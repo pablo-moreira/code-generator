@@ -18,9 +18,9 @@
 			<version>0.0.2</version>
 		</dependency>
 		<dependency>
-			<groupId>br.com.atosdamidia</groupId>
+			<groupId>br.com.atos</groupId>
 			<artifactId>atos-comuns</artifactId>
-			<version>0.0.8</version>
+			<version>0.0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
