@@ -63,10 +63,7 @@ public class GeradorCodigo {
 	private Entidade entidade;
 	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
-	
-	private InputStream templateVisualizarCtrl;
-	private InputStream templateVisualizarXhtml;
-	
+		
 	public Entidade getEntidade() {
 		return entidade;
 	}
@@ -285,17 +282,7 @@ public class GeradorCodigo {
 
 		String path = "/templates/" + recurso + "." + tipo + ".tpl";
 			
-		BufferedReader in; 
-				
-		if (recurso.equals("VisualizarCtrl") && templateVisualizarCtrl != null) {			
-			in = new BufferedReader(new InputStreamReader(templateVisualizarCtrl));
-		}
-		else if (recurso.equals("Visualizar") && templateVisualizarXhtml != null) {
-			in = new BufferedReader(new InputStreamReader(templateVisualizarXhtml));
-		}
-		else {		
-			in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)));
-		}
+		BufferedReader in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)));
 
         PrintWriter pw = new PrintWriter(arquivo);
         
@@ -553,21 +540,5 @@ public class GeradorCodigo {
 				gerarTelaVisualizacao();
 			}
 		}
-	}
-
-	public InputStream getTemplateVisualizarCtrl() {
-		return templateVisualizarCtrl;
-	}
-
-	public void setTemplateVisualizarCtrl(InputStream templateVisualizarCtrl) {
-		this.templateVisualizarCtrl = templateVisualizarCtrl;
-	}
-
-	public InputStream getTemplateVisualizarXhtml() {
-		return templateVisualizarXhtml;
-	}
-
-	public void setTemplateVisualizarXhtml(InputStream templateVisualizarXhtml) {
-		this.templateVisualizarXhtml = templateVisualizarXhtml;
 	}	
 }
