@@ -283,7 +283,7 @@ public class GeradorCodigo {
 				
 		System.out.println(" - " + arquivo.getName() + " [GERADO]");
 
-		String path = recurso + "." + tipo + ".tpl";
+		String path = "/templates/" + recurso + "." + tipo + ".tpl";
 			
 		BufferedReader in; 
 				
