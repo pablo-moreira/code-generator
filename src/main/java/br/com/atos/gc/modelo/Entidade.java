@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import org.hibernate.envers.Audited;
 
+import br.com.atos.gc.GeradorCodigo;
 import br.com.atos.utils.ReflectionUtils;
 import br.com.atos.utils.StringUtils;
 import br.com.atosdamidia.comuns.modelo.IBaseEntity;
@@ -24,11 +25,13 @@ public class Entidade {
 	private boolean inicializadoAtributos;
 	private boolean inicializadoRotuloEhArtigo;
 	private String artigoDefinido;
-	private String rotulo;	
+	private String rotulo;
+	private GeradorCodigo gc;	
 		
-	public Entidade(Class<? extends IBaseEntity<?>> tipo) {
+	public Entidade(Class<? extends IBaseEntity<?>> tipo, GeradorCodigo geradorCodigo) {
 		super();
 		this.tipo = tipo;
+		this.gc = geradorCodigo;		
 	}
 
 	private List<Atributo> atributos = new ArrayList<Atributo>();
@@ -47,6 +50,10 @@ public class Entidade {
 
 	public String getRotulo() {
 		return rotulo;
+	}	
+	
+	public GeradorCodigo getGc() {
+		return gc;
 	}
 
 	public boolean isInicializadoAtributos() {
@@ -95,6 +102,15 @@ public class Entidade {
 		}
 	}
 	
+	public boolean isAtributoIgnorado(String atributoNome) {
+		for (String atributoIgnorado : getGc().getAtributosIgnorados()) {
+			if (atributoNome.equals(atributoIgnorado)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void inicializarAtributosSeNecessario() {
 		
 		if (!isInicializadoAtributos()) {
@@ -103,12 +119,15 @@ public class Entidade {
 			
 			for (Field field : fields) {
 	
-				if (!Modifier.isStatic(field.getModifiers())) {
-					
+				if (!Modifier.isStatic(field.getModifiers()) 
+						&& !isAtributoIgnorado(field.getName())) {
+										
 					if (field.getAnnotation(Id.class) != null) {
 						atributos.add(new AtributoId(field));
 					}
 					else {
+						
+						Atributo atributo;
 						
 						String rotulo = JOptionPane.showInputDialog("Digite um rotulo para o atributo (" + field.getName() + "):");
 						
@@ -131,7 +150,7 @@ public class Entidade {
 								);
 							}
 							
-							atributos.add(new AtributoOneToMany(field, rotulo, tipoFormulario));
+							atributo = new AtributoOneToMany(field, rotulo, tipoFormulario);
 						}
 						else if (field.getAnnotation(ManyToOne.class) != null || field.getAnnotation(OneToOne.class) != null) {
 							
@@ -157,11 +176,13 @@ public class Entidade {
 								}
 							}
 							
-							atributos.add(new AtributoManyToOne(field, rotulo, associacaoAtributoField, associacaoAtributoDescricao));
+							atributo = new AtributoManyToOne(field, rotulo, associacaoAtributoField, associacaoAtributoDescricao);
 						}
 						else {
-							atributos.add(new Atributo(field, rotulo));
+							atributo = new Atributo(field, rotulo);
 						}
+						
+						atributos.add(atributo);
 					}
 				}
 			}

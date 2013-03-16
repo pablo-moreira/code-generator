@@ -7,8 +7,9 @@ public class Atributo {
 	private Field field;	
 	private String rotulo;
 	
-	private boolean gridColuna = true;
-	private boolean gridFiltro = true;
+	private boolean renderizarGridColuna = true;
+	private boolean renderizarGridFiltro = true;
+	private boolean renderizarWinFrm = true;
 
 	public Atributo(Field field, String rotulo) {
 		super();
@@ -32,19 +33,27 @@ public class Atributo {
 		this.rotulo = rotulo;
 	}
 
-	public boolean isGridColuna() {
-		return gridColuna;
+	public boolean isRenderizarGridColuna() {
+		return renderizarGridColuna;
 	}
 
-	public void setGridColuna(boolean gridColuna) {
-		this.gridColuna = gridColuna;
+	public void setRenderizarGridColuna(boolean renderizarGridColuna) {
+		this.renderizarGridColuna = renderizarGridColuna;
 	}
 
-	public boolean isGridFiltro() {
-		return gridFiltro;
+	public boolean isRenderizarGridFiltro() {
+		return renderizarGridFiltro;
 	}
 
-	public void setGridFiltro(boolean gridFiltro) {
-		this.gridFiltro = gridFiltro;
+	public void setRenderizarGridFiltro(boolean renderizarGridFiltro) {
+		this.renderizarGridFiltro = renderizarGridFiltro;
+	}
+
+	public boolean isRenderizarWinFrm() {
+		return renderizarWinFrm;
+	}
+
+	public void setRenderizarWinFrm(boolean renderizarFrm) {
+		this.renderizarWinFrm = renderizarFrm;
 	}
 }
