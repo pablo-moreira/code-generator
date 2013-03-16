@@ -24,7 +24,8 @@
 		
 		<atos:grid grid="#{cc.attrs.grid}" dataExporter="#{dataExporterCtrl}">
 	       	${gridXhtmlColunas}	       
-			<p:column headerText="Ação" styleClass="col-acao" rendered="#{cc.attrs.winFrm != null}">
+			<p:column styleClass="col-acao" rendered="#{cc.attrs.winFrm != null}" exportable="false">
+				<f:facet name="header"><h:outputText value="Ação" /></f:facet>
 				<h:link outcome="/pages/${entidadeNome}/${entidadeNome}Visualizar.jsf" title="Visualizar o objeto">
 					<f:param name="id" value="#{objeto.id}" />
 					<h:graphicImage value="/resources/img/s.gif" styleClass="link-icone ui-icon-zoomin" />
