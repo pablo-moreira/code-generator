@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -63,7 +64,8 @@ public class GeradorCodigo {
 	private Entidade entidade;
 	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
-		
+	private List<String> atributosIgnorados = new ArrayList<String>();
+
 	public Entidade getEntidade() {
 		return entidade;
 	}
@@ -95,7 +97,7 @@ public class GeradorCodigo {
 	 */
 	public GeradorCodigo(Class<? extends IBaseEntity<?>> entidadeClass) throws Exception {
 
-		entidade = new Entidade(entidadeClass);
+		entidade = new Entidade(entidadeClass, this);
 		
 		InputStream inputStream = this.getClass().getResourceAsStream("/gc.properties");
 
@@ -540,5 +542,13 @@ public class GeradorCodigo {
 				gerarTelaVisualizacao();
 			}
 		}
-	}	
+	}
+	
+	public List<String> getAtributosIgnorados() {
+		return atributosIgnorados;
+	}
+
+	public void setAtributosIgnorados(String ... atributos) {
+		atributosIgnorados = Arrays.asList(atributos);
+	}
 }
