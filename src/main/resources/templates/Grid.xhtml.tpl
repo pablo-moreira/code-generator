@@ -22,7 +22,7 @@
 			${gridXhtmlFiltros}			
 		</atos:gridFilters>
 		
-		<atos:grid grid="#{cc.attrs.grid}">
+		<atos:grid grid="#{cc.attrs.grid}" dataExporter="#{dataExporterCtrl}">
 	       	${gridXhtmlColunas}	       
 			<p:column headerText="Ação" styleClass="col-acao" rendered="#{cc.attrs.winFrm != null}">
 				<h:link outcome="/pages/${entidadeNome}/${entidadeNome}Visualizar.jsf" title="Visualizar o objeto">
