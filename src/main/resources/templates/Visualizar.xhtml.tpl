@@ -14,7 +14,7 @@
 	<ui:composition template="/templates/padrao.xhtml">    
 	   	<ui:param name="pgTitulo" value="Visualizando ${artigoDefinido} ${entidadeRotulo}" />
 		<ui:define name="conteudo">
-			<h:form id="form">
+			<h:form id="frm">
 				<p:tabView dynamic="true" cache="false">								
 					${visualizarXhtml}
 				</p:tabView>

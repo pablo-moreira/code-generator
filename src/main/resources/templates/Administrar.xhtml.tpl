@@ -10,7 +10,7 @@
 	<ui:composition template="/templates/padrao.xhtml">    
 	   	<ui:param name="pgTitulo" value="Administração de ${entidadeRotulo}s" />
 		<ui:define name="conteudo">
-			<h:form id="form">				
+			<h:form id="frm">				
 				<custom:grid${EntidadeNome} grid="#{${entidadeNome}AdministrarCtrl.grid}" winFrm="#{${entidadeNome}AdministrarCtrl.winFrm}" />				
 			</h:form>
 			<custom:winFrm${EntidadeNome} winFrm="#{${entidadeNome}AdministrarCtrl.winFrm}" salvarAction="#{${entidadeNome}AdministrarCtrl.salvar}" excluirAction="#{${entidadeNome}AdministrarCtrl.excluir}" />
