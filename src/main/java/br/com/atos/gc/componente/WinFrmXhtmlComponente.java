@@ -122,12 +122,11 @@ public class WinFrmXhtmlComponente extends Componente {
 					println(pw, "\t\t\t\t\t\t<p:inputText id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" disabled=\"true\" />", atributo.getField().getName(), atributo.getRotulo());
 					println(pw, "\t\t\t\t\t\t<p:message for=\"{0}\" display=\"icon\" />", atributo.getField().getName());
 				}
-				else {
+				else if (atributo.isRenderizarWinFrm()) {
 					atributos.add(atributo);
 				}
 			}
 		}
-				
 		
 		for (Atributo atributo : atributos) {
 
