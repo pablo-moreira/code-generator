@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -114,6 +115,25 @@ public class GeradorCodigo {
 		atributosValores.put(ATRIBUTO_ENTIDADE_NOME_UC, getEntidade().getTipoSimpleName());
 		atributosValores.put(ATRIBUTO_ENTIDADE_NOME, firstToLowerCase(getEntidade().getTipoSimpleName()));
 		atributosValores.put(PACOTE_ENTIDADE, entidadeClass.getPackage().getName());
+		
+		String value = properties.getProperty("atributosIgnorados");
+		
+		if (value != null && !value.isEmpty()) {
+
+			StringTokenizer st = new StringTokenizer(value, ",");
+
+			int tokens = st.countTokens();  
+			String[] retorno = new String[tokens];  
+	  
+	        for (int i = 0; i < tokens; i++) {
+	        	retorno[i] = st.nextToken();
+	        }
+	        
+	        atributosIgnorados = Arrays.asList(retorno);
+		}
+		else {
+			atributosIgnorados = new ArrayList<String>();
+		}
 		
 		componentes = new ArrayList<Componente>();
 		componentes.add(new WinFrmXhtmlComponente(this));
@@ -543,12 +563,8 @@ public class GeradorCodigo {
 			}
 		}
 	}
-	
+
 	public List<String> getAtributosIgnorados() {
 		return atributosIgnorados;
-	}
-
-	public void setAtributosIgnorados(String ... atributos) {
-		atributosIgnorados = Arrays.asList(atributos);
 	}
 }
