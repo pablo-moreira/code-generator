@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>br.com.atos</groupId>
 			<artifactId>atos-comuns</artifactId>
-			<version>0.0.9</version>
+			<version>0.0.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
