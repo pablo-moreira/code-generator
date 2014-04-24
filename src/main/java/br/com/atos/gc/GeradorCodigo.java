@@ -4,6 +4,8 @@ import static br.com.atos.utils.StringUtils.firstToLowerCase;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,18 +23,18 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
-import br.com.atos.gc.componente.Componente;
-import br.com.atos.gc.componente.GridXhtmlColunasComponente;
-import br.com.atos.gc.componente.GridXhtmlFiltrosComponente;
-import br.com.atos.gc.componente.VisualizarXhtmlComponente;
-import br.com.atos.gc.componente.WinFrmJavaAtributosComponente;
-import br.com.atos.gc.componente.WinFrmJavaImportsComponente;
-import br.com.atos.gc.componente.WinFrmJavaMetodosComponente;
-import br.com.atos.gc.componente.WinFrmXhtmlAssociacoesComponente;
-import br.com.atos.gc.componente.WinFrmXhtmlComponente;
-import br.com.atos.gc.modelo.Atributo;
-import br.com.atos.gc.modelo.AtributoManyToOne;
-import br.com.atos.gc.modelo.Entidade;
+import br.com.atos.gc.component.Componente;
+import br.com.atos.gc.component.GridXhtmlColunasComponente;
+import br.com.atos.gc.component.GridXhtmlFiltrosComponente;
+import br.com.atos.gc.component.VisualizarXhtmlComponente;
+import br.com.atos.gc.component.WinFrmJavaAtributosComponente;
+import br.com.atos.gc.component.WinFrmJavaImportsComponente;
+import br.com.atos.gc.component.WinFrmJavaMetodosComponente;
+import br.com.atos.gc.component.WinFrmXhtmlAssociacoesComponente;
+import br.com.atos.gc.component.WinFrmXhtmlComponente;
+import br.com.atos.gc.model.Attribute;
+import br.com.atos.gc.model.AttributeManyToOne;
+import br.com.atos.gc.model.Entity;
 import br.com.atos.utils.StringUtils;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 import br.com.atosdamidia.comuns.modelo.IBaseEntity;
@@ -49,45 +51,51 @@ public class GeradorCodigo {
 	public static final String PACOTE_WINFRM = "pacoteWinFrm";
 	public static final String PACOTE_CONTROLADOR = "pacoteControlador";	
 	public static final String DIR_SRC = "dirSrc";
+	public static final String DIR_RESOURCES = "dirResources";
 	public static final String DIR_WEBCONTENT = "dirWebContent";	
 	public static final String JAVA = "java";
 	public static final String XHTML = "xhtml";
 	public static final String ATRIBUTO_ENTIDADE_NOME_UC = "EntidadeNome";
 	public static final String ATRIBUTO_ENTIDADE_NOME = "entidadeNome";
-	public static final String ATRIBUTO_ENTIDADE_AUDITADA = "entidadeAuditada";
-	
+	public static final String ATRIBUTO_ENTIDADE_AUDITADA = "entidadeAuditada";	
+	public static final String GC_PROPERTIES_FILENAME = "gc.properties";
+	public static final String MESSAGES_PROPERTIES_FILENAME = "messages.properties";
+		
 	public Pattern pattern = Pattern.compile("\\$\\{([a-zA-Z]*)\\}");	
 	private File dirSrc;	
 	private File dirWebContent;	
-	private HashMap<String, String> atributosValores;
-	private List<Componente> componentes;
-	private Properties properties;
-	private Entidade entidade;
+	private HashMap<String, String> attributesValues;
+	private List<Componente> components;
+	private Properties gcProperties;
+	private Entity entity;
 	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
-	private List<String> atributosIgnorados = new ArrayList<String>();
+	private List<String> ignoredAttributes = new ArrayList<String>();
+	private Properties messagesProperties;
+	private File dirProjeto;
+	private File dirResources;
 
-	public Entidade getEntidade() {
-		return entidade;
+	public Entity getEntity() {
+		return entity;
 	}
 
 	private void inicializarRotuloEhArtigoSeNecessario() {
 
-		if (!getEntidade().isInicializadoRotuloEhArtigo()) {
+		if (!getEntity().isInicializedLabelAndGender()) {
 			
-			getEntidade().inicializarRotuloEhArtigoSeNecessario();
+			getEntity().initializeLabelsAndGenderIfNecessarily();
 			
-			atributosValores.put("ArtigoDefinido", getEntidade().getArtigoDefinido().toUpperCase());
-			atributosValores.put("artigoDefinido", getEntidade().getArtigoDefinido());		
-			atributosValores.put("entidadeRotulo", getEntidade().getRotulo());
-			atributosValores.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntidade().getRotulo()));
+			attributesValues.put("ArtigoDefinido", getEntity().getGender().toUpperCase());
+			attributesValues.put("artigoDefinido", getEntity().getGender());		
+			attributesValues.put("entidadeRotulo", getEntity().getLabel());
+			attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
 		}
 	}
 	
 	private void inicializarEntidadeAtributosSeNecessario() {
 		
-		if (!getEntidade().isInicializadoAtributos()) {
-			getEntidade().inicializarAtributosSeNecessario();
+		if (!getEntity().isInicializedAttributes()) {
+			getEntity().inicializarAtributosSeNecessario();
 		}
 	}
 	
@@ -97,88 +105,123 @@ public class GeradorCodigo {
 	 *	gerador.gerarTudo();
 	 */
 	public GeradorCodigo(Class<? extends IBaseEntity<?>> entidadeClass) throws Exception {
+	
+		dirProjeto = new File(System.getProperty("user.dir"));
+		
+		carregarGcProperties();
+		
+		String dr = gcProperties.getProperty(DIR_RESOURCES);
 
-		entidade = new Entidade(entidadeClass, this);
-		
-		InputStream inputStream = this.getClass().getResourceAsStream("/gc.properties");
+		dirSrc = new File(dirProjeto, gcProperties.getProperty(DIR_SRC));
+		dirResources = new File(dirProjeto,  !StringUtils.isNullOrEmpty(dr) ? dr : "src/main/resources");
+		dirWebContent = new File(dirProjeto, gcProperties.getProperty(DIR_WEBCONTENT));
 
-		properties = new Properties();
-		properties.load(inputStream);
-		
-		atributosValores = new HashMap<String,String>();
-		
-		for (Object key : properties.keySet()) {
-			atributosValores.put(key.toString(), properties.getProperty(key.toString()));
+		// Verifica se os diretorios existe se nao existir mostrar msg de erro
+		if (!dirSrc.exists() || !dirSrc.isDirectory()) {
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de codigo fonte ({0}) configurado no arquivo gc.properties é inválido!", gcProperties.getProperty(DIR_SRC)), "Erro", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
 		}
 		
-		atributosValores.put(ATRIBUTO_ENTIDADE_AUDITADA, getEntidade().isAuditada() ? "true" : "false");
-		atributosValores.put(ATRIBUTO_ENTIDADE_NOME_UC, getEntidade().getTipoSimpleName());
-		atributosValores.put(ATRIBUTO_ENTIDADE_NOME, firstToLowerCase(getEntidade().getTipoSimpleName()));
-		atributosValores.put(PACOTE_ENTIDADE, entidadeClass.getPackage().getName());
+		if (!dirWebContent.exists() || !dirWebContent.isDirectory()) {
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de recursos ({0}) configurado no arquivo gc.properties é inválido!", gcProperties.getProperty(DIR_RESOURCES)), "Erro", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
 		
-		String value = properties.getProperty("atributosIgnorados");
+		if (!dirWebContent.exists() || !dirWebContent.isDirectory()) {
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório do conteudo WEB ({0}) configurado no arquivo gc.properties é inválido!", gcProperties.getProperty(DIR_WEBCONTENT)), "Erro", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
+		
+		File messagesFile = getMessagesPropertiesFile();
+		
+		// Se nao encontrar o arquivo messages.properties cria
+		if (messagesFile.exists() == false) {		
+			messagesFile.createNewFile();
+		}
+		
+		messagesProperties = new Properties();
+		messagesProperties.load(new FileInputStream(messagesFile));
+		
+		entity = new Entity(entidadeClass, this);
+		
+		attributesValues = new HashMap<String,String>();
+		
+		for (Object key : gcProperties.keySet()) {
+			attributesValues.put(key.toString(), gcProperties.getProperty(key.toString()));
+		}
+		
+		attributesValues.put(ATRIBUTO_ENTIDADE_AUDITADA, getEntity().isAuditada() ? "true" : "false");
+		attributesValues.put(ATRIBUTO_ENTIDADE_NOME_UC, getEntity().getClazzSimpleName());
+		attributesValues.put(ATRIBUTO_ENTIDADE_NOME, firstToLowerCase(getEntity().getClazzSimpleName()));
+		attributesValues.put(PACOTE_ENTIDADE, entidadeClass.getPackage().getName());
+		
+		String value = gcProperties.getProperty("atributosIgnorados");
 		
 		if (value != null && !value.isEmpty()) {
 
 			StringTokenizer st = new StringTokenizer(value, ",");
 
 			int tokens = st.countTokens();  
-			String[] retorno = new String[tokens];  
+			String[] result = new String[tokens];  
 	  
 	        for (int i = 0; i < tokens; i++) {
-	        	retorno[i] = st.nextToken();
+	        	result[i] = st.nextToken();
 	        }
 	        
-	        atributosIgnorados = Arrays.asList(retorno);
+	        ignoredAttributes = Arrays.asList(result);
 		}
 		else {
-			atributosIgnorados = new ArrayList<String>();
+			ignoredAttributes = new ArrayList<String>();
 		}
 		
-		componentes = new ArrayList<Componente>();
-		componentes.add(new WinFrmXhtmlComponente(this));
-		componentes.add(new WinFrmXhtmlAssociacoesComponente(this));
-		componentes.add(new WinFrmJavaAtributosComponente(this));
-		componentes.add(new WinFrmJavaMetodosComponente(this));
-		componentes.add(new WinFrmJavaImportsComponente(this));
-		componentes.add(new GridXhtmlFiltrosComponente(this));
-		componentes.add(new GridXhtmlColunasComponente(this));
-		componentes.add(new VisualizarXhtmlComponente(this));
+		components = new ArrayList<Componente>();
+		components.add(new WinFrmXhtmlComponente(this));
+		components.add(new WinFrmXhtmlAssociacoesComponente(this));
+		components.add(new WinFrmJavaAtributosComponente(this));
+		components.add(new WinFrmJavaMetodosComponente(this));
+		components.add(new WinFrmJavaImportsComponente(this));
+		components.add(new GridXhtmlFiltrosComponente(this));
+		components.add(new GridXhtmlColunasComponente(this));
+		components.add(new VisualizarXhtmlComponente(this));
 
-		String dirProjeto = System.getProperty("user.dir");
-		
-		dirSrc = new File(dirProjeto + "/" + properties.getProperty(DIR_SRC));
-		dirWebContent = new File(dirProjeto + "/" + properties.getProperty(DIR_WEBCONTENT));
-
-		// Verifica se os diretorios existe se nao existir mostrar msg de erro
-		if (!dirSrc.exists() || !dirSrc.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de codigo fonte ({0}) configurado no arquivo gc.properties é inválido!", properties.getProperty(DIR_SRC)), "Erro", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
-		}
-		
-		if (!dirWebContent.exists() || !dirWebContent.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório do conteudo WEB ({0}) configurado no arquivo gc.properties é inválido!", properties.getProperty(DIR_WEBCONTENT)), "Erro", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
-		}
-		
 		try {
-			Field fieldId = JpaReflectionUtils.getFieldId(entidadeClass);			
-			atributosValores.put("entidadeIdClass",  fieldId.getType().getSimpleName());			
+			attributesValues.put("entidadeIdClass",  entity.getAtributoId().getField().getType().getSimpleName());			
 		}
 		catch (Exception e) {
-			throw new Exception("Erro ao obter o atributo 'entidadeIdClass' da classe " + getEntidade().getTipoSimpleName());
+			throw new Exception("Erro ao obter o atributo 'entidadeIdClass' da classe " + getEntity().getClazzSimpleName());
 		}
 	}
 	
-	public void addComponente(Componente novoComponente) {
+	private File getMessagesPropertiesFile() {
+		return new File(dirResources, MESSAGES_PROPERTIES_FILENAME);
+	}
+	
+	private File getGcPropertiesFile() {
+		return new File(dirResources, GC_PROPERTIES_FILENAME);
+	}
+
+	private void carregarGcProperties() throws Exception {
 		
-		Componente componente = recuperarComponentePorChave(novoComponente.getComponenteChave());
+		// Tenta recuperar o gc.properties pelo classPath
+		InputStream isGc = this.getClass().getResourceAsStream("/" + GC_PROPERTIES_FILENAME);
 		
-		if (componente != null) {
-			componentes.remove(componente);
+		if (isGc == null) {
+			throw new RuntimeException("O arquivo gc.properties não foi encontrado no classpath!");
 		}
 		
-		componentes.add(novoComponente);
+		gcProperties = new Properties();
+		gcProperties.load(isGc);
+	}
+
+	public void addComponent(Componente newComponent) {
+		
+		Componente component = recuperarComponentePorChave(newComponent.getComponenteChave());
+		
+		if (component != null) {
+			components.remove(component);
+		}
+		
+		components.add(newComponent);
 	}
 
 	public void gerarDaoEhManager() throws Exception {
@@ -207,9 +250,9 @@ public class GeradorCodigo {
 			gerarArquivoPorTipo("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true, true, true);
 			gerarArquivoPorTipo("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true, true);
 						
-			for (Atributo atributo : getEntidade().getAtributos()) {				
-				if (atributo instanceof AtributoManyToOne) {
-					adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AtributoManyToOne) atributo);
+			for (Attribute atributo : getEntity().getAttributes()) {				
+				if (atributo instanceof AttributeManyToOne) {
+					adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) atributo);
 				}
 				else if (BaseEnum.class.isAssignableFrom(atributo.getField().getType())) {
 					adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(atributo);
@@ -225,18 +268,26 @@ public class GeradorCodigo {
 	public void gerarTelaVisualizacao() throws Exception {
 		try {		
 			gerarArquivoPorTipo("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, true, false);
-			gerarArquivoPorTipo("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntidade().getTipoSimpleName())), true, true, true);
+			gerarArquivoPorTipo("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true, true);
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
-		}
+		}		
+		finalizar();
 	}
 	
-	public void gerarTelaAdministracao() throws Exception {
+	private void finalizar() throws Exception {
+		gcProperties.store(new FileOutputStream(getGcPropertiesFile()), "");
+		messagesProperties.store(new FileOutputStream(getMessagesPropertiesFile()), "");
+	}
+	
+	private void gerarTelaAdministracao() throws Exception {
 		try {
 			gerarArquivoPorTipo("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false, false, false);
-			gerarArquivoPorTipo("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntidade().getTipoSimpleName())), true, true, false);		
+			gerarArquivoPorTipo("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true, false);
+			
+			finalizar();
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -253,7 +304,7 @@ public class GeradorCodigo {
 	}
 
 	public String getAtributoValor(String atributoNome) {
-		return atributosValores.get(atributoNome);
+		return attributesValues.get(atributoNome);
 	}
 	
 	private void gerarArquivoPorTipo(String recurso, String tipo, boolean recursoInicio, File dirDestino, boolean permiteSobrescrever, boolean inicializarRotuloEhArtigo, boolean inicializarClasseAtributos) throws Exception {
@@ -265,10 +316,10 @@ public class GeradorCodigo {
 		}
 		
 		if (JAVA.equals(tipo)) {
-			arquivoNome = (recursoInicio ? recurso + getEntidade().getTipoSimpleName() : getEntidade().getTipoSimpleName() + recurso) + "." + tipo;
+			arquivoNome = (recursoInicio ? recurso + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + recurso) + "." + tipo;
 		}
 		else {
-			arquivoNome = (recursoInicio ? recurso + getEntidade().getTipoSimpleName() : getEntidade().getTipoSimpleName() + recurso) + "." + tipo;
+			arquivoNome = (recursoInicio ? recurso + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + recurso) + "." + tipo;
 			arquivoNome = arquivoNome.substring(0,1).toLowerCase() + arquivoNome.substring(1);
 		}
 
@@ -324,7 +375,7 @@ public class GeradorCodigo {
             	String parteAtualizar = restoLinha.substring(0, restoLinha.indexOf(tplChave) + tplChave.length());
             	restoLinha = restoLinha.substring(restoLinha.indexOf(tplChave) + tplChave.length());
             	
-            	if (atributosValores.containsKey(chave)) {	            		
+            	if (attributesValues.containsKey(chave)) {	            		
             		pw.print(parteAtualizar.replace(tplChave, getAtributoValor(chave)));
             	}
             	else {
@@ -350,7 +401,7 @@ public class GeradorCodigo {
 
 	private Componente recuperarComponentePorChave(String chave) {
 		
-		for (Componente componente : componentes) {
+		for (Componente componente : components) {
 			if (componente.getComponenteChave().equals(chave)) {
 				return componente;
 			}
@@ -360,7 +411,7 @@ public class GeradorCodigo {
 	}	
 	
 
-	private void adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(Atributo atributo) {
+	private void adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(Attribute atributo) {
 		
 		try {
 			String metodoNome = "get" + atributo.getField().getType().getSimpleName() + "Itens";
@@ -439,7 +490,7 @@ public class GeradorCodigo {
 		}		
 	}
 	
-	private void adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario(AtributoManyToOne atributo) {
+	private void adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario(AttributeManyToOne atributo) {
 				
 		try {
 			String metodoNome = "onComplete" + atributo.getField().getType().getSimpleName();
@@ -498,7 +549,7 @@ public class GeradorCodigo {
 					}
 					
 					String id = JpaReflectionUtils.getFieldId(field.getType()).getName();
-					String rotulo = atributo.getAssociacaoAtributoDescricao();					
+					String rotulo = atributo.getAssociationAttributeDescription();					
 
 					arquivoLinhas.add("\t");
 					arquivoLinhas.add(MessageFormat.format("\tpublic List<{0}> onComplete{0}(String sugestao) '{'", field.getType().getSimpleName()));
@@ -565,6 +616,14 @@ public class GeradorCodigo {
 	}
 
 	public List<String> getAtributosIgnorados() {
-		return atributosIgnorados;
+		return ignoredAttributes;
+	}
+
+	public Properties getGcProperties() {
+		return gcProperties;
+	}
+
+	public Properties getMessagesProperties() {
+		return messagesProperties;
 	}
 }
