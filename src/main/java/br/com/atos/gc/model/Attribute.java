@@ -10,9 +10,9 @@ public class Attribute {
 	private Field field;	
 	private String label;
 	
-	private boolean renderGridColumn = true;
-	private boolean renderGridFilter = true;
-	private boolean renderWinFrm = true;
+	private boolean renderColumn = true;
+	private boolean renderFilter = true;
+	private boolean renderForm = true;
 	
 	private Entity entity;
 
@@ -41,15 +41,15 @@ public class Attribute {
 		String labelValue = getGc().getMessagesProperties().getProperty(getPropertiesKeyBase());
 
 		if (!StringUtils.isNullOrEmpty(renderGridColumnValue)) {
-			renderGridColumn = Boolean.valueOf(renderGridColumnValue);
+			renderColumn = Boolean.valueOf(renderGridColumnValue);
 		}
 		
 		if (!StringUtils.isNullOrEmpty(renderGridFilterValue)) {
-			renderGridFilter = Boolean.valueOf(renderGridFilterValue);
+			renderFilter = Boolean.valueOf(renderGridFilterValue);
 		}
 		
 		if (!StringUtils.isNullOrEmpty(renderWinFrmValue)) {
-			renderWinFrm = Boolean.valueOf(renderWinFrmValue);
+			renderForm = Boolean.valueOf(renderWinFrmValue);
 		}
 				
 		if (!StringUtils.isNullOrEmpty(labelValue)) {
@@ -83,27 +83,27 @@ public class Attribute {
 	}
 
 	public boolean isRenderGridColumn() {
-		return renderGridColumn;
+		return renderColumn;
 	}
 
 	public void setRenderGridColumn(boolean renderGridColumn) {
-		this.renderGridColumn = renderGridColumn;
+		this.renderColumn = renderGridColumn;
 	}
 
 	public boolean isRenderGridFilter() {
-		return renderGridFilter;
+		return renderFilter;
 	}
 
 	public void setRenderGridFilter(boolean renderGridFilter) {
-		this.renderGridFilter = renderGridFilter;
+		this.renderFilter = renderGridFilter;
 	}
 
 	public boolean isRenderWinFrm() {
-		return renderWinFrm;
+		return renderForm;
 	}
 
 	public void setRenderWinFrm(boolean renderWinFrm) {
-		this.renderWinFrm = renderWinFrm;
+		this.renderForm = renderWinFrm;
 	}
 
 	public Entity getEntity() {
