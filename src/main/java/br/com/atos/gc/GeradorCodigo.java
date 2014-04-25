@@ -107,7 +107,7 @@ public class GeradorCodigo {
 	public GeradorCodigo(Class<? extends IBaseEntity<?>> entidadeClass) throws Exception {
 	
 		dirProjeto = new File(System.getProperty("user.dir"));
-		
+
 		carregarGcProperties();
 		
 		String dr = gcProperties.getProperty(DIR_RESOURCES);
