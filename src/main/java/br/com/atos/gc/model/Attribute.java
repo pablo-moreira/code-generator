@@ -34,23 +34,23 @@ public class Attribute {
 	protected void loadProperties() {
 
 		// gc.properties
-		String renderGridColumnValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderGridColumn");
-		String renderGridFilterValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderGridFilter");
-		String renderWinFrmValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderWinFrm");
+		String renderColumnValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderColumn");
+		String renderFilterValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderFilter");
+		String renderFormValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderForm");
 
 		// messages.properties
 		String labelValue = getGc().getMessagesProperties().getProperty(getPropertiesKeyBase());
 
-		if (!StringUtils.isNullOrEmpty(renderGridColumnValue)) {
-			renderColumn = Boolean.valueOf(renderGridColumnValue);
+		if (!StringUtils.isNullOrEmpty(renderColumnValue)) {
+			renderColumn = Boolean.valueOf(renderColumnValue);
 		}
 		
-		if (!StringUtils.isNullOrEmpty(renderGridFilterValue)) {
-			renderFilter = Boolean.valueOf(renderGridFilterValue);
+		if (!StringUtils.isNullOrEmpty(renderFilterValue)) {
+			renderFilter = Boolean.valueOf(renderFilterValue);
 		}
 		
-		if (!StringUtils.isNullOrEmpty(renderWinFrmValue)) {
-			renderForm = Boolean.valueOf(renderWinFrmValue);
+		if (!StringUtils.isNullOrEmpty(renderFormValue)) {
+			renderForm = Boolean.valueOf(renderFormValue);
 		}
 				
 		if (!StringUtils.isNullOrEmpty(labelValue)) {
