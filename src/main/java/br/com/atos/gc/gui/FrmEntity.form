@@ -132,6 +132,9 @@
           <Properties>
             <Property name="autoscrolls" type="boolean" value="true"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="FrmEntity_pnAttributes"/>
+          </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
@@ -139,6 +142,9 @@
               <Properties>
                 <Property name="autoResizeMode" type="int" value="0"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable() {&#xd;&#xa;&#xd;&#xa;    public TableCellEditor getCellEditor(int row, int column) {&#xd;&#xa;        &#xd;&#xa;        TableModel tm = getModel();&#xd;&#xa;        &#xd;&#xa;        TableCellEditor cellEditor;&#xd;&#xa;&#xd;&#xa;        if (tm instanceof AttributeTableModel) {&#xd;&#xa;            AttributeTableModel atm = (AttributeTableModel) tm;&#xd;&#xa;            cellEditor = atm.getCellEditor(row, column);&#xd;&#xa;        }&#xd;&#xa;        &#xd;&#xa;        if (cellEditor != null) {&#xd;&#xa;            return cellEditor;&#xd;&#xa;        }   &#xd;&#xa;        else {&#xd;&#xa;            return super.getCellEditor(row, column);&#xd;&#xa;        }&#xd;&#xa;    }&#xd;&#xa;}"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
