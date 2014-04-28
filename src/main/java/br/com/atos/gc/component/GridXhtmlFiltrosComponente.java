@@ -35,7 +35,7 @@ public class GridXhtmlFiltrosComponente extends Componente {
 				
 				if (AttributeManyToOne.class.isInstance(atributo)) {
 					AttributeManyToOne atributoManyToOne =  (AttributeManyToOne) atributo;
-					imprimirFiltro(pw, atributo, atributoManyToOne.getAssociationAttributeField(), atributo.getField().getName() + "." + atributoManyToOne.getAssociationAttributeDescription());
+					imprimirFiltro(pw, atributo, atributoManyToOne.getDescriptionAttributeOfAssociationField(), atributo.getField().getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
 				}
 				else {				
 					imprimirFiltro(pw, atributo, atributo.getField(), atributo.getField().getName());

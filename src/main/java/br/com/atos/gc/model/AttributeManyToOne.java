@@ -1,40 +1,50 @@
 package br.com.atos.gc.model;
 
+import br.com.atos.utils.ReflectionUtils;
 import java.lang.reflect.Field;
+import java.util.List;
 
 
 public class AttributeManyToOne extends Attribute {
 
-	/*
-	 * Refatorar para armazenar uma expression language para o atributo de descricao da associacao
-	 * descriptionAttributeOfAssociation
-	 */
-	private Field associationDescriptionField;
-	private String associationDescriptionFieldName; // Remover nao serve para nada.
+    private String descriptionAttributeOfAssociation; // Remover nao serve para nada.
+    private Field descriptionAttributeOfAssociationField;
 		
-	public AttributeManyToOne(Field field, String label, Field associationAttributeField, String associationAttributeDescription) {
-		super(field, label);
-		this.associationDescriptionField = associationAttributeField;
-		this.associationDescriptionFieldName = associationAttributeDescription;
-	}
+    public AttributeManyToOne() {}
+        
+    public AttributeManyToOne(Field field, String label, String descriptionAttributeOfAssociation) {
+	super(field, label);
+	this.descriptionAttributeOfAssociation = descriptionAttributeOfAssociation;
+    }
 
-	public AttributeManyToOne(Field field, Entity entity) {
-		super(field, entity);
-	}
+    public AttributeManyToOne(Field field, Entity entity) {
+	super(field, entity);
+    }
 
-	public String getAssociationAttributeDescription() {
-		return associationDescriptionFieldName;
-	}
+    public String getDescriptionAttributeOfAssociation() {
+	return descriptionAttributeOfAssociation;
+    }    
 	
-	public Field getAssociationAttributeField() {
-		return associationDescriptionField;
+    public Field getDescriptionAttributeOfAssociationField() {
+	return descriptionAttributeOfAssociationField;
+    }
+
+    public void setDescriptionAttributeOfAssociation(String descriptionAttributeOfAssociation) {
+	
+	this.descriptionAttributeOfAssociation = descriptionAttributeOfAssociation;
+	
+	// Verifica se este atributo existe na associacao
+	List<Field> assocFields = ReflectionUtils.getFieldsRecursive(getField().getType());
+
+	for (Field assocField : assocFields) {
+	    if (assocField.getName().equals(descriptionAttributeOfAssociation)) {
+		descriptionAttributeOfAssociationField = assocField;
+		break;
+	    }
 	}
 
-	public void setAssociationAttributeField(Field associationAttributeField) {
-		this.associationDescriptionField = associationAttributeField;
+	if (descriptionAttributeOfAssociationField == null) {
+	    descriptionAttributeOfAssociation = null;
 	}
-
-	public void setAssociationAttributeDescription(String associationAttributeDescription) {
-		this.associationDescriptionFieldName = associationAttributeDescription;
-	}	
+    }
 }

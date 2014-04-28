@@ -186,10 +186,10 @@ public class WinFrmXhtmlComponente extends Componente {
 				println(pw, "\t\t\t\t\t\t<p:autoComplete id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" required=\"{2}\" forceSelection=\"true\"", atributo.getField().getName(), atributoLabel, required);
 				println(pw, "\t\t\t\t\t\t\tdisabled=\"#'{'cc.attrs.winFrm.entidadeAssociada != null and cc.attrs.winFrm.entidadeAssociada == cc.attrs.winFrm.objeto.{0}'}'\"", atributo.getField().getName());
 				println(pw, "\t\t\t\t\t\t\tcompleteMethod=\"#'{'autoCompleteCtrl.onComplete{0}'}'\" dropdown=\"true\" converter=\"lazyEntityConverter\"", atributo.getField().getType().getSimpleName());
-				println(pw, "\t\t\t\t\t\t\tvar=\"{0}\" itemValue=\"#'{'{0}'}'\" itemLabel=\"#'{'{0}.{1}'}'\"", firstToLowerCase(atributo.getField().getType().getSimpleName()), atributoManyToOne.getAssociationAttributeDescription());
+				println(pw, "\t\t\t\t\t\t\tvar=\"{0}\" itemValue=\"#'{'{0}'}'\" itemLabel=\"#'{'{0}.{1}'}'\"", firstToLowerCase(atributo.getField().getType().getSimpleName()), atributoManyToOne.getDescriptionAttributeOfAssociation());
 				println(pw, "\t\t\t\t\t\t\tsize=\"40\" scrollHeight=\"200\">");
 				println(pw, "\t\t\t\t\t\t\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(atributo.getField().getType().getSimpleName()),  associacaoFieldId.getName());
-				println(pw, "\t\t\t\t\t\t\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(atributo.getField().getType().getSimpleName()), atributoManyToOne.getAssociationAttributeDescription());
+				println(pw, "\t\t\t\t\t\t\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(atributo.getField().getType().getSimpleName()), atributoManyToOne.getDescriptionAttributeOfAssociation());
 				println(pw, "\t\t\t\t\t\t</p:autoComplete>");
 			}
 			

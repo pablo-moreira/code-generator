@@ -6,6 +6,7 @@ package br.com.atos.gc.gui;
 
 import br.com.atos.gc.gui.tablemodel.AttributeTableModel;
 import br.com.atos.gc.model.Attribute;
+import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Entity;
 import java.util.ArrayList;
@@ -46,12 +47,13 @@ public class FrmAttributes extends javax.swing.JPanel {
 
             attributes.add(new Attribute());
             attributes.add(new AttributeOneToMany());
+            attributes.add(new AttributeManyToOne());
 
             getTmAttributes().getAttributes().addAll(attributes);
             //getTmAttributes().hideColumnRenderColumn();
             //getTmAttributes().hideColumnRenderFilter();
             //getTmAttributes().hideColumnRenderForm();
-            getTmAttributes().hideColumnAttributeDescription();    
+            //getTmAttributes().hideColumnAttributeDescription();    
             getTmAttributes().fireTableDataChanged();
         }
         

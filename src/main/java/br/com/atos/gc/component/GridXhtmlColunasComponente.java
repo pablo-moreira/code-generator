@@ -30,9 +30,9 @@ public class GridXhtmlColunasComponente extends Componente {
 				
 				if (AttributeManyToOne.class.isInstance(atributo)) {
 					AttributeManyToOne atributoManyToOne =  (AttributeManyToOne) atributo;
-					println(pw, "\t\t\t<p:column sortBy=\"#'{'objeto.{1}.{2}'}'\">", atributo.getLabel(), atributo.getField().getName(), atributoManyToOne.getAssociationAttributeDescription());
+					println(pw, "\t\t\t<p:column sortBy=\"#'{'objeto.{1}.{2}'}'\">", atributo.getLabel(), atributo.getField().getName(), atributoManyToOne.getDescriptionAttributeOfAssociation());
 					println(pw, "\t\t\t\t<f:facet name=\"header\"><h:outputText value=\"{0}\" /></f:facet>", atributo.getLabel());
-					printOutputText(pw, "\t\t\t\t", atributoManyToOne.getAssociationAttributeField(), path + atributo.getField().getName() + "." + atributoManyToOne.getAssociationAttributeDescription());
+					printOutputText(pw, "\t\t\t\t", atributoManyToOne.getDescriptionAttributeOfAssociationField(), path + atributo.getField().getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
 					println(pw, "\t\t\t</p:column>");
 				}
 				else {

@@ -218,8 +218,7 @@ public class Entity {
 							}
 						}
 
-						((AttributeManyToOne) attribute).setAssociationAttributeDescription(associationAttributeDescription);
-						((AttributeManyToOne) attribute).setAssociationAttributeField(associationAttributeField);
+						((AttributeManyToOne) attribute).setDescriptionAttributeOfAssociation(associationAttributeDescription);
 					}
 				}
 			}

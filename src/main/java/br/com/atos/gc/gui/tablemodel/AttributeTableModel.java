@@ -4,6 +4,7 @@
  */
 package br.com.atos.gc.gui.tablemodel;
 
+import br.com.atos.gc.gui.WinFrmEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -62,10 +63,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 return attribute.isRenderForm();
             case 5 :
             	if (attribute instanceof AttributeManyToOne) {
-            		return ((AttributeManyToOne) attribute).getAssociationAttributeDescription();
+		    return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
             	}
             	else {
-            		return null;
+		    return null;
             	}
             case 6 :
                 if (attribute instanceof AttributeOneToMany) {
@@ -201,8 +202,8 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             attribute.setRenderForm((Boolean)value);
         }
         else if (COL_ATTRIBUTE_DESCRIPTION.getIndex() == col) {
-        	AttributeManyToOne attributeManyToOne = (AttributeManyToOne) attribute;
-            attributeManyToOne.setAssociationAttributeDescription((String) value);
+	    AttributeManyToOne attributeManyToOne = (AttributeManyToOne) attribute;
+	    attributeManyToOne.setDescriptionAttributeOfAssociation((String) value);
         }
         else if (COL_FORM_TYPE.getIndex() == col) {
         	
@@ -252,24 +253,32 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 
             List<String> entities = new ArrayList<String>();
             
-    		List<Field> associationAttributes = ReflectionUtils.getFieldsRecursive(attribute.getField().getType());
+            Class<?> associationClass = null;
+            
+            if (attribute.getField() != null) {
+                associationClass = attribute.getField().getType();
+            }
+            else {
+		associationClass = WinFrmEntity.class;
+            }
+            
+            List<Field> associationAttributes = ReflectionUtils.getFieldsRecursive(associationClass);
     		
-    		for (Field field : associationAttributes) {
-    	
-    			if (!Modifier.isStatic(field.getModifiers())) {
-    				entities.add(field.getName());
-    			}
+            for (Field field : associationAttributes) {    	
+                if (!Modifier.isStatic(field.getModifiers())) {
+                        entities.add(field.getName());
+                }
             }
     		
-    		JComboBox cbbAttributeDescription = new JComboBox(new EntityComboBoxModel<String>(entities){
+            JComboBox cbbAttributeDescription = new JComboBox(new EntityComboBoxModel<String>(entities){
 
-				private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
-				@Override
-				public String getLabel(String item) {
-					return item;
-				}    			
-    		});			
+		@Override
+		public String getLabel(String item) {
+			return item;
+		}    			
+	    });			
 
             return new DefaultCellEditor(cbbAttributeDescription);
         }

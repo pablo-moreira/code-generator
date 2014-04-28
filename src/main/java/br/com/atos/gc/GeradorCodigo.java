@@ -577,7 +577,7 @@ public class GeradorCodigo {
 					}
 					
 					String id = JpaReflectionUtils.getFieldId(field.getType()).getName();
-					String rotulo = atributo.getAssociationAttributeDescription();					
+					String rotulo = atributo.getDescriptionAttributeOfAssociation();					
 
 					arquivoLinhas.add("\t");
 					arquivoLinhas.add(MessageFormat.format("\tpublic List<{0}> onComplete{0}(String sugestao) '{'", field.getType().getSimpleName()));

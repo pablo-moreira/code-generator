@@ -38,7 +38,7 @@ public class VisualizarXhtmlComponente extends Componente {
 				
 				if (AttributeManyToOne.class.isInstance(atributo)) {
 					AttributeManyToOne atributoManyToOne =  (AttributeManyToOne) atributo;
-					printOutputText(pw, "\t\t\t\t\t\t\t\t\t", atributoManyToOne.getAssociationAttributeField(), path + atributo.getField().getName() + "." + atributoManyToOne.getAssociationAttributeDescription());
+					printOutputText(pw, "\t\t\t\t\t\t\t\t\t", atributoManyToOne.getDescriptionAttributeOfAssociationField(), path + atributo.getField().getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
 				}
 				else {
 					printOutputText(pw, "\t\t\t\t\t\t\t\t\t", atributo.getField(), path + atributo.getField().getName());

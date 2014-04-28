@@ -4,11 +4,14 @@
  */
 package br.com.atos.gc.gui;
 
+import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Gender;
 import br.com.atos.gc.util.EntityComboBoxModel;
+import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,7 +21,8 @@ public class WinFrmEntity extends javax.swing.JDialog {
     
     private EntityComboBoxModel<Gender> cmGender;
     private Entity entity;
-
+    private int status;
+    
     /**
      * Creates new form WinFrmEntity
      */
@@ -56,6 +60,9 @@ public class WinFrmEntity extends javax.swing.JDialog {
         cbbGender = new javax.swing.JComboBox();
         txtLabel = new javax.swing.JTextField();
         frmAttributes = new br.com.atos.gc.gui.FrmAttributes();
+        jSeparator1 = new javax.swing.JSeparator();
+        btnOk = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Formulário de Entidade");
@@ -68,10 +75,25 @@ public class WinFrmEntity extends javax.swing.JDialog {
 
         cbbGender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        btnOk.setText("OK");
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Cancelar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -87,7 +109,12 @@ public class WinFrmEntity extends javax.swing.JDialog {
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 535, Short.MAX_VALUE)))
+                                .addGap(0, 535, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnOk)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -102,12 +129,40 @@ public class WinFrmEntity extends javax.swing.JDialog {
                     .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(18, 18, 18)
-                .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnOk)
+                    .addComponent(jButton1))
+                .addGap(10, 10, 10))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+
+        // Verifica se foi informado os dados
+        if (cmGender.getSelectedEntity() == null) {
+            JFrameUtils.showErro("Erro de validação", "O Gênero não foi informado!");
+            return;
+        }
+        
+	for (AttributeManyToOne attribute : getEntity().getAtributosManyToOne()) {
+	    if (StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
+		JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação não foi informado!");
+		return;
+	    }
+	}
+	
+	status = JOptionPane.OK_OPTION;
+    }//GEN-LAST:event_btnOkActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        status = JOptionPane.CANCEL_OPTION;
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -155,6 +210,7 @@ public class WinFrmEntity extends javax.swing.JDialog {
     public void start() {
         JFrameUtils.setCenterLocation(this);
 	setVisible(true);
+	status = JOptionPane.CANCEL_OPTION;
     }
     
     public Entity getEntity() {
@@ -182,10 +238,13 @@ public class WinFrmEntity extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnOk;
     private javax.swing.JComboBox cbbGender;
     private br.com.atos.gc.gui.FrmAttributes frmAttributes;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField txtLabel;
     // End of variables declaration//GEN-END:variables
 }
