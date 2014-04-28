@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 import br.com.atos.gc.component.Componente;
 import br.com.atos.gc.component.GridXhtmlColunasComponente;
@@ -36,12 +37,12 @@ import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
+import br.com.atos.gc.model.Target;
 import br.com.atos.utils.OsUtil;
 import br.com.atos.utils.StringUtils;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
-import javax.swing.UIManager;
 
 public class GeradorCodigo {
 
@@ -77,6 +78,7 @@ public class GeradorCodigo {
 	private Properties messagesProperties;
 	private File dirProjeto;
 	private File dirResources;
+	private Target target;
 	
 	public Entity getEntity() {
 		return entity;
@@ -243,8 +245,8 @@ public class GeradorCodigo {
 
 	public void gerarDaoEhManager() throws Exception {
 		try {
-			gerarArquivoPorTipo("DAO", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_DAO).replace(".", "/")), false, false, false);
-			gerarArquivoPorTipo("Manager", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_MANAGER).replace(".", "/")), false, false, false);
+			gerarArquivoPorTipo(new Target("DAO", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_DAO).replace(".", "/")), false, false));
+			gerarArquivoPorTipo(new Target("Manager", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_MANAGER).replace(".", "/")), false, false));
 		}
 		catch (Exception e) {			
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -254,7 +256,7 @@ public class GeradorCodigo {
 	
 	public void gerarGrid() throws Exception {
 		try {			
-			gerarArquivoPorTipo("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true, true);
+			gerarArquivoPorTipo(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -264,8 +266,8 @@ public class GeradorCodigo {
 
 	public void gerarWinFrm() throws Exception {
 		try {	
-			gerarArquivoPorTipo("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true, true, true);
-			gerarArquivoPorTipo("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true, true);
+			gerarArquivoPorTipo(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true, true));
+			gerarArquivoPorTipo(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
 						
 			for (Attribute atributo : getEntity().getAttributes()) {				
 				if (atributo instanceof AttributeManyToOne) {
@@ -284,8 +286,8 @@ public class GeradorCodigo {
 	
 	public void gerarTelaVisualizacao() throws Exception {
 		try {		
-			gerarArquivoPorTipo("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, true, false);
-			gerarArquivoPorTipo("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true, true);
+			gerarArquivoPorTipo(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, true));
+			gerarArquivoPorTipo(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -301,8 +303,8 @@ public class GeradorCodigo {
 	
 	private void gerarTelaAdministracao() throws Exception {
 		try {
-			gerarArquivoPorTipo("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false, false, false);
-			gerarArquivoPorTipo("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true, false);
+			gerarArquivoPorTipo(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false, false));
+			gerarArquivoPorTipo(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
 			
 			finalizar();
 		}
@@ -324,57 +326,66 @@ public class GeradorCodigo {
 		return attributesValues.get(atributoNome);
 	}
 	
-	private void gerarArquivoPorTipo(String recurso, String tipo, boolean recursoInicio, File dirDestino, boolean permiteSobrescrever, boolean inicializarRotuloEhArtigo, boolean inicializarClasseAtributos) throws Exception {
-		
-		String arquivoNome;
+	public Target getTarget() {
+		return target;
+	}	
+	
+	private void gerarArquivoPorTipo(Target target) throws Exception {
 
-		if (!dirDestino.exists()) {
-			dirDestino.mkdirs();
+		this.target = target;
+		
+		String fileName;
+
+		if (!getTarget().getDestinationDirectory().exists()) {
+			getTarget().getDestinationDirectory().mkdirs();
 		}
 		
-		if (JAVA.equals(tipo)) {
-			arquivoNome = (recursoInicio ? recurso + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + recurso) + "." + tipo;
+		if (JAVA.equals(getTarget().getType())) {
+			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
 		}
 		else {
-			arquivoNome = (recursoInicio ? recurso + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + recurso) + "." + tipo;
-			arquivoNome = arquivoNome.substring(0,1).toLowerCase() + arquivoNome.substring(1);
+			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
+			fileName = fileName.substring(0,1).toLowerCase() + fileName.substring(1);
 		}
 
-		//File arquivo = new File("/home/pablo-moreira/Desktop/", arquivoNome);
-		File arquivo = new File(dirDestino, arquivoNome);
-				
-		// Verifica se o arquivo existe
-		if (arquivo.exists()) {
+		File file = new File(getTarget().getDestinationDirectory(), fileName);
 
-			if (!permiteSobrescrever) {
-				System.out.println(" - " + arquivo.getName() + " [IGNORADO]");				
+		// Verifica se o arquivo existe
+		if (file.exists()) {
+
+			if (!getTarget().isAllowOverwrite()) {
+				System.out.println(" - " + file.getName() + " [IGNORADO]");				
 				return;
 			}
 			else {
-				int resultado = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja substituir o arquivo: " + arquivo.getName(), "Substituir arquivo",JOptionPane.YES_NO_OPTION);
+				int resultado = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja substituir o arquivo: " + file.getName(), "Substituir arquivo",JOptionPane.YES_NO_OPTION);
 			
 				if (JOptionPane.YES_OPTION != resultado) {
-					System.out.println(" - " + arquivo.getName() + " [IGNORADO]");					
+					System.out.println(" - " + file.getName() + " [IGNORADO]");					
 					return;
 				}			
 			}
 		}
 		
-		if (inicializarRotuloEhArtigo) {
+		if (getTarget().isInitializeEntity()) {
 			inicializarRotuloEhArtigoSeNecessario();
 		}
 		
-		if (inicializarClasseAtributos) {
-			inicializarEntidadeAtributosSeNecessario();
-		}
+//		if (inicializarRotuloEhArtigo) {
+//			inicializarRotuloEhArtigoSeNecessario();
+//		}
+//		
+//		if (inicializarClasseAtributos) {
+//			inicializarEntidadeAtributosSeNecessario();
+//		}
 				
-		System.out.println(" - " + arquivo.getName() + " [GERADO]");
+		System.out.println(" - " + file.getName() + " [GERADO]");
 
-		String path = "/templates/" + recurso + "." + tipo + ".tpl";
+		String path = "/templates/" + target.getResource() + "." + target.getType() + ".tpl";
 			
 		BufferedReader in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)));
 
-        PrintWriter pw = new PrintWriter(arquivo);
+        PrintWriter pw = new PrintWriter(file);
         
         String linha;
 
