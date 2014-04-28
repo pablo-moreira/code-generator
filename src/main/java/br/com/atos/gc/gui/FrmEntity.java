@@ -91,7 +91,7 @@ public class FrmEntity extends javax.swing.JPanel {
 
                 TableModel tm = getModel();
 
-                TableCellEditor cellEditor;
+                TableCellEditor cellEditor = null;
 
                 if (tm instanceof AttributeTableModel) {
                     AttributeTableModel atm = (AttributeTableModel) tm;
