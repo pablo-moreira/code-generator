@@ -4,6 +4,7 @@
  */
 package br.com.atos.gc.gui.tablemodel;
 
+import br.com.atos.gc.util.SuggestBoxModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import br.com.atos.gc.model.Attribute;
@@ -72,24 +74,20 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 return null;
         }
     }
-
+    
     @Override
     protected void initialize() {
         
         super.initialize();
-        
-        //getTable().getColumnModel().getColumn(2).setCellRenderer(TableCellRendererUtils.getDataHorarioTableCellRenderer());
-        
-        TableColumn colFormType = getColumnFormType();
-        
-        JComboBox comboBox = new JComboBox(new EntityComboBoxModel<AttributeFormType>(AttributeFormType.values()) {
+                
+        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<AttributeFormType>(AttributeFormType.values()) {
             @Override
             public String getLabel(AttributeFormType item) {
                 return item.getDescription();
             }
         });
                 
-        colFormType.setCellEditor(new DefaultCellEditor(comboBox));
+        getColumnFormType().setCellEditor(new DefaultCellEditor(cbbFormType));
     }
     
     public TableColumn getColumnRenderFilter() {
@@ -224,5 +222,37 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 
     public List<Attribute> getAttributes() {
         return attributes;
+    }
+    
+    public TableCellEditor getCellEditor(int row, int col) {
+        
+        if (COL_ATTRIBUTE_DESCRIPTION.getIndex() == col) {
+            
+            final Attribute attribute = getEntityByRow(row);
+                                   
+            JComboBox cbbAttributeDescription = new JComboBox();
+
+            new SuggestBoxModel<String>(cbbAttributeDescription) {
+
+                @Override
+                public List<String> getEntities() {
+
+                    List<String> entities = new ArrayList<String>();
+                    
+                    
+                    
+                    return entities;
+                }
+
+                @Override
+                public String getEntityLabel(String entity) {
+                    return entity;
+                }
+            };
+
+            return new DefaultCellEditor(cbbAttributeDescription);
+        }
+        
+        return null;
     }
 }
