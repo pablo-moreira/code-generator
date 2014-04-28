@@ -2,7 +2,6 @@ package br.com.atos.gc;
 
 import static br.com.atos.utils.StringUtils.firstToLowerCase;
 
-import java.awt.Dialog.ModalityType;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +21,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import br.com.atos.gc.component.Componente;
@@ -34,12 +32,11 @@ import br.com.atos.gc.component.WinFrmJavaImportsComponente;
 import br.com.atos.gc.component.WinFrmJavaMetodosComponente;
 import br.com.atos.gc.component.WinFrmXhtmlAssociacoesComponente;
 import br.com.atos.gc.component.WinFrmXhtmlComponente;
-import br.com.atos.gc.gui.FrmEntity;
+import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.utils.StringUtils;
-import br.com.atos.utils.swing.JFrameUtils;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
@@ -87,28 +84,16 @@ public class GeradorCodigo {
 
 		if (!getEntity().isInicializedLabelAndGender()) {
 			
-			JDialog win = new JDialog();
-			win.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			win.setModalityType(ModalityType.APPLICATION_MODAL);
-			win.setSize(800,600);
-			
-			FrmEntity frm = new FrmEntity();
-			
-			win.add(frm);
-			
-			frm.setEntity(getEntity());
-			frm.initialize();
-			
-			JFrameUtils.setCenterLocation(win);
-			
-			win.setVisible(true);
+                    WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
+                    winFrm.initialize(getEntity());			
+                    winFrm.start();
 						
-			//getEntity().initializeLabelsAndGenderIfNecessarily();
+                    //getEntity().initializeLabelsAndGenderIfNecessarily();
 			
-			attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
-			attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());		
-			attributesValues.put("entidadeRotulo", getEntity().getLabel());
-			attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
+                    attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
+                    attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());		
+                    attributesValues.put("entidadeRotulo", getEntity().getLabel());
+                    attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
 		}
 	}
 	
