@@ -103,14 +103,6 @@ public class FrmAttributes extends javax.swing.JPanel {
 
         pnAttributes.setAutoscrolls(true);
 
-        tblAttributes.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null}
-            },
-            new String [] {
-                "Título 1"
-            }
-        ));
         tblAttributes.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         pnAttributes.setViewportView(tblAttributes);
 
