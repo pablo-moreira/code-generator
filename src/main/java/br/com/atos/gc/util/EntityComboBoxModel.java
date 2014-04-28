@@ -13,7 +13,9 @@ import javax.swing.ComboBoxModel;
  */
 abstract public class EntityComboBoxModel<E> extends AbstractEntityListModel<E> implements ComboBoxModel {
 
-    public EntityComboBoxModel(E[] items) {
+	private static final long serialVersionUID = 1L;
+
+	public EntityComboBoxModel(E[] items) {
         super(items);
     }
 

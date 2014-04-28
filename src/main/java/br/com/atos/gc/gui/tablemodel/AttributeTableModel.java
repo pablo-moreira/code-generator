@@ -4,7 +4,8 @@
  */
 package br.com.atos.gc.gui.tablemodel;
 
-import br.com.atos.gc.util.SuggestBoxModel;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,14 +23,17 @@ import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.util.ColumnMetadata;
 import br.com.atos.gc.util.EntityColumnWidthTableModel;
 import br.com.atos.gc.util.EntityComboBoxModel;
+import br.com.atos.utils.ReflectionUtils;
 
 /**
  *
  * @author 205327
  */
 public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> {
-    
-    public static final ColumnMetadata COL_ATTRIBUTE = new ColumnMetadata(0, "Atributo", 150);
+
+	private static final long serialVersionUID = 1L;
+	
+	public static final ColumnMetadata COL_ATTRIBUTE = new ColumnMetadata(0, "Atributo", 150);
     public static final ColumnMetadata COL_LABEL = new ColumnMetadata(1, "Rótulo", 200);
     public static final ColumnMetadata COL_RENDER_COLUMN = new ColumnMetadata(2, "Coluna", 50, "Renderizar uma coluna para atributo");
     public static final ColumnMetadata COL_RENDER_FILTER = new ColumnMetadata(3, "Filtro", 50, "Renderizar um filtro para atributo");
@@ -81,7 +85,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         super.initialize();
                 
         JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<AttributeFormType>(AttributeFormType.values()) {
-            @Override
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public String getLabel(AttributeFormType item) {
                 return item.getDescription();
             }
@@ -179,31 +186,41 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     @Override
     public void setValueAt(Object value, int row, int col) {
         
-        Attribute entity = getEntityByRow(row);
+        Attribute attribute = getEntityByRow(row);
         
         if (COL_LABEL.getIndex() == col) {
-            entity.setLabel((String) value);
+            attribute.setLabel((String) value);
         }
         else if (COL_RENDER_COLUMN.getIndex() == col) {
-            entity.setRenderColumn((Boolean) value);
+            attribute.setRenderColumn((Boolean) value);
         }
         else if (COL_RENDER_FILTER.getIndex() == col) {
-            entity.setRenderFilter((Boolean)value);
+            attribute.setRenderFilter((Boolean)value);
         }
         else if (COL_RENDER_FORM.getIndex() == col) {
-            entity.setRenderForm((Boolean)value);
+            attribute.setRenderForm((Boolean)value);
+        }
+        else if (COL_ATTRIBUTE_DESCRIPTION.getIndex() == col) {
+        	AttributeManyToOne attributeManyToOne = (AttributeManyToOne) attribute;
+            attributeManyToOne.setAssociationAttributeDescription((String) value);
         }
         else if (COL_FORM_TYPE.getIndex() == col) {
-            System.out.println("form type");    
+        	
+        	AttributeOneToMany attributeOneToMany = (AttributeOneToMany) attribute;
+        	
+        	for (AttributeFormType item : AttributeFormType.values()) {
+                if (item.getDescription().equals(value)) {
+                	attributeOneToMany.setFormType(item);
+                	break;
+                }
+            }
         }
         else {
-            System.out.println("Teste!!!");
-                
+            System.out.println("Teste!!!");                
         }
         
         System.out.println("Value: " + value + " - Row: " + row + " - Col: " + col);
         
-        //fireTableRowsUpdated(row,row);
         fireTableCellUpdated(row, col);
     }
 
@@ -214,6 +231,9 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 || COL_RENDER_FILTER.getIndex() == col
                 || COL_RENDER_FORM.getIndex() == col) {
             return Boolean.class;
+        }
+        else if (COL_FORM_TYPE.getIndex() == col) {
+        	return AttributeFormType.class;
         }
         else {
             return super.getColumnClass(col);
@@ -229,26 +249,27 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         if (COL_ATTRIBUTE_DESCRIPTION.getIndex() == col) {
             
             final Attribute attribute = getEntityByRow(row);
-                                   
-            JComboBox cbbAttributeDescription = new JComboBox();
 
-            new SuggestBoxModel<String>(cbbAttributeDescription) {
+            List<String> entities = new ArrayList<String>();
+            
+    		List<Field> associationAttributes = ReflectionUtils.getFieldsRecursive(attribute.getField().getType());
+    		
+    		for (Field field : associationAttributes) {
+    	
+    			if (!Modifier.isStatic(field.getModifiers())) {
+    				entities.add(field.getName());
+    			}
+            }
+    		
+    		JComboBox cbbAttributeDescription = new JComboBox(new EntityComboBoxModel<String>(entities){
 
-                @Override
-                public List<String> getEntities() {
+				private static final long serialVersionUID = 1L;
 
-                    List<String> entities = new ArrayList<String>();
-                    
-                    
-                    
-                    return entities;
-                }
-
-                @Override
-                public String getEntityLabel(String entity) {
-                    return entity;
-                }
-            };
+				@Override
+				public String getLabel(String item) {
+					return item;
+				}    			
+    		});			
 
             return new DefaultCellEditor(cbbAttributeDescription);
         }
