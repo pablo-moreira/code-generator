@@ -14,10 +14,10 @@ public abstract class EntityColumnWidthTableModel<E> extends EntityTableModel<E>
 
     public EntityColumnWidthTableModel(JTable table) {        
         super(table);        
-        initializeSort();
+        initializeWidth();
     }
    
-    private void initializeSort() {
+    private void initializeWidth() {
         for (int i=0; i < getTable().getColumnModel().getColumnCount(); i++) {
             getTable().getColumnModel().getColumn(i).setPreferredWidth(findColumnMetadataByIndex(i).getWidth());
         }

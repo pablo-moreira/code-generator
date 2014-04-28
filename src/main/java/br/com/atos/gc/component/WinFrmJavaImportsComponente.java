@@ -32,7 +32,7 @@ public class WinFrmJavaImportsComponente extends Componente {
 			boolean temTipoFormularioEmbutido = false;
 			
 			for (AttributeOneToMany atributo : atributosOneToMany) {
-				if (AttributeFormType.EXTERNO.equals(atributo.getFormType())) {
+				if (AttributeFormType.EXTERNAL.equals(atributo.getFormType())) {
 					temTipoFormularioExterno = true;						
 				}
 				else {

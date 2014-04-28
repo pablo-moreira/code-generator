@@ -2,8 +2,8 @@ package br.com.atos.gc.model;
 
 public enum Gender {
 	
-	M("o"),
-	F("a");
+	M("Masculino"),
+	F("Feminino");
 	
 	private String description;
 

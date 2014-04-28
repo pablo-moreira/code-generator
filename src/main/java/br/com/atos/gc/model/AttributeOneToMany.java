@@ -11,10 +11,14 @@ import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 
 public class AttributeOneToMany extends Attribute {
 	
-	private AttributeFormType formType = AttributeFormType.EXTERNO;
+	private AttributeFormType formType = AttributeFormType.EXTERNAL;
 	
 	private Entity associationEntity;
 	
+        public AttributeOneToMany() {
+            
+        }
+        
 	public AttributeOneToMany(Field field, Entity entity) {
 		
 		super(field, entity);

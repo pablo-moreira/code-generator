@@ -6,8 +6,8 @@ public class AttributeId extends Attribute {
 
 	public AttributeId(Field field) {
 		super(field, "Id");
-		setRenderGridColumn(true);
-		setRenderGridFilter(true);
+		setRenderColumn(true);
+		setRenderFilter(true);
 	}
 		
 	public AttributeId(Field field, Entity entity) {

@@ -13,12 +13,12 @@ import javax.swing.ComboBoxModel;
  */
 abstract public class EntityComboBoxModel<E> extends AbstractEntityListModel<E> implements ComboBoxModel {
 
-    public EntityComboBoxModel(E[] itens) {
-        super(itens);
+    public EntityComboBoxModel(E[] items) {
+        super(items);
     }
 
-    public EntityComboBoxModel(List<E> itens) {
-        super(itens);
+    public EntityComboBoxModel(List<E> items) {
+        super(items);
     }
     
     private String selectedItem;
@@ -33,7 +33,7 @@ abstract public class EntityComboBoxModel<E> extends AbstractEntityListModel<E> 
         return this.selectedItem;
     }
     
-    public E getEntidadeSelecionada() {
+    public E getSelectedEntity() {
         for (E item : getItens()) {
             if (getLabel(item).equals(getSelectedItem())) {
                 return item;
@@ -42,7 +42,7 @@ abstract public class EntityComboBoxModel<E> extends AbstractEntityListModel<E> 
         return null;
     }
         
-    public void setEntidadeSelecionada(E selected) {        
+    public void setSelectedEntity(E selected) {        
         if (selected != null) {
             setSelectedItem(getLabel(selected));
         }

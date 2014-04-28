@@ -10,17 +10,24 @@ package br.com.atos.gc.util;
  */
 public class ColumnMetadata {
 
-    private Integer index;
+    public int index;
     private String label;
     private Integer width;
-            
-    public ColumnMetadata(Integer index, String label, Integer width) {
+    private String tooltip;
+    
+    public ColumnMetadata(int index, String label, Integer width) {
         this.label = label;
         this.width = width;
         this.index = index;
+        
+    }
+    
+    public ColumnMetadata(int index, String label, Integer width, String tooltip) {
+        this(index, label, width);
+        this.tooltip = tooltip;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
@@ -30,5 +37,9 @@ public class ColumnMetadata {
 
     public Integer getWidth() {
         return width;
+    }
+    
+    public String getTooltip() {
+        return tooltip;
     }
 }

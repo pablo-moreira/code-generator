@@ -1,30 +1,27 @@
 package br.com.atos.gc.component;
 
+import br.com.atos.gc.GeradorCodigo;
+import br.com.atos.gc.model.Attribute;
+import br.com.atos.gc.model.AttributeFormType;
+import br.com.atos.gc.model.AttributeId;
+import br.com.atos.gc.model.AttributeManyToOne;
+import br.com.atos.gc.model.AttributeOneToMany;
+import br.com.atos.utils.StringUtils;
 import static br.com.atos.utils.StringUtils.firstToLowerCase;
-
+import br.com.atosdamidia.comuns.modelo.BaseEnum;
+import br.com.atosdamidia.comuns.modelo.IBaseEntity;
+import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
-
-import br.com.atos.gc.GeradorCodigo;
-import br.com.atos.gc.model.AttributeId;
-import br.com.atos.gc.model.Attribute;
-import br.com.atos.gc.model.AttributeFormType;
-import br.com.atos.gc.model.AttributeManyToOne;
-import br.com.atos.gc.model.AttributeOneToMany;
-import br.com.atos.utils.StringUtils;
-import br.com.atosdamidia.comuns.modelo.BaseEnum;
-import br.com.atosdamidia.comuns.modelo.IBaseEntity;
-import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
 
 public class WinFrmXhtmlComponente extends Componente {
 
@@ -54,7 +51,7 @@ public class WinFrmXhtmlComponente extends Componente {
 			println(pw, "\t\t\t\t\t\tvar=\"associacao\">");
 			println(pw, "\t\t\t\t\t\t");
 			
-			if (AttributeFormType.EXTERNO.equals(atributo.getFormType())) {
+			if (AttributeFormType.EXTERNAL.equals(atributo.getFormType())) {
 						
 				println(pw, "\t\t\t\t\t\t<p:column headerText=\"Id\" sortBy=\"#{associacao.id}\">");
 				println(pw, "\t\t\t\t\t\t\t<h:outputText value=\"#{associacao.id}\" />");
@@ -122,7 +119,7 @@ public class WinFrmXhtmlComponente extends Componente {
 					println(pw, "\t\t\t\t\t\t<p:inputText id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" disabled=\"true\" />", atributo.getField().getName(), atributo.getLabel());
 					println(pw, "\t\t\t\t\t\t<p:message for=\"{0}\" display=\"icon\" />", atributo.getField().getName());
 				}
-				else if (atributo.isRenderWinFrm()) {
+				else if (atributo.isRenderForm()) {
 					atributos.add(atributo);
 				}
 			}

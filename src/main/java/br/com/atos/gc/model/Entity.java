@@ -1,23 +1,20 @@
 package br.com.atos.gc.model;
 
+import br.com.atos.gc.GeradorCodigo;
+import br.com.atos.utils.ReflectionUtils;
+import br.com.atos.utils.StringUtils;
+import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.swing.JOptionPane;
-
 import org.hibernate.envers.Audited;
-
-import br.com.atos.gc.GeradorCodigo;
-import br.com.atos.utils.ReflectionUtils;
-import br.com.atos.utils.StringUtils;
-import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 
 public class Entity {
 
@@ -187,7 +184,7 @@ public class Entity {
 									JOptionPane.INFORMATION_MESSAGE, 
 									null,
 									AttributeFormType.values(), 
-									AttributeFormType.EXTERNO
+									AttributeFormType.EXTERNAL
 							);
 						}
 						

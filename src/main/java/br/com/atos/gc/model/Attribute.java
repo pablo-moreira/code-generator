@@ -1,9 +1,8 @@
 package br.com.atos.gc.model;
 
-import java.lang.reflect.Field;
-
 import br.com.atos.gc.GeradorCodigo;
 import br.com.atos.utils.StringUtils;
+import java.lang.reflect.Field;
 
 public class Attribute {
 
@@ -16,6 +15,8 @@ public class Attribute {
 	
 	private Entity entity;
 
+        public Attribute() {}
+        
 	public Attribute(Field field, Entity entity) {
 		this.field = field;
 		this.entity = entity;
@@ -82,28 +83,28 @@ public class Attribute {
 		this.label = label;
 	}
 
-	public boolean isRenderGridColumn() {
+	public boolean isRenderColumn() {
 		return renderColumn;
 	}
 
-	public void setRenderGridColumn(boolean renderGridColumn) {
-		this.renderColumn = renderGridColumn;
+	public void setRenderColumn(boolean renderColumn) {
+		this.renderColumn = renderColumn;
 	}
 
-	public boolean isRenderGridFilter() {
+	public boolean isRenderFilter() {
 		return renderFilter;
 	}
 
-	public void setRenderGridFilter(boolean renderGridFilter) {
-		this.renderFilter = renderGridFilter;
+	public void setRenderFilter(boolean renderFilter) {
+		this.renderFilter = renderFilter;
 	}
 
-	public boolean isRenderWinFrm() {
+	public boolean isRenderForm() {
 		return renderForm;
 	}
 
-	public void setRenderWinFrm(boolean renderWinFrm) {
-		this.renderForm = renderWinFrm;
+	public void setRenderForm(boolean renderForm) {
+		this.renderForm = renderForm;
 	}
 
 	public Entity getEntity() {

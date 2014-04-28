@@ -6,11 +6,12 @@ package br.com.atos.gc.gui;
 
 import br.com.atos.gc.gui.tablemodel.AttributeTableModel;
 import br.com.atos.gc.model.Attribute;
-import br.com.atos.gc.util.EntityColumnWidthTableModel;
+import br.com.atos.gc.model.AttributeOneToMany;
+import br.com.atos.gc.model.Gender;
+import br.com.atos.gc.util.EntityComboBoxModel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
-import javax.swing.table.TableColumn;
 
 /**
  *
@@ -27,13 +28,27 @@ public class FrmEntity extends javax.swing.JPanel {
         
         initComponents();
         
+        txtLabel.requestFocus();
+        
+        cbbGender.setModel(new EntityComboBoxModel<Gender>(Gender.values()) {
+
+            @Override
+            public String getLabel(Gender item) {
+                return item.getDescription();
+            }
+        });
+        
         final List<Attribute> attributes = new ArrayList<Attribute>();
+                
+        attributes.add(new Attribute());
+        attributes.add(new AttributeOneToMany());
         
         tmAttributes = new AttributeTableModel(tblAttributes, attributes);
         
-        tmAttributes.hideColumnRenderColumn();
-        tmAttributes.hideColumnRenderFilter();
-        tmAttributes.hideColumnRenderForm();
+        //tmAttributes.hideColumnRenderColumn();
+        //tmAttributes.hideColumnRenderFilter();
+        //tmAttributes.hideColumnRenderForm();
+        tmAttributes.hideColumnAttributeDescription();
     }
     
     public static void main(String[] args) {

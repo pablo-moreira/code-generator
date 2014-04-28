@@ -33,7 +33,7 @@ public class WinFrmJavaMetodosComponente extends Componente {
 				
 				println(pw, "\t\t");
 				
-				if (AttributeFormType.INTERNO.equals(atributo.getFormType())) {
+				if (AttributeFormType.INTERNAL.equals(atributo.getFormType())) {
 					println(pw, "\t\tthis.associacao{2} = new FrmAssociacaoOneToMany<WinFrm{0}, {0}, {1}>(this, {1}.class, {1}Manager.class, \"tbView:dt{2}\") '{'", getGc().getAtributoValor("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));				
 				}
 				else {	
@@ -57,7 +57,7 @@ public class WinFrmJavaMetodosComponente extends Componente {
 			println(pw, "\t");
 			
 			for (AttributeOneToMany atributo : atributosOneToMany) {
-				if (AttributeFormType.INTERNO.equals(atributo.getFormType())) {
+				if (AttributeFormType.INTERNAL.equals(atributo.getFormType())) {
 					println(pw, "\tpublic FrmAssociacaoOneToMany<WinFrm{0}, {0}, {1}> getAssociacao{2}() '{'", getGc().getAtributoValor("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
 					println(pw, "\t\treturn associacao{0};", StringUtils.firstToUpperCase(atributo.getField().getName()));
 					println(pw, "\t}");

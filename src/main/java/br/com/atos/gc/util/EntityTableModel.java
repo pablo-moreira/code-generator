@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
+import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
  *
@@ -29,9 +30,9 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
         this.table = table;
         this.table.setModel(this);
         
-        rowSorter = new TableRowSorter<EntityTableModel<E>>(this);
-        this.table.setRowSorter(rowSorter);
-        
+        //rowSorter = new TableRowSorter<EntityTableModel<E>>(this);
+        //this.table.setRowSorter(rowSorter);
+        initializeTooltip();
         initialize();
     }
 
@@ -46,8 +47,8 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
                 return column;
             }
         }
+        throw new RuntimeException("Não foi encontrada nenhuma coluna para o index " + index + "!");
         
-        return null;
     }
     
     @Override
@@ -118,4 +119,33 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
         column.setWidth(0);
         column.setMaxWidth(0);
     }
+    
+    protected TableColumn getColumnByIndex(Integer index) {
+        return getTable().getColumnModel().getColumn(index);
+    }
+    
+    public E getEntityByRow(int row) {
+        return getEntities().get(row);
+    }
+
+    private void initializeTooltip() {
+        
+        
+        for (int i=0; i < getTable().getColumnModel().getColumnCount(); i++) {
+            
+            ColumnMetadata colMetadata = findColumnMetadataByIndex(i);
+            
+            if (colMetadata.getTooltip() != null) {
+            
+                TableColumn column = getTable().getColumnModel().getColumn(i);
+                DefaultTableCellHeaderRenderer render = new DefaultTableCellHeaderRenderer();
+                render.setToolTipText(colMetadata.getTooltip());
+                column.setHeaderRenderer(render);
+            }
+        }       
+    }
+
+    
+    
+
 }
