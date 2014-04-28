@@ -10,9 +10,13 @@ import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Gender;
 import br.com.atos.gc.util.EntityComboBoxModel;
+import java.awt.Dialog;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -44,21 +48,26 @@ public class FrmEntity extends javax.swing.JPanel {
         cbbGender.setModel(cmGender);
         
         tmAttributes = new AttributeTableModel(tblAttributes);
+        
+        
     }
     
     public static void main(String[] args) {
         
-        JFrame win = new JFrame("Formulário");
-        win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        win.setSize(800,600);
-        
+        JDialog dialog = new JDialog();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setSize(800,600);
+        dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         FrmEntity frm = new FrmEntity();
         
-        win.add(frm);
-        
-        win.setVisible(true);        
-        
+        dialog.add(frm);
         frm.initialize();
+        
+        dialog.setVisible(true);
+        //dialog.setVisible(true); 
+        //dialog.
+        
+        System.out.println("Teste!!!");
     }
 
     /**
@@ -76,7 +85,27 @@ public class FrmEntity extends javax.swing.JPanel {
         txtLabel = new javax.swing.JTextField();
         pnAttributesRoot = new javax.swing.JPanel();
         pnAttributes = new javax.swing.JScrollPane();
-        tblAttributes = new javax.swing.JTable();
+        tblAttributes = new javax.swing.JTable() {
+
+            public TableCellEditor getCellEditor(int row, int column) {
+
+                TableModel tm = getModel();
+
+                TableCellEditor cellEditor;
+
+                if (tm instanceof AttributeTableModel) {
+                    AttributeTableModel atm = (AttributeTableModel) tm;
+                    cellEditor = atm.getCellEditor(row, column);
+                }
+
+                if (cellEditor != null) {
+                    return cellEditor;
+                }   
+                else {
+                    return super.getCellEditor(row, column);
+                }
+            }
+        };
 
         setBorder(javax.swing.BorderFactory.createTitledBorder("Entidade"));
         setPreferredSize(new java.awt.Dimension(800, 300));
@@ -106,7 +135,7 @@ public class FrmEntity extends javax.swing.JPanel {
             pnAttributesRootLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnAttributesRootLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+                .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnAttributesRootLayout.setVerticalGroup(
