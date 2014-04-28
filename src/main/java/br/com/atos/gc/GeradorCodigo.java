@@ -36,10 +36,12 @@ import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
+import br.com.atos.utils.OsUtil;
 import br.com.atos.utils.StringUtils;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
+import javax.swing.UIManager;
 
 public class GeradorCodigo {
 
@@ -195,6 +197,16 @@ public class GeradorCodigo {
 		catch (Exception e) {
 			throw new Exception("Erro ao obter o atributo 'entidadeIdClass' da classe " + getEntity().getClazzSimpleName());
 		}
+                
+                try {
+                    if (OsUtil.isOsLinux()) {
+                        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+                    }
+                    else {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    }  
+                }
+                catch (Exception e) {}
 	}
 	
 	private File getMessagesPropertiesFile() {
