@@ -64,9 +64,13 @@ public class Entity {
 		return clazz;
 	}
 	
-	public String getGender() {
-		return gender.getDescription();
+	public Gender getGender() {
+            return gender;
 	}
+        
+        public String getGenderDescription() {
+            return gender.getDescription();
+        }
 
 	public String getLabel() {
 		return label;

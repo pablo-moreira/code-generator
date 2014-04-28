@@ -7,6 +7,7 @@ package br.com.atos.gc.gui;
 import br.com.atos.gc.gui.tablemodel.AttributeTableModel;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeOneToMany;
+import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Gender;
 import br.com.atos.gc.util.EntityComboBoxModel;
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ import javax.swing.JFrame;
 public class FrmEntity extends javax.swing.JPanel {
     
     private final AttributeTableModel tmAttributes;
+    
+    private Entity entity;
+    private final EntityComboBoxModel<Gender> cmGender;
 
     /**
      * Creates new form FrmEntity
@@ -30,25 +34,16 @@ public class FrmEntity extends javax.swing.JPanel {
         
         txtLabel.requestFocus();
         
-        cbbGender.setModel(new EntityComboBoxModel<Gender>(Gender.values()) {
-
+        cmGender = new EntityComboBoxModel<Gender>(Gender.values()) {
             @Override
             public String getLabel(Gender item) {
                 return item.getDescription();
             }
-        });
+        };
         
-        final List<Attribute> attributes = new ArrayList<Attribute>();
-                
-        attributes.add(new Attribute());
-        attributes.add(new AttributeOneToMany());
+        cbbGender.setModel(cmGender);
         
-        tmAttributes = new AttributeTableModel(tblAttributes, attributes);
-        
-        //tmAttributes.hideColumnRenderColumn();
-        //tmAttributes.hideColumnRenderFilter();
-        //tmAttributes.hideColumnRenderForm();
-        tmAttributes.hideColumnAttributeDescription();
+        tmAttributes = new AttributeTableModel(tblAttributes);
     }
     
     public static void main(String[] args) {
@@ -62,6 +57,8 @@ public class FrmEntity extends javax.swing.JPanel {
         win.add(frm);
         
         win.setVisible(true);        
+        
+        frm.initialize();
     }
 
     /**
@@ -159,6 +156,40 @@ public class FrmEntity extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbbGenderActionPerformed
 
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
+
+    public Entity getEntity() {
+        return entity;
+    }
+
+    public void initialize() {
+
+        if (entity != null) {
+            txtLabel.setText(getEntity().getLabel());
+            cmGender.setSelectedEntity(getEntity().getGender());
+            
+            tmAttributes.getAttributes().clear();
+            tmAttributes.getAttributes().addAll(getEntity().getAttributes());
+            //tmAttributes.fireTableDataChanged();
+        }
+        // Para testes
+        else {
+            List<Attribute> attributes = new ArrayList<Attribute>();
+
+            attributes.add(new Attribute());
+            attributes.add(new AttributeOneToMany());
+
+            tmAttributes.getAttributes().addAll(attributes);
+            //tmAttributes.hideColumnRenderColumn();
+            //tmAttributes.hideColumnRenderFilter();
+            //tmAttributes.hideColumnRenderForm();
+            tmAttributes.hideColumnAttributeDescription();    
+        }
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cbbGender;
     private javax.swing.JLabel jLabel1;

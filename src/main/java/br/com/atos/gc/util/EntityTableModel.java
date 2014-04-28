@@ -10,7 +10,6 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
-import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
  *
@@ -137,10 +136,10 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
             
             if (colMetadata.getTooltip() != null) {
             
-                TableColumn column = getTable().getColumnModel().getColumn(i);
-                DefaultTableCellHeaderRenderer render = new DefaultTableCellHeaderRenderer();
-                render.setToolTipText(colMetadata.getTooltip());
-                column.setHeaderRenderer(render);
+                //TableColumn column = getTable().getColumnModel().getColumn(i);
+               // DefaultTableCellHeaderRenderer render = new DefaultTableCellHeaderRenderer();
+                //render.setToolTipText(colMetadata.getTooltip());
+                //column.setHeaderRenderer(render);
             }
         }       
     }

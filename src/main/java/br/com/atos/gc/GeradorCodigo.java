@@ -85,8 +85,8 @@ public class GeradorCodigo {
 			
 			getEntity().initializeLabelsAndGenderIfNecessarily();
 			
-			attributesValues.put("ArtigoDefinido", getEntity().getGender().toUpperCase());
-			attributesValues.put("artigoDefinido", getEntity().getGender());		
+			attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
+			attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());		
 			attributesValues.put("entidadeRotulo", getEntity().getLabel());
 			attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
 		}

@@ -11,6 +11,7 @@ import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.util.ColumnMetadata;
 import br.com.atos.gc.util.EntityColumnWidthTableModel;
 import br.com.atos.gc.util.EntityComboBoxModel;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultCellEditor;
@@ -32,11 +33,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(5, "Atrib. Descrição da Associação", 200);
     public static final ColumnMetadata COL_FORM_TYPE = new ColumnMetadata(6, "Tipo de Formulário", 150);
   
-    private List<Attribute> attributes;
+    private List<Attribute> attributes = new ArrayList<Attribute>();
 
-    public AttributeTableModel(JTable table, List<Attribute> attributes) {
+    public AttributeTableModel(JTable table) {
         super(table);
-        this.attributes = attributes;
     }
     
     @Override
@@ -213,5 +213,9 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         else {
             return super.getColumnClass(col);
         }
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
     }
 }
