@@ -4,6 +4,15 @@
  */
 package br.com.atos.gc.gui.tablemodel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeFormType;
 import br.com.atos.gc.model.AttributeManyToOne;
@@ -11,13 +20,6 @@ import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.util.ColumnMetadata;
 import br.com.atos.gc.util.EntityColumnWidthTableModel;
 import br.com.atos.gc.util.EntityComboBoxModel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
-import javax.swing.JTable;
-import javax.swing.table.TableColumn;
 
 /**
  *
@@ -43,7 +45,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     public Object getValueAt(Attribute attribute, int columnIndex) {
         switch (columnIndex) {
             case 0 :         
-                return "";//entidade.getField().getName();
+                return attribute.getField() != null ? attribute.getField().getName() : null;
             case 1 :
                 return attribute.getLabel();
             case 2 :
@@ -53,7 +55,12 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             case 4 :
                 return attribute.isRenderForm();
             case 5 :
-                //return entidade;
+            	if (attribute instanceof AttributeManyToOne) {
+            		return ((AttributeManyToOne) attribute).getAssociationAttributeDescription();
+            	}
+            	else {
+            		return null;
+            	}
             case 6 :
                 if (attribute instanceof AttributeOneToMany) {
                     return ((AttributeOneToMany) attribute).getFormType().getDescription();
