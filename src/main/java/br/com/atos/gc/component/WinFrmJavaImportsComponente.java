@@ -21,7 +21,7 @@ public class WinFrmJavaImportsComponente extends Componente {
 	@Override
 	public void renderizar(PrintWriter pw) {
 		
-		List<AttributeOneToMany> atributosOneToMany = getGc().getEntity().getAtributosOneToMany();
+		List<AttributeOneToMany> atributosOneToMany = getGc().getEntity().getAttributesOneToMany();
 		
 		if (atributosOneToMany.size() > 0) {
 		

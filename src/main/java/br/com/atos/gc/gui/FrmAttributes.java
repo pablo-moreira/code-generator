@@ -4,15 +4,19 @@
  */
 package br.com.atos.gc.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
+
 import br.com.atos.gc.gui.tablemodel.AttributeTableModel;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Entity;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableModel;
+import br.com.atos.utils.StringUtils;
+import br.com.atos.utils.swing.JFrameUtils;
 
 /**
  *
@@ -128,4 +132,14 @@ public class FrmAttributes extends javax.swing.JPanel {
     private javax.swing.JScrollPane pnAttributes;
     private javax.swing.JTable tblAttributes;
     // End of variables declaration//GEN-END:variables
+
+	public void validateAttributes() {
+		
+		for (AttributeManyToOne attribute : getEntity().getAttributesManyToOne()) {
+		    if (StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
+		    	JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação " + attribute.getField().getName() + " não foi informado!");
+		    	return;
+		    }
+		}				
+	}
 }

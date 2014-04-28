@@ -4,14 +4,15 @@
  */
 package br.com.atos.gc.gui;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Gender;
 import br.com.atos.gc.util.EntityComboBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -150,18 +151,25 @@ public class WinFrmEntity extends javax.swing.JDialog {
             return;
         }
         
-	for (AttributeManyToOne attribute : getEntity().getAtributosManyToOne()) {
-	    if (StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
-		JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação não foi informado!");
-		return;
-	    }
-	}
-	
-	status = JOptionPane.OK_OPTION;
+        getFrmAttributes().validateAttributes();
+        
+        if (StringUtils.isNullOrEmpty(txtLabel.getText())) {
+			getEntity().setLabelDefault();	
+		}
+		else {
+			getEntity().setLabel(txtLabel.getText());
+		}
+		
+		getEntity().setGender(cmGender.getSelectedEntity());
+		
+		status = JOptionPane.OK_OPTION;
+		
+		setVisible(false);		
     }//GEN-LAST:event_btnOkActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         status = JOptionPane.CANCEL_OPTION;
+		setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -209,8 +217,8 @@ public class WinFrmEntity extends javax.swing.JDialog {
     
     public void start() {
         JFrameUtils.setCenterLocation(this);
-	setVisible(true);
-	status = JOptionPane.CANCEL_OPTION;
+        status = JOptionPane.CANCEL_OPTION;
+        setVisible(true);
     }
     
     public Entity getEntity() {
@@ -235,6 +243,10 @@ public class WinFrmEntity extends javax.swing.JDialog {
 
     public FrmAttributes getFrmAttributes() {
         return (FrmAttributes) frmAttributes;
+    }
+    
+    public boolean isStatusOK() {
+    	return status == JOptionPane.OK_OPTION;
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

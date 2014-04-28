@@ -38,6 +38,7 @@ import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Target;
+import br.com.atos.gc.util.CommentedProperties;
 import br.com.atos.utils.OsUtil;
 import br.com.atos.utils.StringUtils;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
@@ -68,37 +69,20 @@ public class GeradorCodigo {
 	public Pattern pattern = Pattern.compile("\\$\\{([a-zA-Z]*)\\}");	
 	private File dirSrc;	
 	private File dirWebContent;	
-	private HashMap<String, String> attributesValues;
+	private HashMap<String,String> attributesValues = new HashMap<String,String>();
 	private List<Componente> components;
-	private Properties gcProperties;
+	private CommentedProperties gcProperties;
 	private Entity entity;
 	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
 	private List<String> ignoredAttributes = new ArrayList<String>();
-	private Properties messagesProperties;
+	private CommentedProperties messagesProperties;
 	private File dirProjeto;
 	private File dirResources;
 	private Target target;
 	
 	public Entity getEntity() {
 		return entity;
-	}
-
-	private void inicializarRotuloEhArtigoSeNecessario() {
-
-		if (!getEntity().isInicializedLabelAndGender()) {
-			
-                    WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
-                    winFrm.initialize(getEntity());			
-                    winFrm.start();
-						
-                    //getEntity().initializeLabelsAndGenderIfNecessarily();
-			
-                    attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
-                    attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());		
-                    attributesValues.put("entidadeRotulo", getEntity().getLabel());
-                    attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
-		}
 	}
 	
 	private void inicializarEntidadeAtributosSeNecessario() {
@@ -148,18 +132,16 @@ public class GeradorCodigo {
 			messagesFile.createNewFile();
 		}
 		
-		messagesProperties = new Properties();
+		messagesProperties = new CommentedProperties();
 		messagesProperties.load(new FileInputStream(messagesFile));
 		
 		entity = new Entity(entidadeClass, this);
-		
-		attributesValues = new HashMap<String,String>();
 		
 		for (Object key : gcProperties.keySet()) {
 			attributesValues.put(key.toString(), gcProperties.getProperty(key.toString()));
 		}
 		
-		attributesValues.put(ATRIBUTO_ENTIDADE_AUDITADA, getEntity().isAuditada() ? "true" : "false");
+		attributesValues.put(ATRIBUTO_ENTIDADE_AUDITADA, getEntity().isAudited() ? "true" : "false");
 		attributesValues.put(ATRIBUTO_ENTIDADE_NOME_UC, getEntity().getClazzSimpleName());
 		attributesValues.put(ATRIBUTO_ENTIDADE_NOME, firstToLowerCase(getEntity().getClazzSimpleName()));
 		attributesValues.put(PACOTE_ENTIDADE, entidadeClass.getPackage().getName());
@@ -194,7 +176,7 @@ public class GeradorCodigo {
 		components.add(new VisualizarXhtmlComponente(this));
 
 		try {
-			attributesValues.put("entidadeIdClass",  entity.getAtributoId().getField().getType().getSimpleName());			
+			attributesValues.put("entidadeIdClass",  entity.getAttributeId().getField().getType().getSimpleName());			
 		}
 		catch (Exception e) {
 			throw new Exception("Erro ao obter o atributo 'entidadeIdClass' da classe " + getEntity().getClazzSimpleName());
@@ -228,7 +210,7 @@ public class GeradorCodigo {
 			throw new RuntimeException("O arquivo gc.properties não foi encontrado no classpath!");
 		}
 		
-		gcProperties = new Properties();
+		gcProperties = new CommentedProperties();
 		gcProperties.load(isGc);
 	}
 
@@ -245,8 +227,8 @@ public class GeradorCodigo {
 
 	public void gerarDaoEhManager() throws Exception {
 		try {
-			gerarArquivoPorTipo(new Target("DAO", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_DAO).replace(".", "/")), false, false));
-			gerarArquivoPorTipo(new Target("Manager", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_MANAGER).replace(".", "/")), false, false));
+			makeTarget(new Target("DAO", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_DAO).replace(".", "/")), false, false));
+			makeTarget(new Target("Manager", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_MANAGER).replace(".", "/")), false, false));
 		}
 		catch (Exception e) {			
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -256,7 +238,7 @@ public class GeradorCodigo {
 	
 	public void gerarGrid() throws Exception {
 		try {			
-			gerarArquivoPorTipo(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
+			makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -266,8 +248,8 @@ public class GeradorCodigo {
 
 	public void gerarWinFrm() throws Exception {
 		try {	
-			gerarArquivoPorTipo(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true, true));
-			gerarArquivoPorTipo(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
+			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true, true));
+			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
 						
 			for (Attribute atributo : getEntity().getAttributes()) {				
 				if (atributo instanceof AttributeManyToOne) {
@@ -286,8 +268,8 @@ public class GeradorCodigo {
 	
 	public void gerarTelaVisualizacao() throws Exception {
 		try {		
-			gerarArquivoPorTipo(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, true));
-			gerarArquivoPorTipo(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
+			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, true));
+			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -303,8 +285,8 @@ public class GeradorCodigo {
 	
 	private void gerarTelaAdministracao() throws Exception {
 		try {
-			gerarArquivoPorTipo(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false, false));
-			gerarArquivoPorTipo(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
+			makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false, false));
+			makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
 			
 			finalizar();
 		}
@@ -330,7 +312,7 @@ public class GeradorCodigo {
 		return target;
 	}	
 	
-	private void gerarArquivoPorTipo(Target target) throws Exception {
+	private void makeTarget(Target target) throws Exception {
 
 		this.target = target;
 		
@@ -358,9 +340,9 @@ public class GeradorCodigo {
 				return;
 			}
 			else {
-				int resultado = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja substituir o arquivo: " + file.getName(), "Substituir arquivo",JOptionPane.YES_NO_OPTION);
+				int result = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja substituir o arquivo: " + file.getName(), "Substituir arquivo",JOptionPane.YES_NO_OPTION);
 			
-				if (JOptionPane.YES_OPTION != resultado) {
+				if (JOptionPane.YES_OPTION != result) {
 					System.out.println(" - " + file.getName() + " [IGNORADO]");					
 					return;
 				}			
@@ -368,7 +350,28 @@ public class GeradorCodigo {
 		}
 		
 		if (getTarget().isInitializeEntity()) {
-			inicializarRotuloEhArtigoSeNecessario();
+					
+			if (!getEntity().isInicializedLabelAndGender()) {
+				
+	            WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
+	            winFrm.initialize(getEntity());			
+	            winFrm.start();
+	            
+	            if (!winFrm.isStatusOK()) {
+	            	System.exit(0);
+	            }
+	            else {	
+	            	store(getEntity());
+	            }
+	
+	            //getEntity().initializeLabelsAndGenderIfNecessarily();
+
+	            attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
+	            attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());		
+	            attributesValues.put("entidadeRotulo", getEntity().getLabel());
+	            attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
+			}
+			
 		}
 		
 //		if (inicializarRotuloEhArtigo) {
@@ -425,6 +428,19 @@ public class GeradorCodigo {
         in.close();
         
         pw.close();
+	}
+
+	private void store(Entity entity) {
+			
+		try {
+			entity.store();
+			
+			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile(), true), "");
+			getGcProperties().store(new FileOutputStream(getGcPropertiesFile(), true), "");
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Erro ao gravar os arquivos gc.properties e messages.properties, msg interna: " + e.getMessage());
+		}
 	}
 
 	private Componente recuperarComponentePorChave(String chave) {
@@ -647,11 +663,11 @@ public class GeradorCodigo {
 		return ignoredAttributes;
 	}
 
-	public Properties getGcProperties() {
+	public CommentedProperties getGcProperties() {
 		return gcProperties;
 	}
 
-	public Properties getMessagesProperties() {
+	public CommentedProperties getMessagesProperties() {
 		return messagesProperties;
 	}
 }

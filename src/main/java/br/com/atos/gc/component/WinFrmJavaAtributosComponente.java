@@ -20,7 +20,7 @@ public class WinFrmJavaAtributosComponente extends Componente {
 
 	@Override
 	public void renderizar(PrintWriter pw) {
-		for (AttributeOneToMany atributo : getGc().getEntity().getAtributosOneToMany()) {
+		for (AttributeOneToMany atributo : getGc().getEntity().getAttributesOneToMany()) {
 			if (AttributeFormType.INTERNAL.equals(atributo.getFormType())) {
 				println(pw, "\tprivate FrmAssociacaoOneToMany<WinFrm{0}, {0}, {1}> associacao{2};", getGc().getAtributoValor("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
 			}

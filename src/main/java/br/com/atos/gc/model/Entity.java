@@ -1,20 +1,23 @@
 package br.com.atos.gc.model;
 
-import br.com.atos.gc.GeradorCodigo;
-import br.com.atos.utils.ReflectionUtils;
-import br.com.atos.utils.StringUtils;
-import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.swing.JOptionPane;
+
 import org.hibernate.envers.Audited;
+
+import br.com.atos.gc.GeradorCodigo;
+import br.com.atos.utils.ReflectionUtils;
+import br.com.atos.utils.StringUtils;
+import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 
 public class Entity {
 
@@ -31,28 +34,24 @@ public class Entity {
 		this.clazz = clazz;		
 		this.gc = gc;		
 		
-		loadProperties();
+		load();
 				
 		initializeAttributes();
 	}
 	
-	private void loadProperties() {
+	private void load() {
 
 		// Verifica se possui os dados no gc.properties
 		String genderValue = gc.getGcProperties().getProperty(getClazz().getName() + ".gender");
 
 		if (!StringUtils.isNullOrEmpty(genderValue)) {
-			gender = Gender.valueOf(genderValue.toUpperCase());
+			gender = Gender.valueOf(genderValue);
 		}
 		
 		String labelValue = gc.getMessagesProperties().getProperty(getClazz().getName());
 		
 		if (!StringUtils.isNullOrEmpty(labelValue)) {
 			label = labelValue;
-		}
-		
-		if (gender != null && label != null) {
-			initializedLabelAndGender = true;
 		}
 	}
 	
@@ -65,12 +64,12 @@ public class Entity {
 	}
 	
 	public Gender getGender() {
-            return gender;
+		return gender;
 	}
         
-        public String getGenderDescription() {
-            return gender.getDescription();
-        }
+    public String getGenderDescription() {
+        return gender.getDescription();
+    }
 
 	public String getLabel() {
 		return label;
@@ -126,9 +125,9 @@ public class Entity {
 		}
 	}
 	
-	public boolean isAttributeIgnored(String atributoNome) {
-		for (String atributoIgnorado : getGc().getAtributosIgnorados()) {
-			if (atributoNome.equals(atributoIgnorado)) {
+	public boolean isAttributeIgnored(String attributeName) {
+		for (String attributeIgnored : getGc().getAtributosIgnorados()) {
+			if (attributeName.equals(attributeIgnored)) {
 				return true;
 			}
 		}
@@ -230,44 +229,74 @@ public class Entity {
 		return getClazz().getSimpleName();
 	}
 	
-	public List<AttributeManyToOne> getAtributosManyToOne() {
+	public List<AttributeManyToOne> getAttributesManyToOne() {
 		
-		List<AttributeManyToOne> atributosManyToOne = new ArrayList<AttributeManyToOne>();
+		List<AttributeManyToOne> attributesManyToOne = new ArrayList<AttributeManyToOne>();
 		
-		for (Attribute atributo : getAttributes()) {
-			if (atributo instanceof AttributeManyToOne) {
-				atributosManyToOne.add((AttributeManyToOne) atributo);
+		for (Attribute attribute : getAttributes()) {
+			if (attribute instanceof AttributeManyToOne) {
+				attributesManyToOne.add((AttributeManyToOne) attribute);
 			}
 		}
 		
-		return atributosManyToOne;	
+		return attributesManyToOne;	
 	}
 	
-	public List<AttributeOneToMany> getAtributosOneToMany() {
+	public List<AttributeOneToMany> getAttributesOneToMany() {
 		
-		List<AttributeOneToMany> atributosOneToMany = new ArrayList<AttributeOneToMany>();
+		List<AttributeOneToMany> attributesOneToMany = new ArrayList<AttributeOneToMany>();
 		
-		for (Attribute atributo : getAttributes()) {
-			if (atributo instanceof AttributeOneToMany) {
-				atributosOneToMany.add((AttributeOneToMany) atributo);
+		for (Attribute attribute : getAttributes()) {
+			if (attribute instanceof AttributeOneToMany) {
+				attributesOneToMany.add((AttributeOneToMany) attribute);
 			}
 		}
 		
-		return atributosOneToMany;	
+		return attributesOneToMany;	
 	}
 	
-	public AttributeId getAtributoId() {
+	public AttributeId getAttributeId() {
 		
-		for (Attribute atributo : getAttributes()) {
-			if (atributo instanceof AttributeId) {
-				return (AttributeId) atributo;
+		for (Attribute attribute : getAttributes()) {
+			if (attribute instanceof AttributeId) {
+				return (AttributeId) attribute;
 			}
 		}
 		
 		return null;
 	}
 	
-	public boolean isAuditada() {
+	public boolean isAudited() {
 		return getClazz().isAnnotationPresent(Audited.class);
 	}
+
+	public void store() {
+		
+		String keyBase = getClazz().getName();
+				
+		if (getGender() != null) {
+			// Verifica se possui os dados no gc.properties
+			gc.getGcProperties().add(keyBase  + ".gender", getGender().name());
+		}
+
+		if (getLabel() != null) {
+			gc.getMessagesProperties().add(keyBase, getLabel());
+		}
+	
+		for (Attribute attribute : getAttributes()) {			
+			attribute.store();						
+		}
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public void setLabelDefault() {
+		this.label = getClazzSimpleName();
+	}	
 }

@@ -49,7 +49,7 @@ public class VisualizarXhtmlComponente extends Componente {
 		println(pw, "\t\t\t\t\t\t\t\t</h:panelGrid>");		
 		println(pw, "\t\t\t\t\t\t\t</p:tab>");
 		
-		for (AttributeOneToMany atributo : getGc().getEntity().getAtributosOneToMany()) {
+		for (AttributeOneToMany atributo : getGc().getEntity().getAttributesOneToMany()) {
 			
 			println(pw, "\t\t\t\t\t\t\t<p:tab title=\"{0}\">", atributo.getLabel());
 			

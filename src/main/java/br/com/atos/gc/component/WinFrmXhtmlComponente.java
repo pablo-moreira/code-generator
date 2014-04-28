@@ -41,7 +41,7 @@ public class WinFrmXhtmlComponente extends Componente {
 		
 		gerarTabEntidade(pw);
 		
-		for (AttributeOneToMany atributo : getGc().getEntity().getAtributosOneToMany()) { 
+		for (AttributeOneToMany atributo : getGc().getEntity().getAttributesOneToMany()) { 
 			println(pw, "\t\t\t\t<p:tab title=\"{0}\">", atributo.getLabel());
 			
 			println(pw, "\t\t\t\t\t<p:dataTable");

@@ -12,18 +12,16 @@ import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 public class AttributeOneToMany extends Attribute {
 	
 	private AttributeFormType formType = AttributeFormType.EXTERNAL;
-	
+
 	private Entity associationEntity;
-	
-        public AttributeOneToMany() {
-            
-        }
+
+	public AttributeOneToMany() {}
         
 	public AttributeOneToMany(Field field, Entity entity) {
 		
 		super(field, entity);
 		
-		loadProperties();
+		load();
 		
 		Class<?> associationClass = getAssociationClass();
 		
@@ -101,19 +99,28 @@ public class AttributeOneToMany extends Attribute {
 		return mappedBy;
 	}
 	
-	@Override
-	protected void loadProperties() {
+	public Entity getAssociationEntity() {
+		return associationEntity;
+	}
 	
-		super.loadProperties();
+	@Override
+	protected void load() {
+	
+		super.load();
 		
-		String formTypeValue = getGc().getMessagesProperties().getProperty(getPropertiesKeyBase() + ".formType");
+		String formTypeValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".formType");
 		
 		if (!StringUtils.isNullOrEmpty(formTypeValue)) {
 			formType = AttributeFormType.valueOf(formTypeValue);
 		}
 	}
+	
+	public void store() {
+		
+		super.store();
 
-	public Entity getAssociationEntity() {
-		return associationEntity;
-	}	
+		if (getFormType() != null) {
+			getGc().getGcProperties().add(getPropertiesKeyBase() + ".formType", getFormType().name());
+		}
+	}
 }
