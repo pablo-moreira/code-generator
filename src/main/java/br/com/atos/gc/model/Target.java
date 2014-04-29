@@ -30,13 +30,7 @@ public class Target {
 		this.frmAttributeOneToMany = frmAttributeOneToMany;
 	}
 
-	public String getResource() {/*
-																										 * 	private boolean renderColumnRenderColumn;
-																										private boolean renderColumnRenderFilter;
-																										private boolean renderColumnRenderForm;
-																										private boolean renderColumnAttributeDescription;
-																										private boolean renderColumnFormType;
-																										 */
+	public String getResource() {
 		return resource;
 	}
 

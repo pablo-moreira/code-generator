@@ -14,7 +14,6 @@ import br.com.atos.gc.gui.tablemodel.AttributeTableModel;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
-import br.com.atos.gc.model.Entity;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
 
@@ -23,9 +22,10 @@ import br.com.atos.utils.swing.JFrameUtils;
  * @author 205327
  */
 public class FrmAttributes extends javax.swing.JPanel {
-  
-    private final AttributeTableModel tmAttributes;
-    private Entity entity;
+
+	private static final long serialVersionUID = 1L;
+	
+	private final AttributeTableModel tmAttributes;
 
     /**
      * Creates new form FrmAttributes
@@ -37,39 +37,30 @@ public class FrmAttributes extends javax.swing.JPanel {
         tmAttributes = new AttributeTableModel(tblAttributes);
     }
     
-    public void initialize(Entity entity) {
-        
-        this.entity = entity;
-        
-        if (entity != null) {                       
-            getTmAttributes().getAttributes().clear();
-            getTmAttributes().getAttributes().addAll(getEntity().getAttributes());
+    public void initialize(List<Attribute> attributes) {
+                	
+    	if (attributes != null) {
+        	getTmAttributes().setAttributes(attributes);
         }
         // Para testes
         else {
-            List<Attribute> attributes = new ArrayList<Attribute>();
+            attributes = new ArrayList<Attribute>();
 
             attributes.add(new Attribute());
             attributes.add(new AttributeOneToMany());
             attributes.add(new AttributeManyToOne());
 
-            getTmAttributes().getAttributes().addAll(attributes);
+            getTmAttributes().setAttributes(attributes);
             //getTmAttributes().hideColumnRenderColumn();
             //getTmAttributes().hideColumnRenderFilter();
             //getTmAttributes().hideColumnRenderForm();
             //getTmAttributes().hideColumnAttributeDescription();    
             getTmAttributes().fireTableDataChanged();
         }
-        
-        
     }
 
     public AttributeTableModel getTmAttributes() {
         return tmAttributes;
-    }
-    
-    public Entity getEntity() {
-        return entity;
     }
    
     /**
@@ -133,13 +124,29 @@ public class FrmAttributes extends javax.swing.JPanel {
     private javax.swing.JTable tblAttributes;
     // End of variables declaration//GEN-END:variables
 
-	public void validateAttributes() {
+	public boolean validateAttributes() {
 		
-		for (AttributeManyToOne attribute : getEntity().getAttributesManyToOne()) {
-		    if (StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
-		    	JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação " + attribute.getField().getName() + " não foi informado!");
-		    	return;
-		    }
-		}				
+		for (Attribute attr : getTmAttributes().getEntities()) {
+			
+			if (attr instanceof AttributeManyToOne) {
+				
+				AttributeManyToOne attribute = (AttributeManyToOne) attr;
+				
+				if (StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
+					JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação " + attribute.getField().getName() + " não foi informado!");
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	public void save() {		
+		for (Attribute attribute : getTmAttributes().getEntities()) {
+			if (StringUtils.isNullOrEmpty(attribute.getLabel())) {
+				attribute.setLabelDefault();
+			}
+		}	
 	}
 }

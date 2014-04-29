@@ -4,6 +4,9 @@
  */
 package br.com.atos.gc.gui;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Gender;
 import br.com.atos.gc.model.Target;
@@ -11,8 +14,6 @@ import br.com.atos.gc.model.TargetColumnRender;
 import br.com.atos.gc.util.EntityComboBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,10 +21,11 @@ import javax.swing.JOptionPane;
  */
 public class WinFrmEntity extends javax.swing.JDialog {
     
-    private EntityComboBoxModel<Gender> cmGender;
+	private static final long serialVersionUID = 1L;
+	
+	private EntityComboBoxModel<Gender> cmGender;
     private Entity entity;
     private int status;
-	private Target target;
     
     /**
      * Creates new form WinFrmEntity
@@ -34,7 +36,7 @@ public class WinFrmEntity extends javax.swing.JDialog {
         
         initComponents();
         
-        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);			    
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);			    
         
         txtLabel.requestFocus();
         
@@ -144,14 +146,20 @@ public class WinFrmEntity extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+    	save();        
+    }//GEN-LAST:event_btnOkActionPerformed
 
-        // Verifica se foi informado os dados
+    private void save() {
+    	
+    	// Verifica se foi informado os dados
         if (cmGender.getSelectedEntity() == null) {
             JFrameUtils.showErro("Erro de validação", "O Gênero não foi informado!");
             return;
         }
         
-        getFrmAttributes().validateAttributes();
+        if (!getFrmAttributes().validateAttributes()) {
+        	return;
+        }
         
         if (StringUtils.isNullOrEmpty(txtLabel.getText())) {
 			getEntity().setLabelDefault();	
@@ -162,12 +170,14 @@ public class WinFrmEntity extends javax.swing.JDialog {
 		
 		getEntity().setGender(cmGender.getSelectedEntity());
 		
+		getFrmAttributes().save();
+		
 		status = JOptionPane.OK_OPTION;
 		
 		setVisible(false);
-    }//GEN-LAST:event_btnOkActionPerformed
+	}
 
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+	private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         status = JOptionPane.CANCEL_OPTION;
 		setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
@@ -219,37 +229,39 @@ public class WinFrmEntity extends javax.swing.JDialog {
 	}
 	
     public void start(Entity entity, Target target) {
-        
+    	
         this.entity = entity;
-		this.target = target;
-        
+		        
         if (entity != null) {
+
+        	setTitle(getTitle() + " - " + entity.getClazz().getName());
+        	
             txtLabel.setText(getEntity().getLabel());
             cmGender.setSelectedEntity(getEntity().getGender());
             
-            getFrmAttributes().initialize(getEntity());
+            getFrmAttributes().initialize(getEntity().getAttributes());
         }
         // Para testes
         else {
-            getFrmAttributes().initialize(getEntity());
+            getFrmAttributes().initialize(null);
         }
 		
 		TargetColumnRender colRender = target.getFrmEntity();
 		
 		if (colRender != null) {			
-			if (colRender.isRenderRenderColumn()) {
+			if (!colRender.isRenderRenderColumn()) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderColumn();
 			}
-			if (colRender.isRenderRenderFilter()) {
+			if (!colRender.isRenderRenderFilter()) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderFilter();
 			}
-			if (colRender.isRenderRenderForm()) {
+			if (!colRender.isRenderRenderForm()) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderForm();
 			}			
-			if (colRender.isRenderAttributeDescription()) {
+			if (!colRender.isRenderAttributeDescription()) {
 				getFrmAttributes().getTmAttributes().hideColumnAttributeDescription();
 			}
-			if (colRender.isRenderFormType()) {
+			if (!colRender.isRenderFormType()) {
 				getFrmAttributes().getTmAttributes().hideColumnFormType();
 			}
 		}

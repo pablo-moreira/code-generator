@@ -36,10 +36,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 	
 	public static final ColumnMetadata COL_ATTRIBUTE = new ColumnMetadata(0, "Atributo", 150);
     public static final ColumnMetadata COL_LABEL = new ColumnMetadata(1, "Rótulo", 200);
-    public static final ColumnMetadata COL_RENDER_COLUMN = new ColumnMetadata(2, "Coluna", 50, "Renderizar uma coluna para atributo");
-    public static final ColumnMetadata COL_RENDER_FILTER = new ColumnMetadata(3, "Filtro", 50, "Renderizar um filtro para atributo");
-    public static final ColumnMetadata COL_RENDER_FORM = new ColumnMetadata(4, "Form.", 50, "Renderizar um campo no formulário para atributo");
-    public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(5, "Atrib. Descrição da Associação", 200);
+    public static final ColumnMetadata COL_RENDER_COLUMN = new ColumnMetadata(2, "Coluna", 60, "Renderizar uma coluna para atributo");
+    public static final ColumnMetadata COL_RENDER_FILTER = new ColumnMetadata(3, "Filtro", 60, "Renderizar um filtro para atributo");
+    public static final ColumnMetadata COL_RENDER_FORM = new ColumnMetadata(4, "Form.", 60, "Renderizar um campo no formulário para atributo");
+    public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(5, "Atrib. Descrição da Associação", 220);
     public static final ColumnMetadata COL_FORM_TYPE = new ColumnMetadata(6, "Tipo de Formulário", 150);
   
     private List<Attribute> attributes = new ArrayList<Attribute>();
@@ -220,11 +220,8 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 }
             }
         }
-        else {
-            System.out.println("Teste!!!");                
-        }
         
-        System.out.println("Value: " + value + " - Row: " + row + " - Col: " + col);
+        //System.out.println("Value: " + value + " - Row: " + row + " - Col: " + col);
         
         fireTableCellUpdated(row, col);
     }

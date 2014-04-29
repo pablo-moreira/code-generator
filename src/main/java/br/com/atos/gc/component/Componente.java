@@ -9,6 +9,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.atos.gc.GeradorCodigo;
+import br.com.atos.gc.model.Attribute;
+import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 
 abstract public class Componente {
@@ -61,6 +63,44 @@ abstract public class Componente {
 		}
 		else {
 			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\" />", indentacao, value);
+		}
+	}
+	
+	protected void printOutputText(PrintWriter pw, String indentation, String path, Attribute attribute) {
+
+		Field field;
+		String value;
+		
+		if (attribute instanceof AttributeManyToOne) {			
+			field = ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociationField();
+			value = path + attribute.getField().getName() + "." + field.getName();
+		}
+		else {
+			field = attribute.getField();
+			value = path + field.getName();
+		}
+		
+		if (BaseEnum.class.isAssignableFrom(field.getType())) {
+			println(pw, "{0}<h:outputText value=\"#'{'{1}.descricao'}'\" />", indentation, value);
+		}
+		else if (Date.class.isAssignableFrom(field.getType())) {
+			
+			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\">", indentation, value);
+			
+			if (field.getAnnotation(Temporal.class).value() == TemporalType.DATE) {
+				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"date\" />", indentation);
+			}
+			else if (field.getAnnotation(Temporal.class).value() == TemporalType.TIME) {
+				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"time\" />", indentation);
+			}
+			else {
+				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"both\" />", indentation);
+			}
+			
+			println(pw, "{0}</h:outputText>", indentation);
+		}
+		else {
+			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\" />", indentation, value);
 		}
 	}
 }

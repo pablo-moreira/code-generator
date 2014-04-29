@@ -14,9 +14,11 @@ import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,20 +35,21 @@ import br.com.atos.gc.component.WinFrmJavaImportsComponente;
 import br.com.atos.gc.component.WinFrmJavaMetodosComponente;
 import br.com.atos.gc.component.WinFrmXhtmlAssociacoesComponente;
 import br.com.atos.gc.component.WinFrmXhtmlComponente;
+import br.com.atos.gc.gui.WinFrmAttributeOneToMany;
 import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
+import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Target;
 import br.com.atos.gc.model.TargetColumnRender;
 import br.com.atos.gc.util.LinkedProperties;
+import br.com.atos.utils.DataUtils;
 import br.com.atos.utils.OsUtil;
 import br.com.atos.utils.StringUtils;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 public class GeradorCodigo {
 
@@ -73,12 +76,12 @@ public class GeradorCodigo {
 	private File dirSrc;	
 	private File dirWebContent;	
 	private HashMap<String,String> attributesValues = new HashMap<String,String>();
-	private List<Componente> components;
-	private LinkedProperties gcProperties;
+	private List<Componente> components;	
 	private Entity entity;
 	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
 	private List<String> ignoredAttributes = new ArrayList<String>();
+	private LinkedProperties gcProperties;
 	private LinkedProperties messagesProperties;
 	private File dirProject;
 	private File dirResources;
@@ -87,14 +90,7 @@ public class GeradorCodigo {
 	public Entity getEntity() {
 		return entity;
 	}
-	
-	private void inicializarEntidadeAtributosSeNecessario() {
 		
-		if (!getEntity().isInicializedAttributes()) {
-			getEntity().inicializarAtributosSeNecessario();
-		}
-	}
-	
 	/**
 	 * Exemplo de utilizacao do gerador:
 	 *	GeradorCodigo gerador = new GeradorCodigo(Produto.class);
@@ -104,12 +100,10 @@ public class GeradorCodigo {
 	
 		dirProject = new File(System.getProperty("user.dir"));
 
-		carregarGcProperties();
+		loadGcProperties();
 		
-		String dr = gcProperties.getProperty(DIR_RESOURCES);
-
 		dirSrc = new File(dirProject, gcProperties.getProperty(DIR_SRC));
-		dirResources = new File(dirProject,  !StringUtils.isNullOrEmpty(dr) ? dr : "src/main/resources");
+		dirResources = new File(dirProject,  gcProperties.getProperty(DIR_RESOURCES, "src/main/resources"));
 		dirWebContent = new File(dirProject, gcProperties.getProperty(DIR_WEBCONTENT));
 
 		// Verifica se os diretorios existe se nao existir mostrar msg de erro
@@ -128,25 +122,14 @@ public class GeradorCodigo {
 			System.exit(0);
 		}
 		
-		File messagesFile = getMessagesPropertiesFile();
-		
-		// Se nao encontrar o arquivo messages.properties cria
-		if (messagesFile.exists() == false) {		
-			messagesFile.createNewFile();
-		}
-		
-		messagesProperties = new LinkedProperties();
-		messagesProperties.load(new FileInputStream(messagesFile));
+		loadMessagesProperties();
 		
 		entity = new Entity(entidadeClass, this);
-		
+					
 		Iterator<Entry<String, String>> iterator = gcProperties.iterator();
-		
 		while (iterator.hasNext()) {
-			
-			Entry<String, String> property = iterator.next();
-			
-			attributesValues.put(property.getKey(), property.getValue());
+			Entry<String, String> key = iterator.next();
+			attributesValues.put(key.getKey(), key.getValue());
 		}
 		
 		attributesValues.put(ATRIBUTO_ENTIDADE_AUDITADA, getEntity().isAudited() ? "true" : "false");
@@ -201,6 +184,19 @@ public class GeradorCodigo {
                 catch (Exception e) {}
 	}
 	
+	private void loadMessagesProperties() throws Exception {
+		
+		File messagesFile = getMessagesPropertiesFile();
+		
+		// Se nao encontrar o arquivo messages.properties cria
+		if (messagesFile.exists() == false) {		
+			messagesFile.createNewFile();
+		}
+		
+		messagesProperties = new LinkedProperties();
+		messagesProperties.load(new FileInputStream(messagesFile));		
+	}
+
 	private File getMessagesPropertiesFile() {
 		return new File(dirResources, MESSAGES_PROPERTIES_FILENAME);
 	}
@@ -209,17 +205,21 @@ public class GeradorCodigo {
 		return new File(dirResources, GC_PROPERTIES_FILENAME);
 	}
 
-	private void carregarGcProperties() throws Exception {
+	private void loadGcProperties() throws Exception {
 		
 		// Tenta recuperar o gc.properties pelo classPath
-		InputStream isGc = this.getClass().getResourceAsStream("/" + GC_PROPERTIES_FILENAME);
+		InputStream is = this.getClass().getResourceAsStream("/" + GC_PROPERTIES_FILENAME);
 		
-		if (isGc == null) {
+		if (is == null) {
 			throw new RuntimeException("O arquivo gc.properties não foi encontrado no classpath!");
 		}
 		
+		loadGcProperties(is);
+	}
+	
+	private void loadGcProperties(InputStream is) throws Exception {
 		gcProperties = new LinkedProperties();
-		gcProperties.load(isGc);
+		gcProperties.load(is);		
 	}
 
 	public void addComponent(Componente newComponent) {
@@ -282,7 +282,7 @@ public class GeradorCodigo {
 	
 	public void gerarTelaVisualizacao() throws Exception {
 		try {
-			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, true));
+			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, false));
 			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true
 					, new TargetColumnRender(true, false, false, true, false)
 					, new TargetColumnRender(true, false, false, true, false)
@@ -359,37 +359,38 @@ public class GeradorCodigo {
 		}
 		
 		if (getTarget().isInitializeEntity()) {
-					
-			if (!getEntity().isInicializedLabelAndGender()) {
-				
-	            WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
-	            winFrm.start(getEntity(), getTarget());
-	            
-	            if (!winFrm.isStatusOK()) {
-	            	System.exit(0);
-	            }
-	            else {	
-	            	store(getEntity());
-	            }
-	
-	            //getEntity().initializeLabelsAndGenderIfNecessarily();
 
-	            attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
-	            attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());		
-	            attributesValues.put("entidadeRotulo", getEntity().getLabel());
-	            attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
-			}
-			
+            WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
+            winFrm.start(getEntity(), getTarget());
+            
+            if (!winFrm.isStatusOK()) {
+            	System.exit(0);
+            }
+            else {	
+            	store(getEntity());
+            }
+
+            attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
+            attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());
+            attributesValues.put("entidadeRotulo", getEntity().getLabel());
+            attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
+                                    
+            for (AttributeOneToMany attribute : getEntity().getAttributesOneToMany()) {
+
+            	attribute.initializeAssociationEntity();
+            	
+            	WinFrmAttributeOneToMany winFrmAttributeOneToMany = new WinFrmAttributeOneToMany(null, true);                                        
+            	winFrmAttributeOneToMany.start(attribute, getTarget());
+
+                if (!winFrmAttributeOneToMany.isStatusOK()) {
+                	System.exit(0);
+                }
+                else {
+                	store(attribute.getAssociationEntity());
+                }
+            }
 		}
-		
-//		if (inicializarRotuloEhArtigo) {
-//			inicializarRotuloEhArtigoSeNecessario();
-//		}
-//		
-//		if (inicializarClasseAtributos) {
-//			inicializarEntidadeAtributosSeNecessario();
-//		}
-				
+						
 		System.out.println(" - " + file.getName() + " [GERADO]");
 
 		String path = "/templates/" + target.getResource() + "." + target.getType() + ".tpl";
@@ -441,10 +442,21 @@ public class GeradorCodigo {
 	private void store(Entity entity) {
 			
 		try {
-			entity.store();
+			String doc = "## Gerado por " + System.getProperty("user.name") + " em: " + DataUtils.getDataHorario(new Date());
 			
-			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile(), true), "");
-			getGcProperties().store(new FileOutputStream(getGcPropertiesFile(), true), "");
+			getGcProperties().addComment("");
+			getGcProperties().addComment(doc);
+			
+			getMessagesProperties().addComment("");
+			getMessagesProperties().addComment(doc);
+						
+			entity.store();			
+
+			getGcProperties().store(new FileOutputStream(getGcPropertiesFile()), null);
+			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile()), null);
+			
+			loadGcProperties(new FileInputStream(getGcPropertiesFile()));
+			loadMessagesProperties();
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Erro ao gravar os arquivos gc.properties e messages.properties, msg interna: " + e.getMessage());

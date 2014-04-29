@@ -43,7 +43,7 @@ public class WinFrmJavaMetodosComponente extends Componente {
 				println(pw, "\t\t\t");
 				println(pw, "\t\t\t@Override");
 				println(pw, "\t\t\tpublic void associar({0} associacao, {1} entidade) '{'", atributo.getAssociationClassSimpleName(), getGc().getAtributoValor("EntidadeNome"));			
-				println(pw, "\t\t\t\tassociacao.set{0}(entidade);", atributo.getAssociationMappedBy());
+				println(pw, "\t\t\t\tassociacao.set{0}(entidade);", StringUtils.firstToUpperCase(atributo.getAssociationMappedBy()));
 				println(pw, "\t\t\t}");
 				println(pw, "\t\t\t");
 				println(pw, "\t\t\t@Override");

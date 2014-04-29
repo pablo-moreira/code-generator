@@ -6,6 +6,7 @@ package br.com.atos.gc.util;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
@@ -16,8 +17,10 @@ import javax.swing.table.TableRowSorter;
  * @author pablo-moreira
  */
 public abstract class EntityTableModel<E> extends AbstractTableModel {
-    
-    private JTable table;
+
+	private static final long serialVersionUID = 1L;
+	
+	private JTable table;
     private TableRowSorter<EntityTableModel<E>> rowSorter;
     abstract public List<ColumnMetadata> getColumnsMetadata();
     abstract public List<E> getEntities();
@@ -135,11 +138,10 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
             ColumnMetadata colMetadata = findColumnMetadataByIndex(i);
             
             if (colMetadata.getTooltip() != null) {
-            
-                //TableColumn column = getTable().getColumnModel().getColumn(i);
-               // DefaultTableCellHeaderRenderer render = new DefaultTableCellHeaderRenderer();
-                //render.setToolTipText(colMetadata.getTooltip());
-                //column.setHeaderRenderer(render);
+//                TableColumn column = getTable().getColumnModel().getColumn(i);
+//                DefaultTableCellRenderer render = new DefaultTableCellHeaderRenderer();
+//                render.setToolTipText(colMetadata.getTooltip());
+//                column.setHeaderRenderer(render);
             }
         }       
     }

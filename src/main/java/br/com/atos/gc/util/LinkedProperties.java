@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -176,7 +177,7 @@ public class LinkedProperties implements Iterable<Map.Entry<String, String>> {
     //----------------------------------------------------------------------
     public void load(InputStream is)
             throws IOException {
-        load(new InputStreamReader(is));
+        load(new InputStreamReader(is, "ISO-8859-1"));
     }
 
     //----------------------------------------------------------------------
@@ -224,23 +225,23 @@ public class LinkedProperties implements Iterable<Map.Entry<String, String>> {
     }
 
     //----------------------------------------------------------------------
-    public void store(OutputStream out, String comment)
-            throws IOException {
-        store(new PrintWriter(out, true), comment);
+    public void store(OutputStream out, String comment) throws IOException {
+        store(new PrintWriter(new OutputStreamWriter(out, "ISO-8859-1"), true), comment);
     }
 
     //----------------------------------------------------------------------
-    public void store(Writer writer, String comment)
-            throws IOException {
+    public void store(Writer writer, String comment) throws IOException {
         store(new PrintWriter(writer, true), comment);
     }
 
     //----------------------------------------------------------------------
-    public void store(PrintWriter out, String comment)
-            throws IOException {
-        out.println("#! " + comment);
-        out.println("#! " + new Date());
+    public void store(PrintWriter out, String comment) throws IOException {
 
+    	if (comment != null && !comment.isEmpty()) {
+    		out.println("## " + comment);
+    		out.println("## " + new Date());
+    	}
+    	
         Iterator<Entry<String, String>> itr = iterator(false);
         while (itr.hasNext()) {
             out.println(toString(itr.next()));

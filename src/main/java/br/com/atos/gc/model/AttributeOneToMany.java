@@ -1,11 +1,15 @@
 package br.com.atos.gc.model;
 
-import br.com.atos.utils.StringUtils;
-import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.OneToMany;
+
+import br.com.atos.utils.StringUtils;
+import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 
 public class AttributeOneToMany extends Attribute {
 	
@@ -20,27 +24,26 @@ public class AttributeOneToMany extends Attribute {
 		super(field, entity);
 		
 		load();
-		
-		Class<?> associationClass = getAssociationClass();
-		
-		if (IBaseEntity.class.isAssignableFrom(associationClass)) {
+				
+		if (!IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
+			throw new RuntimeException("A classe da associação " + getField().getName() + " não implementa a interface IBaseEntity!");
+		}
+	}	
+	
+	public void initializeAssociationEntity() {
+
+		if (IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
 			
 			@SuppressWarnings("unchecked")
-			Class<? extends IBaseEntity<?>> clazz = (Class<? extends IBaseEntity<?>>) associationClass;
+			Class<? extends IBaseEntity<?>> clazz = (Class<? extends IBaseEntity<?>>) getAssociationClass();
 			
-			associationEntity = new Entity(clazz, entity.getGc());	
+			associationEntity = new Entity(clazz, getEntity().getGc());			
 		}
 		else {
-			throw new RuntimeException("A classe da associação " + field.getName() + " não implementa a interface IBaseEntity!");
+			throw new RuntimeException("A classe da associação " + getField().getName() + " não implementa a interface IBaseEntity!");
 		}
-			
 	}
-	
-	public AttributeOneToMany(Field atributo, String label, AttributeFormType formType) {
-		super(atributo, label);
-		this.formType = formType;
-	}
-	
+		
 	public AttributeFormType getFormType() {
 		return formType;
 	}
@@ -91,14 +94,10 @@ public class AttributeOneToMany extends Attribute {
 		String mappedBy = "";
 		
 		if (getField().getAnnotation(OneToMany.class) != null) {
-			mappedBy = StringUtils.firstToUpperCase(getField().getAnnotation(OneToMany.class).mappedBy());
+			mappedBy = getField().getAnnotation(OneToMany.class).mappedBy();
 		}
 		
 		return mappedBy;
-	}
-	
-	public Entity getAssociationEntity() {
-		return associationEntity;
 	}
 	
 	@Override
@@ -113,7 +112,6 @@ public class AttributeOneToMany extends Attribute {
 		}
 	}
 	
-	@Override
 	public void store() {
 		
 		super.store();
@@ -121,5 +119,22 @@ public class AttributeOneToMany extends Attribute {
 		if (getFormType() != null) {
 			getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".formType", getFormType().name());
 		}
+	}
+
+	public Entity getAssociationEntity() {
+		return associationEntity;
+	}
+
+	public List<Attribute> getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany() {
+
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		
+		for (Attribute attribute : getAssociationEntity().getAttributesWithoutAttributesOneToMany()) {
+			if (!attribute.getField().getName().equals(getAssociationMappedBy())) {
+				attributes.add(attribute);
+			}
+		}
+		
+		return attributes;
 	}
 }

@@ -53,6 +53,10 @@ public class Attribute {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
+	public void setLabelDefault() {
+		this.label = field.getName();		
+	}
 
 	public Boolean isRenderColumn() {
 		return renderColumn;
@@ -106,9 +110,6 @@ public class Attribute {
 				
 		if (!StringUtils.isNullOrEmpty(labelValue)) {
 			label = labelValue;
-		}
-		else {
-			label = field.getName();
 		}
 	}
 	

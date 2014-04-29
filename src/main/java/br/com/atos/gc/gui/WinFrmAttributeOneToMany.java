@@ -4,11 +4,12 @@
  */
 package br.com.atos.gc.gui;
 
+import javax.swing.JOptionPane;
+
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Target;
 import br.com.atos.gc.model.TargetColumnRender;
 import br.com.atos.utils.swing.JFrameUtils;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -152,28 +153,30 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 	}
 
 	public void start(AttributeOneToMany attributeOneToMany, Target target) {
-        
+        		
+		setTitle("Formulário - " + attributeOneToMany.getEntity().getClazzSimpleName() + "." + attributeOneToMany.getField().getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
+		
 		this.attributeOneToMany = attributeOneToMany;
 		this.target = target;
-		
-        getFrmAttributes().initialize(getAttributeOneToMany().getEntity());    
+
+        getFrmAttributes().initialize(attributeOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany());
 
 		TargetColumnRender colRender = target.getFrmAttributeOneToMany();
 		
 		if (colRender != null) {			
-			if (colRender.isRenderRenderColumn()) {
+			if (!colRender.isRenderRenderColumn()) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderColumn();
 			}
-			if (colRender.isRenderRenderFilter()) {
+			if (!colRender.isRenderRenderFilter()) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderFilter();
 			}
-			if (colRender.isRenderRenderForm()) {
+			if (!colRender.isRenderRenderForm()) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderForm();
 			}			
-			if (colRender.isRenderAttributeDescription()) {
+			if (!colRender.isRenderAttributeDescription()) {
 				getFrmAttributes().getTmAttributes().hideColumnAttributeDescription();
 			}
-			if (colRender.isRenderFormType()) {
+			if (!colRender.isRenderFormType()) {
 				getFrmAttributes().getTmAttributes().hideColumnFormType();
 			}
 		}
