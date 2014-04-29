@@ -38,12 +38,15 @@ import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Target;
-import br.com.atos.gc.util.CommentedProperties;
+import br.com.atos.gc.model.TargetColumnRender;
+import br.com.atos.gc.util.LinkedProperties;
 import br.com.atos.utils.OsUtil;
 import br.com.atos.utils.StringUtils;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 public class GeradorCodigo {
 
@@ -71,13 +74,13 @@ public class GeradorCodigo {
 	private File dirWebContent;	
 	private HashMap<String,String> attributesValues = new HashMap<String,String>();
 	private List<Componente> components;
-	private CommentedProperties gcProperties;
+	private LinkedProperties gcProperties;
 	private Entity entity;
 	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
 	private List<String> ignoredAttributes = new ArrayList<String>();
-	private CommentedProperties messagesProperties;
-	private File dirProjeto;
+	private LinkedProperties messagesProperties;
+	private File dirProject;
 	private File dirResources;
 	private Target target;
 	
@@ -99,15 +102,15 @@ public class GeradorCodigo {
 	 */
 	public GeradorCodigo(Class<? extends IBaseEntity<?>> entidadeClass) throws Exception {
 	
-		dirProjeto = new File(System.getProperty("user.dir"));
+		dirProject = new File(System.getProperty("user.dir"));
 
 		carregarGcProperties();
 		
 		String dr = gcProperties.getProperty(DIR_RESOURCES);
 
-		dirSrc = new File(dirProjeto, gcProperties.getProperty(DIR_SRC));
-		dirResources = new File(dirProjeto,  !StringUtils.isNullOrEmpty(dr) ? dr : "src/main/resources");
-		dirWebContent = new File(dirProjeto, gcProperties.getProperty(DIR_WEBCONTENT));
+		dirSrc = new File(dirProject, gcProperties.getProperty(DIR_SRC));
+		dirResources = new File(dirProject,  !StringUtils.isNullOrEmpty(dr) ? dr : "src/main/resources");
+		dirWebContent = new File(dirProject, gcProperties.getProperty(DIR_WEBCONTENT));
 
 		// Verifica se os diretorios existe se nao existir mostrar msg de erro
 		if (!dirSrc.exists() || !dirSrc.isDirectory()) {
@@ -132,13 +135,18 @@ public class GeradorCodigo {
 			messagesFile.createNewFile();
 		}
 		
-		messagesProperties = new CommentedProperties();
+		messagesProperties = new LinkedProperties();
 		messagesProperties.load(new FileInputStream(messagesFile));
 		
 		entity = new Entity(entidadeClass, this);
 		
-		for (Object key : gcProperties.keySet()) {
-			attributesValues.put(key.toString(), gcProperties.getProperty(key.toString()));
+		Iterator<Entry<String, String>> iterator = gcProperties.iterator();
+		
+		while (iterator.hasNext()) {
+			
+			Entry<String, String> property = iterator.next();
+			
+			attributesValues.put(property.getKey(), property.getValue());
 		}
 		
 		attributesValues.put(ATRIBUTO_ENTIDADE_AUDITADA, getEntity().isAudited() ? "true" : "false");
@@ -210,7 +218,7 @@ public class GeradorCodigo {
 			throw new RuntimeException("O arquivo gc.properties não foi encontrado no classpath!");
 		}
 		
-		gcProperties = new CommentedProperties();
+		gcProperties = new LinkedProperties();
 		gcProperties.load(isGc);
 	}
 
@@ -237,8 +245,11 @@ public class GeradorCodigo {
 	}
 	
 	public void gerarGrid() throws Exception {
-		try {			
-			makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
+		try {
+			makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true
+					, new TargetColumnRender(true, true, false, true, false)
+					, new TargetColumnRender(false, false, false, false, false)
+			));
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -247,9 +258,12 @@ public class GeradorCodigo {
 	}
 
 	public void gerarWinFrm() throws Exception {
-		try {	
+		try {
 			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true, true));
-			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true));
+			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true
+					, new TargetColumnRender(false, false, true, true, true)
+					, new TargetColumnRender(true, false, true, true, true)
+			));
 						
 			for (Attribute atributo : getEntity().getAttributes()) {				
 				if (atributo instanceof AttributeManyToOne) {
@@ -267,28 +281,23 @@ public class GeradorCodigo {
 	}
 	
 	public void gerarTelaVisualizacao() throws Exception {
-		try {		
+		try {
 			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, true));
-			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
+			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true
+					, new TargetColumnRender(true, false, false, true, false)
+					, new TargetColumnRender(true, false, false, true, false)
+			));
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
-		}		
-		finalizar();
+		}
 	}
-	
-	private void finalizar() throws Exception {
-		gcProperties.store(new FileOutputStream(getGcPropertiesFile()), "");
-		messagesProperties.store(new FileOutputStream(getMessagesPropertiesFile()), "");
-	}
-	
+		
 	private void gerarTelaAdministracao() throws Exception {
 		try {
 			makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false, false));
 			makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
-			
-			finalizar();
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -354,8 +363,7 @@ public class GeradorCodigo {
 			if (!getEntity().isInicializedLabelAndGender()) {
 				
 	            WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
-	            winFrm.initialize(getEntity());			
-	            winFrm.start();
+	            winFrm.start(getEntity(), getTarget());
 	            
 	            if (!winFrm.isStatusOK()) {
 	            	System.exit(0);
@@ -663,11 +671,11 @@ public class GeradorCodigo {
 		return ignoredAttributes;
 	}
 
-	public CommentedProperties getGcProperties() {
+	public LinkedProperties getGcProperties() {
 		return gcProperties;
 	}
 
-	public CommentedProperties getMessagesProperties() {
+	public LinkedProperties getMessagesProperties() {
 		return messagesProperties;
 	}
 }

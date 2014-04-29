@@ -1,10 +1,9 @@
 package br.com.atos.gc.model;
 
-import java.lang.reflect.Field;
-import java.util.List;
-
 import br.com.atos.utils.ReflectionUtils;
 import br.com.atos.utils.StringUtils;
+import java.lang.reflect.Field;
+import java.util.List;
 
 
 public class AttributeManyToOne extends Attribute {
@@ -62,12 +61,13 @@ public class AttributeManyToOne extends Attribute {
 		}
 	}
     
+	@Override
 	public void store() {
 		
 		super.store();
 
 		if (!StringUtils.isNullOrEmpty(getDescriptionAttributeOfAssociation())) {
-			getGc().getGcProperties().add(getPropertiesKeyBase() + ".descriptionAttributeAssociation", getDescriptionAttributeOfAssociation());
+			getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".descriptionAttributeAssociation", getDescriptionAttributeOfAssociation());
 		}
 	}
 }

@@ -113,6 +113,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     public TableColumn getColumnAttributeDescription() {
         return getTable().getColumnModel().getColumn(COL_ATTRIBUTE_DESCRIPTION.getIndex());
     }
+		    
+    private TableColumn getColumnFormType() {
+        return getColumnByIndex(COL_FORM_TYPE.getIndex());
+    }
     
     public void hideColumnRenderColumn() {
         hideColumn(getColumnRenderColumn());
@@ -129,6 +133,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     public void hideColumnAttributeDescription() {
         hideColumn(getColumnAttributeDescription());   
     }
+		
+	public void hideColumnFormType() {
+		hideColumn(getColumnFormType());
+	}
     
     public void setAttributes(List<Attribute> attributes) {
         this.attributes = attributes;
@@ -150,10 +158,6 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     @Override
     public List<Attribute> getEntities() {
         return attributes;
-    }
-    
-    private TableColumn getColumnFormType() {
-        return getColumnByIndex(COL_FORM_TYPE.getIndex());
     }
     
     @Override

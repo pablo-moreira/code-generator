@@ -4,15 +4,15 @@
  */
 package br.com.atos.gc.gui;
 
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-
-import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Gender;
+import br.com.atos.gc.model.Target;
+import br.com.atos.gc.model.TargetColumnRender;
 import br.com.atos.gc.util.EntityComboBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,6 +23,7 @@ public class WinFrmEntity extends javax.swing.JDialog {
     private EntityComboBoxModel<Gender> cmGender;
     private Entity entity;
     private int status;
+	private Target target;
     
     /**
      * Creates new form WinFrmEntity
@@ -60,10 +61,10 @@ public class WinFrmEntity extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         cbbGender = new javax.swing.JComboBox();
         txtLabel = new javax.swing.JTextField();
-        frmAttributes = new br.com.atos.gc.gui.FrmAttributes();
         jSeparator1 = new javax.swing.JSeparator();
         btnOk = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        frmAttributes = new br.com.atos.gc.gui.FrmAttributes();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Formulário de Entidade");
@@ -83,10 +84,10 @@ public class WinFrmEntity extends javax.swing.JDialog {
             }
         });
 
-        jButton1.setText("Cancelar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnCancel.setText("Cancelar");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnCancelActionPerformed(evt);
             }
         });
 
@@ -98,25 +99,24 @@ public class WinFrmEntity extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                    .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(btnOk))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 535, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnOk)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1)))
-                        .addContainerGap())))
+                                .addGap(18, 18, 18)
+                                .addComponent(txtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,14 +129,14 @@ public class WinFrmEntity extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOk)
-                    .addComponent(jButton1))
+                    .addComponent(btnCancel))
                 .addGap(10, 10, 10))
         );
 
@@ -164,13 +164,13 @@ public class WinFrmEntity extends javax.swing.JDialog {
 		
 		status = JOptionPane.OK_OPTION;
 		
-		setVisible(false);		
+		setVisible(false);
     }//GEN-LAST:event_btnOkActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         status = JOptionPane.CANCEL_OPTION;
 		setVisible(false);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnCancelActionPerformed
 
     /**
      * @param args the command line arguments
@@ -209,36 +209,54 @@ public class WinFrmEntity extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
-                dialog.initialize(null);
-                dialog.setVisible(true);
+                dialog.start(null, null);
             }
         });
     }
-    
-    public void start() {
-        JFrameUtils.setCenterLocation(this);
-        status = JOptionPane.CANCEL_OPTION;
-        setVisible(true);
-    }
-    
-    public Entity getEntity() {
-        return entity;
-    }
 
-    public void initialize(Entity entity) {
+	public Entity getEntity() {
+		return entity;
+	}
+	
+    public void start(Entity entity, Target target) {
         
         this.entity = entity;
+		this.target = target;
         
         if (entity != null) {
             txtLabel.setText(getEntity().getLabel());
             cmGender.setSelectedEntity(getEntity().getGender());
             
-            getFrmAttributes().initialize(entity);
+            getFrmAttributes().initialize(getEntity());
         }
         // Para testes
         else {
-            getFrmAttributes().initialize(entity);
+            getFrmAttributes().initialize(getEntity());
         }
+		
+		TargetColumnRender colRender = target.getFrmEntity();
+		
+		if (colRender != null) {			
+			if (colRender.isRenderRenderColumn()) {
+				getFrmAttributes().getTmAttributes().hideColumnRenderColumn();
+			}
+			if (colRender.isRenderRenderFilter()) {
+				getFrmAttributes().getTmAttributes().hideColumnRenderFilter();
+			}
+			if (colRender.isRenderRenderForm()) {
+				getFrmAttributes().getTmAttributes().hideColumnRenderForm();
+			}			
+			if (colRender.isRenderAttributeDescription()) {
+				getFrmAttributes().getTmAttributes().hideColumnAttributeDescription();
+			}
+			if (colRender.isRenderFormType()) {
+				getFrmAttributes().getTmAttributes().hideColumnFormType();
+			}
+		}
+		
+		JFrameUtils.setCenterLocation(this);
+        status = JOptionPane.CANCEL_OPTION;
+        setVisible(true);
     }    
 
     public FrmAttributes getFrmAttributes() {
@@ -250,10 +268,10 @@ public class WinFrmEntity extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
     private javax.swing.JComboBox cbbGender;
     private br.com.atos.gc.gui.FrmAttributes frmAttributes;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JSeparator jSeparator1;

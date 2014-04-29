@@ -9,18 +9,34 @@ public class Target {
 	private boolean resourceStart;	
 	private File destinationDirectory;	
 	private boolean allowOverwrite;	
-	private boolean initializeEntity;
+	private boolean initializeEntity;	
+	private TargetColumnRender frmEntity;
+	private TargetColumnRender frmAttributeOneToMany;
 
-	public Target(String resource, String type, boolean resourceStart, File destinationDirectory, boolean allowOverwrite, boolean initializeEntity) {
+	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean initializeEntity) {
 		this.resource = resource;
 		this.type = type;
 		this.resourceStart = resourceStart;
-		this.destinationDirectory = destinationDirectory;
+		this.destinationDirectory = destDirectory;
 		this.allowOverwrite = allowOverwrite;
 		this.initializeEntity = initializeEntity;
+		this.frmEntity = new TargetColumnRender(false, false, false, false, false);
+		this.frmAttributeOneToMany = new TargetColumnRender(false, false, false, false, false);
 	}
 
-	public String getResource() {
+	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean initializeEntity, TargetColumnRender frmEntity, TargetColumnRender frmAttributeOneToMany) {
+		this(resource, type, resourceStart, destDirectory, allowOverwrite, initializeEntity);
+		this.frmEntity = frmEntity;
+		this.frmAttributeOneToMany = frmAttributeOneToMany;
+	}
+
+	public String getResource() {/*
+																										 * 	private boolean renderColumnRenderColumn;
+																										private boolean renderColumnRenderFilter;
+																										private boolean renderColumnRenderForm;
+																										private boolean renderColumnAttributeDescription;
+																										private boolean renderColumnFormType;
+																										 */
 		return resource;
 	}
 
@@ -43,4 +59,12 @@ public class Target {
 	public boolean isInitializeEntity() {
 		return initializeEntity;
 	}	
+
+	public TargetColumnRender getFrmAttributeOneToMany() {
+		return frmAttributeOneToMany;
+	}
+
+	public TargetColumnRender getFrmEntity() {
+		return frmEntity;
+	}
 }

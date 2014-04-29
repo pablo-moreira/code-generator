@@ -1,23 +1,20 @@
 package br.com.atos.gc.model;
 
+import br.com.atos.gc.GeradorCodigo;
+import br.com.atos.utils.ReflectionUtils;
+import br.com.atos.utils.StringUtils;
+import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.swing.JOptionPane;
-
 import org.hibernate.envers.Audited;
-
-import br.com.atos.gc.GeradorCodigo;
-import br.com.atos.utils.ReflectionUtils;
-import br.com.atos.utils.StringUtils;
-import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 
 public class Entity {
 
@@ -276,11 +273,11 @@ public class Entity {
 				
 		if (getGender() != null) {
 			// Verifica se possui os dados no gc.properties
-			gc.getGcProperties().add(keyBase  + ".gender", getGender().name());
+			gc.getGcProperties().setProperty(keyBase  + ".gender", getGender().name());
 		}
 
 		if (getLabel() != null) {
-			gc.getMessagesProperties().add(keyBase, getLabel());
+			gc.getMessagesProperties().setProperty(keyBase, getLabel());
 		}
 	
 		for (Attribute attribute : getAttributes()) {			

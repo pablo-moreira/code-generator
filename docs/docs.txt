@@ -1,0 +1,80 @@
+
+
+
+FluxoEvento
+	fluxoEvento.id					// AttributeId
+	fluxoEvento.nome				// Attribute
+	fluxoEvento.descricao			// Attribute
+	fluxoEvento.fluxo.nome			// AttributeManyToOne
+
+	fluxoEvento.perfis				// AttributeOneToMany	
+	
+		FluxoEventoPerfil			
+			id						// AttributeId
+			perfil.nome				// AttributeManyToOne
+			fluxoEvento				// AttributeManyToOne - mappedBy	
+	
+	fluxoEvento.condicoes			// AttributeOneToMany	
+	
+		FluxoEventoCondicao			
+			id						// AttributeId
+			condicao.descricao		// AttributeManyToOne
+			fluxoEvento				// AttributeManyToOne - mappedBy	
+
+
+Visualizar.xhtml
+
+FrmEntity
+	- renderColumn = true
+	- renderFilter = false
+	- renderForm = false
+	- description = true
+	- formType = false
+
+FrmAttributeOneToMany
+	- renderColumn = true
+	- renderFilter = false
+	- renderForm = false
+	- description = true
+	- formType = false
+
+
+Grid.xhtml
+
+FrmEntity
+	- renderColumn = true
+	- renderFilter = true
+	- renderForm = false
+	- description = true
+	- formType = false
+
+FrmAttributeOneToMany
+	- renderColumn = false
+	- renderFilter = false
+	- renderForm = false
+	- description = false
+	- formType = false
+
+
+WinFrm.xhtml
+
+FrmEntity
+	- renderColumn = false
+	- renderFilter = false
+	- renderForm = true
+	- description = true
+	- formType = true
+
+FrmAttributeOneToMany
+	- renderColumn = true
+	- renderFilter = false
+	- renderForm = true
+	- description = true
+	- formType = true
+
+
+
+
+
+
+

@@ -1,13 +1,11 @@
 package br.com.atos.gc.model;
 
+import br.com.atos.utils.StringUtils;
+import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
 import javax.persistence.OneToMany;
-
-import br.com.atos.utils.StringUtils;
-import br.com.atosdamidia.comuns.modelo.IBaseEntity;
 
 public class AttributeOneToMany extends Attribute {
 	
@@ -115,12 +113,13 @@ public class AttributeOneToMany extends Attribute {
 		}
 	}
 	
+	@Override
 	public void store() {
 		
 		super.store();
 
 		if (getFormType() != null) {
-			getGc().getGcProperties().add(getPropertiesKeyBase() + ".formType", getFormType().name());
+			getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".formType", getFormType().name());
 		}
 	}
 }

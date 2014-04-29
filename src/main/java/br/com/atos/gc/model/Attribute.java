@@ -114,12 +114,12 @@ public class Attribute {
 	
 	public void store() {
 
-		getGc().getGcProperties().add(getPropertiesKeyBase() + ".renderColumn", isRenderColumn().toString());
-		getGc().getGcProperties().add(getPropertiesKeyBase() + ".renderFilter", isRenderFilter().toString());
-		getGc().getGcProperties().add(getPropertiesKeyBase() + ".renderForm", isRenderForm().toString());
+		getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".renderColumn", isRenderColumn().toString());
+		getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".renderFilter", isRenderFilter().toString());
+		getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".renderForm", isRenderForm().toString());
 		
 		if (getLabel() != null) {
-			getGc().getMessagesProperties().add(getPropertiesKeyBase(), getLabel());	
+			getGc().getMessagesProperties().setProperty(getPropertiesKeyBase(), getLabel());	
 		}
 	}
 }
