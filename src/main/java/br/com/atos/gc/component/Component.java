@@ -13,11 +13,11 @@ import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 
-abstract public class Componente {
+abstract public class Component {
 
 	private GeradorCodigo gc;
 	
-	public Componente(GeradorCodigo gc) {
+	public Component(GeradorCodigo gc) {
 		this.gc = gc;
 	}
 

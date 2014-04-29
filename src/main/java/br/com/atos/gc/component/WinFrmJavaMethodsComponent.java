@@ -8,9 +8,9 @@ import br.com.atos.gc.model.AttributeFormType;
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.utils.StringUtils;
 
-public class WinFrmJavaMetodosComponente extends Componente {
+public class WinFrmJavaMethodsComponent extends Component {
 
-	public WinFrmJavaMetodosComponente(GeradorCodigo gc) {
+	public WinFrmJavaMethodsComponent(GeradorCodigo gc) {
 		super(gc);
 	}
 

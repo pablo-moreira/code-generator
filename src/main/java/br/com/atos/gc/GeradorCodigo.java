@@ -26,15 +26,15 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
-import br.com.atos.gc.component.Componente;
-import br.com.atos.gc.component.GridXhtmlColunasComponente;
-import br.com.atos.gc.component.GridXhtmlFiltrosComponente;
-import br.com.atos.gc.component.VisualizarXhtmlComponente;
-import br.com.atos.gc.component.WinFrmJavaAtributosComponente;
-import br.com.atos.gc.component.WinFrmJavaImportsComponente;
-import br.com.atos.gc.component.WinFrmJavaMetodosComponente;
-import br.com.atos.gc.component.WinFrmXhtmlAssociacoesComponente;
-import br.com.atos.gc.component.WinFrmXhtmlComponente;
+import br.com.atos.gc.component.Component;
+import br.com.atos.gc.component.GridXhtmlColumnsComponent;
+import br.com.atos.gc.component.GridXhtmlFilterComponent;
+import br.com.atos.gc.component.ViewXhtmlComponent;
+import br.com.atos.gc.component.WinFrmJavaAttributesComponent;
+import br.com.atos.gc.component.WinFrmJavaImportsComponent;
+import br.com.atos.gc.component.WinFrmJavaMethodsComponent;
+import br.com.atos.gc.component.WinFrmXhtmlAssociationsComponent;
+import br.com.atos.gc.component.WinFrmXhtmlComponent;
 import br.com.atos.gc.gui.WinFrmAttributeOneToMany;
 import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
@@ -76,7 +76,7 @@ public class GeradorCodigo {
 	private File dirSrc;	
 	private File dirWebContent;	
 	private HashMap<String,String> attributesValues = new HashMap<String,String>();
-	private List<Componente> components;	
+	private List<Component> components;	
 	private Entity entity;
 	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
@@ -156,15 +156,15 @@ public class GeradorCodigo {
 			ignoredAttributes = new ArrayList<String>();
 		}
 		
-		components = new ArrayList<Componente>();
-		components.add(new WinFrmXhtmlComponente(this));
-		components.add(new WinFrmXhtmlAssociacoesComponente(this));
-		components.add(new WinFrmJavaAtributosComponente(this));
-		components.add(new WinFrmJavaMetodosComponente(this));
-		components.add(new WinFrmJavaImportsComponente(this));
-		components.add(new GridXhtmlFiltrosComponente(this));
-		components.add(new GridXhtmlColunasComponente(this));
-		components.add(new VisualizarXhtmlComponente(this));
+		components = new ArrayList<Component>();
+		components.add(new WinFrmXhtmlComponent(this));
+		components.add(new WinFrmXhtmlAssociationsComponent(this));
+		components.add(new WinFrmJavaAttributesComponent(this));
+		components.add(new WinFrmJavaMethodsComponent(this));
+		components.add(new WinFrmJavaImportsComponent(this));
+		components.add(new GridXhtmlFilterComponent(this));
+		components.add(new GridXhtmlColumnsComponent(this));
+		components.add(new ViewXhtmlComponent(this));
 
 		try {
 			attributesValues.put("entidadeIdClass",  entity.getAttributeId().getField().getType().getSimpleName());			
@@ -222,9 +222,9 @@ public class GeradorCodigo {
 		gcProperties.load(is);		
 	}
 
-	public void addComponent(Componente newComponent) {
+	public void addComponent(Component newComponent) {
 		
-		Componente component = recuperarComponentePorChave(newComponent.getComponenteChave());
+		Component component = recuperarComponentePorChave(newComponent.getComponenteChave());
 		
 		if (component != null) {
 			components.remove(component);
@@ -420,7 +420,7 @@ public class GeradorCodigo {
             	}
             	else {
             		
-            		Componente componente = recuperarComponentePorChave(chave);
+            		Component componente = recuperarComponentePorChave(chave);
             		
             		if (componente != null) {
             			componente.renderizar(pw);
@@ -463,9 +463,9 @@ public class GeradorCodigo {
 		}
 	}
 
-	private Componente recuperarComponentePorChave(String chave) {
+	private Component recuperarComponentePorChave(String chave) {
 		
-		for (Componente componente : components) {
+		for (Component componente : components) {
 			if (componente.getComponenteChave().equals(chave)) {
 				return componente;
 			}

@@ -7,9 +7,9 @@ import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
 
-public class GridXhtmlColunasComponente extends Componente {
+public class GridXhtmlColumnsComponent extends Component {
 
-	public GridXhtmlColunasComponente(GeradorCodigo gc) {
+	public GridXhtmlColumnsComponent(GeradorCodigo gc) {
 		super(gc);
 	}
 

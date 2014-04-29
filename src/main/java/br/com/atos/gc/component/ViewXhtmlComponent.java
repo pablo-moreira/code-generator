@@ -7,9 +7,9 @@ import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.utils.StringUtils;
 
-public class VisualizarXhtmlComponente extends Componente {
+public class ViewXhtmlComponent extends Component {
 
-	public VisualizarXhtmlComponente(GeradorCodigo gc) {
+	public ViewXhtmlComponent(GeradorCodigo gc) {
 		super(gc);
 	}
 

@@ -23,9 +23,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-public class WinFrmXhtmlComponente extends Componente {
+public class WinFrmXhtmlComponent extends Component {
 
-	public WinFrmXhtmlComponente(GeradorCodigo gc) {
+	public WinFrmXhtmlComponent(GeradorCodigo gc) {
 		super(gc);
 	}
 

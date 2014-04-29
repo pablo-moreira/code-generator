@@ -6,9 +6,9 @@ import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.utils.StringUtils;
 import java.io.PrintWriter;
 
-public class WinFrmXhtmlAssociacoesComponente extends Componente {
+public class WinFrmXhtmlAssociationsComponent extends Component {
 
-	public WinFrmXhtmlAssociacoesComponente(GeradorCodigo gc) {
+	public WinFrmXhtmlAssociationsComponent(GeradorCodigo gc) {
 		super(gc);
 	}
 

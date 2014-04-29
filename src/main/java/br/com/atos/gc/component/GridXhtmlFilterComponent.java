@@ -14,9 +14,9 @@ import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atosdamidia.componente.model.FilterDate;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
 
-public class GridXhtmlFiltrosComponente extends Componente {
+public class GridXhtmlFilterComponent extends Component {
 
-	public GridXhtmlFiltrosComponente(GeradorCodigo gc) {
+	public GridXhtmlFilterComponent(GeradorCodigo gc) {
 		super(gc);
 	}
 
