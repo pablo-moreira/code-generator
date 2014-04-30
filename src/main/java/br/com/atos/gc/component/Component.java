@@ -1,10 +1,16 @@
 package br.com.atos.gc.component;
 
+import static br.com.atos.utils.StringUtils.firstToLowerCase;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
+import java.util.Calendar;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -12,6 +18,8 @@ import br.com.atos.gc.GeradorCodigo;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atosdamidia.comuns.modelo.BaseEnum;
+import br.com.atosdamidia.comuns.modelo.IBaseEntity;
+import br.com.atosdamidia.comuns.util.JpaReflectionUtils;
 
 abstract public class Component {
 
@@ -111,6 +119,71 @@ abstract public class Component {
 		}
 		else {
 			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\" />", indentation, value);
+		}
+	}
+	
+	protected void printin(PrintWriter pw, String indentation, Attribute attribute) {
+
+		String id = attribute.getField().getName();
+		String label = attribute.getLabel();
+		Class<?> type = attribute.getField().getType();
+		
+		String required = "true";
+
+		if (attribute.getField().getAnnotation(Column.class) != null) {
+			required = attribute.getField().getAnnotation(Column.class).nullable() ? "false" : "true";
+		}
+		else if (attribute.getField().getAnnotation(ManyToOne.class) != null) {
+			required = attribute.getField().getAnnotation(ManyToOne.class).optional() ? "false" : "true";
+		}
+		else if (attribute.getField().getAnnotation(JoinColumn.class) != null) {
+			required = attribute.getField().getAnnotation(JoinColumn.class).nullable() ? "false" : "true";
+		}
+		
+		if (BaseEnum.class.isAssignableFrom(type)) {				
+			
+			println(pw, indentation + "<p:selectOneMenu id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" effectDuration=\"0\" required=\"{2}\">", id, label, required);
+			println(pw, indentation + "\t<f:selectItems value=\"#'{'selectItems.{0}Itens'}'\" />", firstToLowerCase(type.getSimpleName()));
+			println(pw, indentation + "</p:selectOneMenu>");
+			
+		}
+		else if (Date.class.isAssignableFrom(type) || Calendar.class.isAssignableFrom(type)) {
+
+			if (attribute.getField().getAnnotation(Temporal.class).value() == TemporalType.DATE) {
+				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" showOn=\"button\" locale=\"pt_BR\" pattern=\"dd/MM/yyyy\" required=\"{2}\" onkeypress=\"Mask.valid(this, ''data'')\" />", id, label, required);		    			
+
+			}
+			else if (attribute.getField().getAnnotation(Temporal.class).value() == TemporalType.TIME) {
+				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" size=\"4\" showOn=\"button\" locale=\"pt_BR\" pattern=\"HH:mm\" timeOnly=\"true\" required=\"{2}\" onkeypress=\"Mask.valid(this, ''horario'')\" />", id, label, required);
+			}
+			else {
+				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" showOn=\"button\" locale=\"pt_BR\" pattern=\"dd/MM/yyyy HH:mm\" required=\"{2}\" onkeypress=\"Mask.valid(this, ''dataHorario'')\" />", id, label, required);
+			}
+			
+		}
+		else if (IBaseEntity.class.isAssignableFrom(type)) {
+			
+			AttributeManyToOne atributoManyToOne = (AttributeManyToOne) attribute;
+
+			// Imprime um selectOneMenu
+			//println(pw, indentation + "<p:selectOneMenu id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" effectDuration=\"0\" converter=\"simpleEntityConverter\">", atributo.getField().getName(), atributoLabel);
+			//println(pw, indentation + "\t<f:selectItems value=\"#'{'selectItems.{0}Itens'}'\" />", firstToLowerCase(atributo.getField().getType().getSimpleName()));
+			//println(pw, indentation + "</p:selectOneMenu>");
+			
+			Field associacaoFieldId = JpaReflectionUtils.getFieldId(type);
+
+			// Imprime um autocomplete
+			println(pw, indentation + "<p:autoComplete id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" required=\"{2}\" forceSelection=\"true\"", id, label, required);
+			println(pw, indentation + "\tdisabled=\"#'{'cc.attrs.winFrm.entidadeAssociada != null and cc.attrs.winFrm.entidadeAssociada == cc.attrs.winFrm.objeto.{0}'}'\"", attribute.getField().getName());
+			println(pw, indentation + "\tcompleteMethod=\"#'{'autoCompleteCtrl.onComplete{0}'}'\" dropdown=\"true\" converter=\"lazyEntityConverter\"", type.getSimpleName());
+			println(pw, indentation + "\tvar=\"{0}\" itemValue=\"#'{'{0}'}'\" itemLabel=\"#'{'{0}.{1}'}'\"", firstToLowerCase(type.getSimpleName()), atributoManyToOne.getDescriptionAttributeOfAssociation());
+			println(pw, indentation + "\tsize=\"40\" scrollHeight=\"200\">");
+			println(pw, indentation + "\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(type.getSimpleName()), associacaoFieldId.getName());
+			println(pw, indentation + "\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(type.getSimpleName()), atributoManyToOne.getDescriptionAttributeOfAssociation());
+			println(pw, indentation + "</p:autoComplete>");
+		}
+		else {
+			println(pw, indentation + "<p:inputText id=\"{0}\" label=\"{1}\" value=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\" style=\"width: 300px\" required=\"{2}\" />",	id,	label, required);
 		}
 	}
 }

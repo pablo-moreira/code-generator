@@ -265,10 +265,10 @@ public class GeradorCodigo {
 		try {
 			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
 					, new TargetConfig(false, false, true, true, true, true)
-					, new TargetConfig(true, false, true, true, false, false)
+					, new TargetConfig(true, false, false, true, false, false)
 			));
 			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true));
-						
+	
 			for (Attribute atributo : getEntity().getAttributes()) {				
 				if (atributo instanceof AttributeManyToOne) {
 					adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) atributo);
