@@ -8,21 +8,28 @@ package br.com.atos.gc.model;
  *
  * @author pablo-moreira
  */
-public class TargetColumnRender {
+public class TargetConfig {
 	
 	private boolean renderRenderColumn;
 	private boolean renderRenderFilter;
 	private boolean renderRenderForm;
 	private boolean renderAttributeDescription;
 	private boolean renderFormType;
-
-	public TargetColumnRender(boolean renderRenderColumn, boolean renderRenderFilter, boolean renderRenderForm, boolean renderAttributeDescription, boolean renderFormType) {
+	
+	private boolean showAttributesOneToMany;
+	
+	public TargetConfig(boolean renderRenderColumn, boolean renderRenderFilter, boolean renderRenderForm, boolean renderAttributeDescription, boolean renderFormType) {
 		this.renderRenderColumn = renderRenderColumn;
 		this.renderRenderFilter = renderRenderFilter;
 		this.renderRenderForm = renderRenderForm;
 		this.renderAttributeDescription = renderAttributeDescription;
 		this.renderFormType = renderFormType;
 	}
+		
+	public TargetConfig(boolean renderRenderColumn, boolean renderRenderFilter, boolean renderRenderForm, boolean renderAttributeDescription, boolean renderFormType, boolean showAttributesOneToMany) {
+		this(renderRenderColumn, renderRenderFilter, renderRenderForm, renderAttributeDescription, renderFormType);
+		this.showAttributesOneToMany = showAttributesOneToMany;
+	}	
 	
 	public boolean isRenderRenderColumn() {
 		return renderRenderColumn;
@@ -42,5 +49,9 @@ public class TargetColumnRender {
 
 	public boolean isRenderFormType() {
 		return renderFormType;
-	}	
+	}
+
+	public boolean isShowAttributesOneToMany() {
+		return showAttributesOneToMany;
+	}
 }

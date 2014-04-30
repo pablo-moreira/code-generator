@@ -28,44 +28,48 @@ public class GridXhtmlFilterComponent extends Component {
 	@Override
 	public void renderizar(PrintWriter pw) {
 
-		for (Attribute atributo : getGc().getEntity().getAttributes()) {
+		for (Attribute attribute : getGc().getEntity().getAttributes()) {
 			
-			// Ignora as associacoes OneToMany e atributo com campo enum
-			if (!AttributeOneToMany.class.isInstance(atributo)) {
+			// Verificar se e para renderizar o filtro
+			if (attribute.isRenderFilter()) {
 				
-				if (AttributeManyToOne.class.isInstance(atributo)) {
-					AttributeManyToOne atributoManyToOne =  (AttributeManyToOne) atributo;
-					imprimirFiltro(pw, atributo, atributoManyToOne.getDescriptionAttributeOfAssociationField(), atributo.getField().getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
-				}
-				else {				
-					imprimirFiltro(pw, atributo, atributo.getField(), atributo.getField().getName());
+				// Ignora as associacoes OneToMany
+				if (!AttributeOneToMany.class.isInstance(attribute)) {
+					
+					if (AttributeManyToOne.class.isInstance(attribute)) {
+						AttributeManyToOne atributoManyToOne =  (AttributeManyToOne) attribute;
+						printFilter(pw, attribute, atributoManyToOne.getDescriptionAttributeOfAssociationField(), attribute.getField().getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
+					}
+					else {				
+						printFilter(pw, attribute, attribute.getField(), attribute.getField().getName());
+					}
 				}
 			}
 		}
 	}
 	
-	private void imprimirFiltro(PrintWriter pw, Attribute atributo, Field field, String atributoPath) {
-
-		if (!BaseEnum.class.isAssignableFrom(field.getType())) {		
+	private void printFilter(PrintWriter pw, Attribute atributo, Field field, String atributoPath) {
 		
-			if (Long.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType())) {				
-				println(pw, "\t\t\t\t<atos:filterNumeric operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" type=\"{2}\" />", atributoPath, atributo.getLabel(), field.getType().getSimpleName());	
+		if (Number.class.isAssignableFrom(field.getType())) {				
+			println(pw, "\t\t\t\t<atos:filterNumeric operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" type=\"{2}\" />", atributoPath, atributo.getLabel(), field.getType().getSimpleName());	
+		}
+		else if (BaseEnum.class.isAssignableFrom(field.getType())) {
+			println(pw, "\t\t\t\t<atos:filterEnum operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" />", atributoPath, atributo.getLabel());
+		}
+		else if (Date.class.isAssignableFrom(field.getType())) {
+		
+			if (field.getAnnotation(Temporal.class).value() == TemporalType.DATE) {
+				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA);
 			}
-			else if (Date.class.isAssignableFrom(field.getType())) {
-		
-				if (field.getAnnotation(Temporal.class).value() == TemporalType.DATE) {
-					println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA);
-				}
-				else if (field.getAnnotation(Temporal.class).value() == TemporalType.TIMESTAMP) {
-					println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA_HORARIO);
-				}
-				else {
-					// Nao faz nada...
-				}
+			else if (field.getAnnotation(Temporal.class).value() == TemporalType.TIMESTAMP) {
+				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA_HORARIO);
 			}
 			else {
-				println(pw, "\t\t\t\t<atos:filterString operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" />", atributoPath, atributo.getLabel());
+				// Nao faz nada...
 			}
+		}
+		else {
+			println(pw, "\t\t\t\t<atos:filterString operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" />", atributoPath, atributo.getLabel());
 		}
 	}
 }

@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Target;
-import br.com.atos.gc.model.TargetColumnRender;
+import br.com.atos.gc.model.TargetConfig;
 import br.com.atos.utils.swing.JFrameUtils;
 
 /**
@@ -161,7 +161,7 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 
         getFrmAttributes().initialize(attributeOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany());
 
-		TargetColumnRender colRender = target.getFrmAttributeOneToMany();
+		TargetConfig colRender = target.getWinFrmAttributeOneToMany();
 		
 		if (colRender != null) {			
 			if (!colRender.isRenderRenderColumn()) {

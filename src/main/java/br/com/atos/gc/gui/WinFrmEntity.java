@@ -4,13 +4,20 @@
  */
 package br.com.atos.gc.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import br.com.atos.gc.model.Attribute;
+import br.com.atos.gc.model.AttributeId;
+import br.com.atos.gc.model.AttributeManyToOne;
+import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Gender;
 import br.com.atos.gc.model.Target;
-import br.com.atos.gc.model.TargetColumnRender;
+import br.com.atos.gc.model.TargetConfig;
 import br.com.atos.gc.util.EntityComboBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
@@ -230,6 +237,8 @@ public class WinFrmEntity extends javax.swing.JDialog {
 	
     public void start(Entity entity, Target target) {
     	
+    	TargetConfig colRender = target.getWinFrmEntity();
+    	
         this.entity = entity;
 		        
         if (entity != null) {
@@ -239,14 +248,40 @@ public class WinFrmEntity extends javax.swing.JDialog {
             txtLabel.setText(getEntity().getLabel());
             cmGender.setSelectedEntity(getEntity().getGender());
             
-            getFrmAttributes().initialize(getEntity().getAttributes());
+            List<Attribute> attributes = new ArrayList<Attribute>();
+            
+            for (Attribute attribute : getEntity().getAttributes()) {
+            	
+            	boolean add = false;
+            	
+            	if (attribute instanceof AttributeId) {
+            		add = true;
+            	}
+            	else if (attribute instanceof AttributeManyToOne) {
+            		add = true;
+            	}
+            	else if (attribute instanceof AttributeOneToMany) {
+            		if (colRender.isShowAttributesOneToMany()) {
+            			add = true;
+            		}
+            	}
+            	else {
+            		add = true;
+            	}
+
+            	if (add) {
+            		attributes.add(attribute);
+            	}
+            }
+            
+            getFrmAttributes().initialize(attributes);
         }
         // Para testes
         else {
             getFrmAttributes().initialize(null);
         }
 		
-		TargetColumnRender colRender = target.getFrmEntity();
+		
 		
 		if (colRender != null) {			
 			if (!colRender.isRenderRenderColumn()) {

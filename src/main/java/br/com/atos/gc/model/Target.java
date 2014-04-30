@@ -9,25 +9,38 @@ public class Target {
 	private boolean resourceStart;	
 	private File destinationDirectory;	
 	private boolean allowOverwrite;	
-	private boolean initializeEntity;	
-	private TargetColumnRender frmEntity;
-	private TargetColumnRender frmAttributeOneToMany;
+	
+	private TargetConfig winFrmEntity;
+	private TargetConfig winFrmAttributeOneToMany;
 
-	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean initializeEntity) {
+	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite) {
 		this.resource = resource;
 		this.type = type;
 		this.resourceStart = resourceStart;
 		this.destinationDirectory = destDirectory;
 		this.allowOverwrite = allowOverwrite;
-		this.initializeEntity = initializeEntity;
-		this.frmEntity = new TargetColumnRender(false, false, false, false, false);
-		this.frmAttributeOneToMany = new TargetColumnRender(false, false, false, false, false);
 	}
 
-	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean initializeEntity, TargetColumnRender frmEntity, TargetColumnRender frmAttributeOneToMany) {
-		this(resource, type, resourceStart, destDirectory, allowOverwrite, initializeEntity);
-		this.frmEntity = frmEntity;
-		this.frmAttributeOneToMany = frmAttributeOneToMany;
+	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, TargetConfig winFrmEntity, TargetConfig winFrmAttributeOneToMany) {
+		this(resource, type, resourceStart, destDirectory, allowOverwrite);
+		this.winFrmEntity = winFrmEntity;
+		this.winFrmAttributeOneToMany = winFrmAttributeOneToMany;
+	}
+
+	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, TargetConfig winFrmEntity, boolean winFrmAttributeOneToMany) {
+		this(resource, type, resourceStart, destDirectory, allowOverwrite, winFrmEntity, new TargetConfig(winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany));
+	}
+	
+	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean winFrmEntity, TargetConfig winFrmAttributeOneToMany) {
+		this(resource, type, resourceStart, destDirectory, allowOverwrite
+				, new TargetConfig(winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity)
+				, winFrmAttributeOneToMany);
+	}
+	
+	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean winFrmEntity, boolean winFrmAttributeOneToMany) {
+		this(resource, type, resourceStart, destDirectory, allowOverwrite 
+				, new TargetConfig(winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity) 
+				, new TargetConfig(winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany));
 	}
 
 	public String getResource() {
@@ -50,15 +63,19 @@ public class Target {
 		return allowOverwrite;
 	}
 
-	public boolean isInitializeEntity() {
-		return initializeEntity;
-	}	
-
-	public TargetColumnRender getFrmAttributeOneToMany() {
-		return frmAttributeOneToMany;
+	public boolean isShowWinFrmEntity() {
+		return getWinFrmEntity() != null;
 	}
 
-	public TargetColumnRender getFrmEntity() {
-		return frmEntity;
+	public boolean isShowWinFrmAttributeOneToMany() {
+		return getWinFrmAttributeOneToMany() != null;
+	}
+	
+	public TargetConfig getWinFrmAttributeOneToMany() {
+		return winFrmAttributeOneToMany;
+	}
+
+	public TargetConfig getWinFrmEntity() {
+		return winFrmEntity;
 	}
 }

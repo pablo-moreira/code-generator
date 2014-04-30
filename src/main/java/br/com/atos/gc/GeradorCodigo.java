@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,7 +41,7 @@ import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Entity;
 import br.com.atos.gc.model.Target;
-import br.com.atos.gc.model.TargetColumnRender;
+import br.com.atos.gc.model.TargetConfig;
 import br.com.atos.gc.util.LinkedProperties;
 import br.com.atos.utils.DataUtils;
 import br.com.atos.utils.OsUtil;
@@ -124,6 +123,8 @@ public class GeradorCodigo {
 		
 		loadMessagesProperties();
 		
+		loadAttributesIgnored();
+		
 		entity = new Entity(entidadeClass, this);
 					
 		Iterator<Entry<String, String>> iterator = gcProperties.iterator();
@@ -136,26 +137,7 @@ public class GeradorCodigo {
 		attributesValues.put(ATRIBUTO_ENTIDADE_NOME_UC, getEntity().getClazzSimpleName());
 		attributesValues.put(ATRIBUTO_ENTIDADE_NOME, firstToLowerCase(getEntity().getClazzSimpleName()));
 		attributesValues.put(PACOTE_ENTIDADE, entidadeClass.getPackage().getName());
-		
-		String value = gcProperties.getProperty("atributosIgnorados");
-		
-		if (value != null && !value.isEmpty()) {
-
-			StringTokenizer st = new StringTokenizer(value, ",");
-
-			int tokens = st.countTokens();  
-			String[] result = new String[tokens];  
-	  
-	        for (int i = 0; i < tokens; i++) {
-	        	result[i] = st.nextToken();
-	        }
-	        
-	        ignoredAttributes = Arrays.asList(result);
-		}
-		else {
-			ignoredAttributes = new ArrayList<String>();
-		}
-		
+				
 		components = new ArrayList<Component>();
 		components.add(new WinFrmXhtmlComponent(this));
 		components.add(new WinFrmXhtmlAssociationsComponent(this));
@@ -173,17 +155,39 @@ public class GeradorCodigo {
 			throw new Exception("Erro ao obter o atributo 'entidadeIdClass' da classe " + getEntity().getClazzSimpleName());
 		}
                 
-                try {
-                    if (OsUtil.isOsLinux()) {
-                        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-                    }
-                    else {
-                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    }  
-                }
-                catch (Exception e) {}
+        try {
+            if (OsUtil.isOsLinux()) {
+                UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+            }
+            else {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }  
+        }
+        catch (Exception e) {}
 	}
 	
+	private void loadAttributesIgnored() {
+
+		String value = gcProperties.getProperty("atributosIgnorados");
+		
+		if (value != null && !value.isEmpty()) {
+
+			StringTokenizer st = new StringTokenizer(value, ",");
+
+			int tokens = st.countTokens();  
+			
+			ignoredAttributes = new ArrayList<String>();  
+	  
+	        for (int i = 0; i < tokens; i++) {
+	        	ignoredAttributes.add(st.nextToken());
+	        }
+
+		}
+		else {
+			ignoredAttributes = new ArrayList<String>();
+		}		
+	}
+
 	private void loadMessagesProperties() throws Exception {
 		
 		File messagesFile = getMessagesPropertiesFile();
@@ -235,8 +239,8 @@ public class GeradorCodigo {
 
 	public void gerarDaoEhManager() throws Exception {
 		try {
-			makeTarget(new Target("DAO", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_DAO).replace(".", "/")), false, false));
-			makeTarget(new Target("Manager", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_MANAGER).replace(".", "/")), false, false));
+			makeTarget(new Target("DAO", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_DAO).replace(".", "/")), false));
+			makeTarget(new Target("Manager", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_MANAGER).replace(".", "/")), false));
 		}
 		catch (Exception e) {			
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -246,9 +250,9 @@ public class GeradorCodigo {
 	
 	public void gerarGrid() throws Exception {
 		try {
-			makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true
-					, new TargetColumnRender(true, true, false, true, false)
-					, new TargetColumnRender(false, false, false, false, false)
+			makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true
+					, new TargetConfig(true, true, false, true, false, false)
+					, null
 			));
 		}
 		catch (Exception e) {
@@ -259,11 +263,11 @@ public class GeradorCodigo {
 
 	public void gerarWinFrm() throws Exception {
 		try {
-			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true, true));
-			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true, true
-					, new TargetColumnRender(false, false, true, true, true)
-					, new TargetColumnRender(true, false, true, true, true)
+			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
+					, new TargetConfig(false, false, true, true, true, true)
+					, new TargetConfig(true, false, true, true, true, true)
 			));
+			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true));
 						
 			for (Attribute atributo : getEntity().getAttributes()) {				
 				if (atributo instanceof AttributeManyToOne) {
@@ -282,10 +286,10 @@ public class GeradorCodigo {
 	
 	public void gerarTelaVisualizacao() throws Exception {
 		try {
-			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true, false));
-			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true
-					, new TargetColumnRender(true, false, false, true, false)
-					, new TargetColumnRender(true, false, false, true, false)
+			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true));
+			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+					, new TargetConfig(true, false, false, true, false)
+					, new TargetConfig(true, false, false, true, false)
 			));
 		}
 		catch (Exception e) {
@@ -296,8 +300,11 @@ public class GeradorCodigo {
 		
 	private void gerarTelaAdministracao() throws Exception {
 		try {
-			makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false, false));
-			makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true, true));
+			makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false));
+			makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+					, new TargetConfig(false, false, false, false, false)
+					, null
+			));
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -358,7 +365,7 @@ public class GeradorCodigo {
 			}
 		}
 		
-		if (getTarget().isInitializeEntity()) {
+		if (getTarget().isShowWinFrmEntity()) {
 
             WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
             winFrm.start(getEntity(), getTarget());
@@ -366,7 +373,7 @@ public class GeradorCodigo {
             if (!winFrm.isStatusOK()) {
             	System.exit(0);
             }
-            else {	
+            else {
             	store(getEntity());
             }
 
@@ -374,20 +381,23 @@ public class GeradorCodigo {
             attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());
             attributesValues.put("entidadeRotulo", getEntity().getLabel());
             attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
-                                    
-            for (AttributeOneToMany attribute : getEntity().getAttributesOneToMany()) {
-
-            	attribute.initializeAssociationEntity();
-            	
-            	WinFrmAttributeOneToMany winFrmAttributeOneToMany = new WinFrmAttributeOneToMany(null, true);                                        
-            	winFrmAttributeOneToMany.start(attribute, getTarget());
-
-                if (!winFrmAttributeOneToMany.isStatusOK()) {
-                	System.exit(0);
-                }
-                else {
-                	store(attribute.getAssociationEntity());
-                }
+                             
+            if (getTarget().isShowWinFrmAttributeOneToMany()) { 
+	            
+            	for (AttributeOneToMany attribute : getEntity().getAttributesOneToMany()) {
+	
+	            	attribute.initializeAssociationEntity();
+	            	
+	            	WinFrmAttributeOneToMany winFrmAttributeOneToMany = new WinFrmAttributeOneToMany(null, true);                                        
+	            	winFrmAttributeOneToMany.start(attribute, getTarget());
+	
+	                if (!winFrmAttributeOneToMany.isStatusOK()) {
+	                	System.exit(0);
+	                }
+	                else {
+	                	store(attribute.getAssociationEntity());
+	                }
+	            }
             }
 		}
 						
