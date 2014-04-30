@@ -58,23 +58,14 @@ public class Entity {
 	public GeradorCodigo getGc() {
 		return gc;
 	}
-	
-	public boolean isAttributeIgnored(String attributeName) {
-		for (String attributeIgnored : getGc().getAtributosIgnorados()) {
-			if (attributeName.equals(attributeIgnored)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
+		
 	private void initializeAttributes() {
 
 		List<Field> fields = ReflectionUtils.getFieldsRecursive(getClazz());
 
 		for (Field field : fields) {
 	
-			if (!Modifier.isStatic(field.getModifiers()) && !isAttributeIgnored(field.getName())) {
+			if (!Modifier.isStatic(field.getModifiers())) {
 									
 				if (field.getAnnotation(Id.class) != null) {
 					attributes.add(new AttributeId(field, this));

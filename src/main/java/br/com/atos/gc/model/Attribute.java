@@ -87,7 +87,13 @@ public class Attribute {
 	}
 
 	protected void load() {
-
+		
+		if (getGc().isIgnoredAttribute(this)) {
+			renderColumn = false;
+			renderFilter = false;
+			renderForm = false;
+		}
+		
 		// gc.properties
 		String renderColumnValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderColumn");
 		String renderFilterValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderFilter");
@@ -95,7 +101,7 @@ public class Attribute {
 
 		// messages.properties
 		String labelValue = getGc().getMessagesProperties().getProperty(getPropertiesKeyBase());
-
+		
 		if (!StringUtils.isNullOrEmpty(renderColumnValue)) {
 			renderColumn = Boolean.valueOf(renderColumnValue);
 		}

@@ -14,20 +14,15 @@ public class TargetConfig {
 	private boolean renderRenderFilter;
 	private boolean renderRenderForm;
 	private boolean renderAttributeDescription;
-	private boolean renderFormType;
-	
+	private boolean renderFormType;	
 	private boolean showAttributesOneToMany;
-	
-	public TargetConfig(boolean renderRenderColumn, boolean renderRenderFilter, boolean renderRenderForm, boolean renderAttributeDescription, boolean renderFormType) {
+			
+	public TargetConfig(boolean renderRenderColumn, boolean renderRenderFilter, boolean renderRenderForm, boolean renderAttributeDescription, boolean renderFormType, boolean showAttributesOneToMany) {
 		this.renderRenderColumn = renderRenderColumn;
 		this.renderRenderFilter = renderRenderFilter;
 		this.renderRenderForm = renderRenderForm;
 		this.renderAttributeDescription = renderAttributeDescription;
 		this.renderFormType = renderFormType;
-	}
-		
-	public TargetConfig(boolean renderRenderColumn, boolean renderRenderFilter, boolean renderRenderForm, boolean renderAttributeDescription, boolean renderFormType, boolean showAttributesOneToMany) {
-		this(renderRenderColumn, renderRenderFilter, renderRenderForm, renderAttributeDescription, renderFormType);
 		this.showAttributesOneToMany = showAttributesOneToMany;
 	}	
 	

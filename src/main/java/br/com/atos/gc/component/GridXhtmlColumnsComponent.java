@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 
 import br.com.atos.gc.GeradorCodigo;
 import br.com.atos.gc.model.Attribute;
-import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
 
 public class GridXhtmlColumnsComponent extends Component {
@@ -23,27 +22,20 @@ public class GridXhtmlColumnsComponent extends Component {
 		
 		String path = "objeto.";
 		
-		for (Attribute atributo : getGc().getEntity().getAttributes()) {
+		for (Attribute attribute : getGc().getEntity().getAttributes()) {
 			
-			// Ignora as associacoes OneToMany
-			if (!AttributeOneToMany.class.isInstance(atributo)) {
-				
-				if (AttributeManyToOne.class.isInstance(atributo)) {
-					AttributeManyToOne atributoManyToOne =  (AttributeManyToOne) atributo;
-					println(pw, "\t\t\t<p:column sortBy=\"#'{'objeto.{1}.{2}'}'\">", atributo.getLabel(), atributo.getField().getName(), atributoManyToOne.getDescriptionAttributeOfAssociation());
-					println(pw, "\t\t\t\t<f:facet name=\"header\"><h:outputText value=\"{0}\" /></f:facet>", atributo.getLabel());
-					printOutputText(pw, "\t\t\t\t", atributoManyToOne.getDescriptionAttributeOfAssociationField(), path + atributo.getField().getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
-					println(pw, "\t\t\t</p:column>");
-				}
-				else {
-					println(pw, "\t\t\t<p:column sortBy=\"#'{'objeto.{1}'}'\">", atributo.getLabel(), atributo.getField().getName());
-					println(pw, "\t\t\t\t<f:facet name=\"header\"><h:outputText value=\"{0}\" /></f:facet>", atributo.getLabel());
-					printOutputText(pw, "\t\t\t\t", atributo.getField(), path + atributo.getField().getName());
+			// Verificar se e para renderizar o filtro
+			if (attribute.isRenderColumn()) {
+			
+				// Ignora as associacoes OneToMany
+				if (!AttributeOneToMany.class.isInstance(attribute)) {
+					println(pw, "\t\t\t");
+					println(pw, "\t\t\t<p:column sortBy=\"#'{'{0}'}'\">", path + getValue(attribute));
+					println(pw, "\t\t\t\t<f:facet name=\"header\"><h:outputText value=\"{0}\" /></f:facet>", attribute.getLabel());
+					printot(pw, "\t\t\t\t", path, attribute);
 					println(pw, "\t\t\t</p:column>");
 				}
 			}
-			
-			println(pw, "\t\t\t");
 		}
 	}
 }

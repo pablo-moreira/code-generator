@@ -28,7 +28,7 @@ import javax.swing.UIManager;
 import br.com.atos.gc.component.Component;
 import br.com.atos.gc.component.GridXhtmlColumnsComponent;
 import br.com.atos.gc.component.GridXhtmlFilterComponent;
-import br.com.atos.gc.component.ViewXhtmlComponent;
+import br.com.atos.gc.component.VisualizarXhtmlComponent;
 import br.com.atos.gc.component.WinFrmJavaAttributesComponent;
 import br.com.atos.gc.component.WinFrmJavaImportsComponent;
 import br.com.atos.gc.component.WinFrmJavaMethodsComponent;
@@ -123,7 +123,7 @@ public class GeradorCodigo {
 		
 		loadMessagesProperties();
 		
-		loadAttributesIgnored();
+		loadIgnoredAttributes();
 		
 		entity = new Entity(entidadeClass, this);
 					
@@ -146,7 +146,7 @@ public class GeradorCodigo {
 		components.add(new WinFrmJavaImportsComponent(this));
 		components.add(new GridXhtmlFilterComponent(this));
 		components.add(new GridXhtmlColumnsComponent(this));
-		components.add(new ViewXhtmlComponent(this));
+		components.add(new VisualizarXhtmlComponent(this));
 
 		try {
 			attributesValues.put("entidadeIdClass",  entity.getAttributeId().getField().getType().getSimpleName());			
@@ -166,7 +166,7 @@ public class GeradorCodigo {
         catch (Exception e) {}
 	}
 	
-	private void loadAttributesIgnored() {
+	private void loadIgnoredAttributes() {
 
 		String value = gcProperties.getProperty("atributosIgnorados");
 		
@@ -265,7 +265,7 @@ public class GeradorCodigo {
 		try {
 			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
 					, new TargetConfig(false, false, true, true, true, true)
-					, new TargetConfig(true, false, true, true, true, true)
+					, new TargetConfig(true, false, true, true, false, false)
 			));
 			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true));
 						
@@ -288,8 +288,8 @@ public class GeradorCodigo {
 		try {
 			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true));
 			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
-					, new TargetConfig(true, false, false, true, false)
-					, new TargetConfig(true, false, false, true, false)
+					, new TargetConfig(false, false, false, true, false, true)
+					, new TargetConfig(true, false, false, true, false, false)
 			));
 		}
 		catch (Exception e) {
@@ -298,11 +298,11 @@ public class GeradorCodigo {
 		}
 	}
 		
-	private void gerarTelaAdministracao() throws Exception {
+	public void gerarTelaAdministracao() throws Exception {
 		try {
 			makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false));
 			makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
-					, new TargetConfig(false, false, false, false, false)
+					, new TargetConfig(false, false, false, false, false, false)
 					, null
 			));
 		}
@@ -689,7 +689,7 @@ public class GeradorCodigo {
 		}
 	}
 
-	public List<String> getAtributosIgnorados() {
+	public List<String> getIgnoredAttributes() {
 		return ignoredAttributes;
 	}
 
@@ -699,5 +699,14 @@ public class GeradorCodigo {
 
 	public LinkedProperties getMessagesProperties() {
 		return messagesProperties;
+	}
+	
+	public boolean isIgnoredAttribute(Attribute attribute) {
+		for (String attributeIgnored : getIgnoredAttributes()) {
+			if (attribute.getField().getName().equals(attributeIgnored)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

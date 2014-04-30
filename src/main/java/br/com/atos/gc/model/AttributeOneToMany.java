@@ -137,4 +137,13 @@ public class AttributeOneToMany extends Attribute {
 		
 		return attributes;
 	}
+	
+	public boolean isAllowedFormTypeInternal() {
+		
+		if (associationEntity == null) {
+			initializeAssociationEntity();
+		}
+		
+		return getAssociationEntity().isHaveAttributeOneToMany();
+	}
 }

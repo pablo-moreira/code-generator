@@ -40,6 +40,25 @@ abstract public class Component {
 		pw.println(MessageFormat.format(string, attr));
 	}
 	
+	public Field getField(Attribute attribute) {
+		
+		if (AttributeManyToOne.class.isInstance(attribute)) {
+			return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociationField();
+		}
+		else {
+			return attribute.getField();
+		}
+	}
+	
+	public String getValue(Attribute attribute) {		
+		if (AttributeManyToOne.class.isInstance(attribute)) {
+			return attribute.getField().getName() + "." + ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
+		}
+		else {
+			return attribute.getField().getName();
+		}
+	}
+	
 	protected void printOutputText(PrintWriter pw, String indentacao, Field field, String value) {
 		
 		if (BaseEnum.class.isAssignableFrom(field.getType())) {
@@ -66,20 +85,11 @@ abstract public class Component {
 		}
 	}
 	
-	protected void printOutputText(PrintWriter pw, String indentation, String path, Attribute attribute) {
+	protected void printot(PrintWriter pw, String indentation, String path, Attribute attribute) {
 
-		Field field;
-		String value;
-		
-		if (attribute instanceof AttributeManyToOne) {			
-			field = ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociationField();
-			value = path + attribute.getField().getName() + "." + field.getName();
-		}
-		else {
-			field = attribute.getField();
-			value = path + field.getName();
-		}
-		
+		Field field = getField(attribute);
+		String value = path + getValue(attribute);
+
 		if (BaseEnum.class.isAssignableFrom(field.getType())) {
 			println(pw, "{0}<h:outputText value=\"#'{'{1}.descricao'}'\" />", indentation, value);
 		}

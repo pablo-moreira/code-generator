@@ -98,14 +98,20 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
+    	save();
+    }//GEN-LAST:event_btnOKActionPerformed
+	
+    private void save() {
         
-		getFrmAttributes().validateAttributes();
+        if (!getFrmAttributes().validateAttributes()) {
+        	return;
+        }
 		
 		status = JOptionPane.OK_OPTION;
 		
 		setVisible(false);
-    }//GEN-LAST:event_btnOKActionPerformed
-	
+    }
+    
 	/**
 	 * @param args the command line arguments
 	 */

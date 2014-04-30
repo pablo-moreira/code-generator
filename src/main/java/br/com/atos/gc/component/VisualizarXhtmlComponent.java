@@ -34,7 +34,7 @@ public class VisualizarXhtmlComponent extends Component {
 		
 				println(pw, "\t\t\t\t\t\t\t\t");
 				println(pw, "\t\t\t\t\t\t\t\t\t<h:outputText value=\"{0}\" />", attribute.getLabel());
-				printot(pw, "\t\t\t\t\t\t\t\t\t\t", path, attribute);
+				printot(pw, "\t\t\t\t\t\t\t\t\t", path, attribute);
 			}
 		}
 
@@ -50,15 +50,17 @@ public class VisualizarXhtmlComponent extends Component {
 			println(pw, "\t\t\t\t\t\t\t\t\tvalue=\"#'{'{0}{1}'}'\"", path, attribute.getField().getName());
 			println(pw, "\t\t\t\t\t\t\t\t\tvar=\"associacao\">");
 			println(pw, "\t\t\t\t\t\t\t\t\t");			
+
+			String assocPath = "associacao.";
 			
 			for (Attribute assocAttribute : attribute.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
-			
-				String assocPath = "associacao.";
 				
-				println(pw, "\t\t\t\t\t\t\t\t\t<p:column headerText=\"{0}\">", assocAttribute.getLabel());				
-				printot(pw, "\t\t\t\t\t\t\t\t\t\t", assocPath, assocAttribute);
-				println(pw, "\t\t\t\t\t\t\t\t\t</p:column>");
-				println(pw, "\t\t\t\t\t\t\t\t\t");
+				if (assocAttribute.isRenderColumn()) {				
+					println(pw, "\t\t\t\t\t\t\t\t\t<p:column headerText=\"{0}\">", assocAttribute.getLabel());				
+					printot(pw, "\t\t\t\t\t\t\t\t\t\t", assocPath, assocAttribute);
+					println(pw, "\t\t\t\t\t\t\t\t\t</p:column>");
+					println(pw, "\t\t\t\t\t\t\t\t\t");
+				}
 			}
 		
 			println(pw, "\t\t\t\t\t\t\t\t\t<p:column headerText=\"Ação\" styleClass=\"col-acao\">");

@@ -79,25 +79,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 return null;
         }
     }
-    
-    @Override
-    protected void initialize() {
         
-        super.initialize();
-                
-        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<AttributeFormType>(AttributeFormType.values()) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-            public String getLabel(AttributeFormType item) {
-                return item.getDescription();
-            }
-        });
-                
-        getColumnFormType().setCellEditor(new DefaultCellEditor(cbbFormType));
-    }
-    
     public TableColumn getColumnRenderFilter() {
         return getTable().getColumnModel().getColumn(COL_RENDER_FILTER.getIndex());
     }
@@ -163,10 +145,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     @Override
     public boolean isCellEditable(int row, int col) { 
         
-        if (col == 0) {
+        if (col == COL_ATTRIBUTE.getIndex()) {
             return false; 
         }
-        else if (col == 1 || col == 2 || col == 3 || col == 4 ) {
+        else if (col == COL_LABEL.getIndex() || col == COL_RENDER_COLUMN.getIndex() || col == COL_RENDER_FILTER.getIndex() || col == COL_RENDER_FORM.getIndex()) {
             return true;
         }
         else {
@@ -176,10 +158,10 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             boolean instanceofOneToMany = (attribute instanceof AttributeOneToMany);
             boolean instanceofManyToOne = (attribute instanceof AttributeManyToOne);
             
-            if (col == 5 && instanceofManyToOne) {
+            if (col == COL_ATTRIBUTE_DESCRIPTION.getIndex() && instanceofManyToOne) {
                 return true;
             }            
-            else if (col == 6 && instanceofOneToMany) {
+            else if (col == COL_FORM_TYPE.getIndex() && instanceofOneToMany) {
                 return true;
             }
             else {
@@ -260,7 +242,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 associationClass = attribute.getField().getType();
             }
             else {
-		associationClass = WinFrmEntity.class;
+            	associationClass = WinFrmEntity.class;
             }
             
             List<Field> associationAttributes = ReflectionUtils.getFieldsRecursive(associationClass);
@@ -271,17 +253,49 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 }
             }
     		
-            JComboBox cbbAttributeDescription = new JComboBox(new EntityComboBoxModel<String>(entities){
+            JComboBox cbbAttributeDescription = new JComboBox(new EntityComboBoxModel<String>(entities) {
 
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public String getLabel(String item) {
-			return item;
-		}    			
-	    });			
+				private static final long serialVersionUID = 1L;
+		
+				@Override
+				public String getLabel(String item) {
+					return item;
+				}    			
+            });			
 
             return new DefaultCellEditor(cbbAttributeDescription);
+        }
+        else if (COL_FORM_TYPE.getIndex() == col) {
+        	
+        	final Attribute attribute = getEntityByRow(row);
+        	
+        	if (attribute instanceof AttributeOneToMany) {
+        		
+        		AttributeOneToMany attrOneToMany = (AttributeOneToMany) attribute;
+        	              
+        		//AttributeFormType.values()
+        		
+        		AttributeFormType[] types;
+        		
+        		if (attrOneToMany.isAllowedFormTypeInternal()) {
+        			types = new AttributeFormType[] { AttributeFormType.EXTERNAL };
+        		}
+        		else {
+        			types = new AttributeFormType[] { AttributeFormType.EXTERNAL, AttributeFormType.INTERNAL };
+        		}
+        			
+		        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<AttributeFormType>(types) {
+		
+					private static final long serialVersionUID = 1L;
+		
+					@Override
+		            public String getLabel(AttributeFormType item) {
+		                return item.getDescription();
+		            }
+		        });
+		                
+		        return new DefaultCellEditor(cbbFormType);
+        	}
         }
         
         return null;
