@@ -3,6 +3,7 @@ package ${pacoteControlador};
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,7 +31,9 @@ public class ${EntidadeNome}VisualizarCtrl extends AppCtrl {
     }
 	
 	public void iniciar() {
-		entidade = getDAO(${EntidadeNome}DAO.class).recuperarPorId(getId());	
+		if (!FacesContext.getCurrentInstance().isPostback() && !FacesContext.getCurrentInstance().isValidationFailed()) {
+			entidade = getDAO(${EntidadeNome}DAO.class).recuperarPorId(getId());
+		}
 	}
 
 	public ${entidadeIdClass} getId() {
