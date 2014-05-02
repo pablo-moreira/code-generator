@@ -102,6 +102,8 @@ public class WinFrmEntity extends javax.swing.JDialog {
             }
         });
 
+        txtTarget.setEditable(false);
+
         jLabel3.setText("Target:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
