@@ -35,6 +35,7 @@ import br.com.atos.gc.component.WinFrmJavaMethodsComponent;
 import br.com.atos.gc.component.WinFrmXhtmlAssociationsComponent;
 import br.com.atos.gc.component.WinFrmXhtmlComponent;
 import br.com.atos.gc.gui.WinFrmAttributeOneToMany;
+import br.com.atos.gc.gui.WinFrmCodeGeneration;
 import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeFormType;
@@ -654,31 +655,8 @@ public class GeradorCodigo {
 	}
 
 	public void gerar() throws Exception {
-		
-		if (JOptionPane.showConfirmDialog(null, "Gerar tudo, WinFrm, Grid, TelaAdministracao, Dao e Manager?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-			makeAll();
-		}
-		else {
-			if (JOptionPane.showConfirmDialog(null, "Gerar dao e manager?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {		
-				makeDaoAndManager();
-			}
-			
-			if (JOptionPane.showConfirmDialog(null, "Gerar WinFrm?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				makeWinFrm();
-			}
-			
-			if (JOptionPane.showConfirmDialog(null, "Gerar Grid?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				makeGrid();
-			}
-			
-			if (JOptionPane.showConfirmDialog(null, "Gerar TelaAdministração?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				makePageManager();
-			}
-			
-			if (JOptionPane.showConfirmDialog(null, "Gerar TelaVisualização?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				makePageView();
-			}
-		}
+		WinFrmCodeGeneration winFrm = new WinFrmCodeGeneration(null, true);
+		winFrm.start(this);
 	}
 
 	public List<String> getIgnoredAttributes() {

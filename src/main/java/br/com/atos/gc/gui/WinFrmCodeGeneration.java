@@ -4,6 +4,8 @@
  */
 package br.com.atos.gc.gui;
 
+import br.com.atos.gc.GeradorCodigo;
+
 /**
  *
  * @author 205327
@@ -270,4 +272,8 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
+	
+    public void start(GeradorCodigo cg) {
+    	    			
+	}
 }
