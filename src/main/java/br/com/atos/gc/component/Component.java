@@ -126,7 +126,7 @@ abstract public class Component {
 		printin(pw, indentation, path, attribute, false);
 	}
 	
-	protected void printin(PrintWriter pw, String indentation, String path, Attribute attribute, boolean disableAssociatedEntity) {
+	protected void printin(PrintWriter pw, String indentation, String path, Attribute attribute, boolean entityTab) {
 			
 		String id = attribute.getField().getName();
 		String label = attribute.getLabel();
@@ -134,7 +134,7 @@ abstract public class Component {
 		String value = path + "." + attribute.getField().getName();
 		
 		String required = "true";
-
+	
 		if (attribute.getField().getAnnotation(Column.class) != null) {
 			required = attribute.getField().getAnnotation(Column.class).nullable() ? "false" : "true";
 		}
@@ -176,19 +176,19 @@ abstract public class Component {
 			// Imprime um autocomplete
 			println(pw, indentation + "<p:autoComplete id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" required=\"{3}\" forceSelection=\"true\"", id, label, value, required);
 
-			if (disableAssociatedEntity) {
+			if (entityTab) {
 				println(pw, indentation + "\tdisabled=\"#'{'cc.attrs.winFrm.entidadeAssociada != null and cc.attrs.winFrm.entidadeAssociada == cc.attrs.winFrm.objeto.{0}'}'\"", attribute.getField().getName());
 			}
 			
 			println(pw, indentation + "\tcompleteMethod=\"#'{'autoCompleteCtrl.onComplete{0}'}'\" dropdown=\"true\" converter=\"lazyEntityConverter\"", type.getSimpleName());
 			println(pw, indentation + "\tvar=\"{0}\" itemValue=\"#'{'{0}'}'\" itemLabel=\"#'{'{0}.{1}'}'\"", firstToLowerCase(type.getSimpleName()), atributoManyToOne.getDescriptionAttributeOfAssociation());
-			println(pw, indentation + "\tsize=\"40\" scrollHeight=\"200\">");
+			println(pw, indentation + "\tsize=\"{0}\" scrollHeight=\"200\">", entityTab ? "40" : "35");
 			println(pw, indentation + "\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(type.getSimpleName()), associacaoFieldId.getName());
 			println(pw, indentation + "\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(type.getSimpleName()), atributoManyToOne.getDescriptionAttributeOfAssociation());
 			println(pw, indentation + "</p:autoComplete>");
 		}
 		else {
-			println(pw, indentation + "<p:inputText id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" style=\"width: 300px\" required=\"{3}\" />", id, label, value, required);
+			println(pw, indentation + "<p:inputText id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" required=\"{3}\" style=\"width: {4}px\" />", id, label, value, required, entityTab ? "300" : "100");
 		}
 	}
 }

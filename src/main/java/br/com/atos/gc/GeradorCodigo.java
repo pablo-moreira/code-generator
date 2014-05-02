@@ -318,7 +318,7 @@ public class GeradorCodigo {
 	
 	public Target getTarget() {
 		return target;
-	}	
+	}
 	
 	private void makeTarget(Target target) throws Exception {
 
