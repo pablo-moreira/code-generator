@@ -37,10 +37,10 @@ public class WinFrmJavaImportsComponent extends Component {
 				}
 				else {
 					temTipoFormularioEmbutido = true;
-					println(pw, "import {0}.{1}Manager;", getGc().getAtributoValor(GeradorCodigo.PACOTE_MANAGER), atributo.getAssociationClassSimpleName());
+					println(pw, "import {0}.{1}Manager;", getGc().getAttributeValue(GeradorCodigo.PACOTE_MANAGER), atributo.getAssociationClassSimpleName());
 				}
 
-				println(pw, "import {0}.{1};", getGc().getAtributoValor(GeradorCodigo.PACOTE_ENTIDADE), atributo.getAssociationClassSimpleName());
+				println(pw, "import {0}.{1};", getGc().getAttributeValue(GeradorCodigo.PACOTE_ENTIDADE), atributo.getAssociationClassSimpleName());
 			}
 			
 			if (temTipoFormularioExterno) {

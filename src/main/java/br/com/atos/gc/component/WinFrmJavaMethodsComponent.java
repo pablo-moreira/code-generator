@@ -34,20 +34,20 @@ public class WinFrmJavaMethodsComponent extends Component {
 				println(pw, "\t\t");
 				
 				if (AttributeFormType.INTERNAL.equals(atributo.getFormType())) {
-					println(pw, "\t\tthis.associacao{2} = new FrmAssociacaoOneToMany<WinFrm{0}, {0}, {1}>(this, {1}.class, {1}Manager.class, \"tbView:dt{2}\") '{'", getGc().getAtributoValor("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));				
+					println(pw, "\t\tthis.associacao{2} = new FrmAssociacaoOneToMany<WinFrm{0}, {0}, {1}>(this, {1}.class, {1}Manager.class, \"tbView:dt{2}\") '{'", getGc().getAttributeValue("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));				
 				}
 				else {	
-					println(pw, "\t\tthis.associacao{2} = new WinFrmAssociacaoOneToMany<WinFrm{0}, WinFrm{1}, {0}, {1}>(this, winFrm{1}, \"tbView:dt{2}\") '{'", getGc().getAtributoValor("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
+					println(pw, "\t\tthis.associacao{2} = new WinFrmAssociacaoOneToMany<WinFrm{0}, WinFrm{1}, {0}, {1}>(this, winFrm{1}, \"tbView:dt{2}\") '{'", getGc().getAttributeValue("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
 				}
 				
 				println(pw, "\t\t\t");
 				println(pw, "\t\t\t@Override");
-				println(pw, "\t\t\tpublic void associar({0} associacao, {1} entidade) '{'", atributo.getAssociationClassSimpleName(), getGc().getAtributoValor("EntidadeNome"));			
+				println(pw, "\t\t\tpublic void associar({0} associacao, {1} entidade) '{'", atributo.getAssociationClassSimpleName(), getGc().getAttributeValue("EntidadeNome"));			
 				println(pw, "\t\t\t\tassociacao.set{0}(entidade);", StringUtils.firstToUpperCase(atributo.getAssociationMappedBy()));
 				println(pw, "\t\t\t}");
 				println(pw, "\t\t\t");
 				println(pw, "\t\t\t@Override");
-				println(pw, "\t\t\tpublic List<{0}> getAssociacoes({1} entidade) '{'", atributo.getAssociationClassSimpleName(), getGc().getAtributoValor("EntidadeNome"));
+				println(pw, "\t\t\tpublic List<{0}> getAssociacoes({1} entidade) '{'", atributo.getAssociationClassSimpleName(), getGc().getAttributeValue("EntidadeNome"));
 				println(pw, "\t\t\t\treturn entidade.get{0}();", StringUtils.firstToUpperCase(atributo.getField().getName()));
 				println(pw, "\t\t\t}");
 				println(pw, "\t\t};");
@@ -58,12 +58,12 @@ public class WinFrmJavaMethodsComponent extends Component {
 			
 			for (AttributeOneToMany atributo : atributosOneToMany) {
 				if (AttributeFormType.INTERNAL.equals(atributo.getFormType())) {
-					println(pw, "\tpublic FrmAssociacaoOneToMany<WinFrm{0}, {0}, {1}> getAssociacao{2}() '{'", getGc().getAtributoValor("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
+					println(pw, "\tpublic FrmAssociacaoOneToMany<WinFrm{0}, {0}, {1}> getAssociacao{2}() '{'", getGc().getAttributeValue("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
 					println(pw, "\t\treturn associacao{0};", StringUtils.firstToUpperCase(atributo.getField().getName()));
 					println(pw, "\t}");
 				}
 				else {
-					println(pw, "\tpublic WinFrmAssociacaoOneToMany<WinFrm{0}, WinFrm{1}, {0}, {1}> getAssociacao{2}() '{'", getGc().getAtributoValor("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
+					println(pw, "\tpublic WinFrmAssociacaoOneToMany<WinFrm{0}, WinFrm{1}, {0}, {1}> getAssociacao{2}() '{'", getGc().getAttributeValue("EntidadeNome"), atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
 					println(pw, "\t\treturn associacao{0};", StringUtils.firstToUpperCase(atributo.getField().getName()));
 					println(pw, "\t}");
 				}

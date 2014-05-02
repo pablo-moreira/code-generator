@@ -21,10 +21,10 @@ public class VisualizarXhtmlComponent extends Component {
 	@Override
 	public void renderizar(PrintWriter pw) {
 
-		String ctrl = getGc().getAtributoValor("entidadeNome") + "VisualizarCtrl.";
+		String ctrl = getGc().getAttributeValue("entidadeNome") + "VisualizarCtrl.";
 		String path = ctrl + "entidade.";
 		
-		println(pw, "\t\t\t\t\t\t\t<p:tab title=\"{0}\">", getGc().getAtributoValor("EntidadeRotulo"));		
+		println(pw, "\t\t\t\t\t\t\t<p:tab title=\"{0}\">", getGc().getAttributeValue("EntidadeRotulo"));		
 		println(pw, "\t\t\t\t\t\t\t\t<h:panelGrid columns=\"2\" cellpadding=\"5\">");
 		
 		for (Attribute attribute : getGc().getEntity().getAttributes()) {

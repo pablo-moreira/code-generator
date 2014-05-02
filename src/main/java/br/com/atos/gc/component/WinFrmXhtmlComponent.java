@@ -136,7 +136,7 @@ public class WinFrmXhtmlComponent extends Component {
 
 		String path = "cc.attrs.winFrm.objeto";
 		
-		println(pw, "\t\t\t\t<p:tab title=\"{0}\">", getGc().getAtributoValor("EntidadeRotulo"));
+		println(pw, "\t\t\t\t<p:tab title=\"{0}\">", getGc().getAttributeValue("EntidadeRotulo"));
 		println(pw, "\t\t\t\t\t<h:panelGrid columns=\"3\" cellpadding=\"5\" style=\"width: 100%\">");
 		println(pw, "\t\t\t\t\t\t<h:outputLabel value=\"Id:\" for=\"id\" />");
 		println(pw, "\t\t\t\t\t\t<p:inputText id=\"id\" label=\"Id.\" value=\"#'{'{0}.id'}'\" disabled=\"true\" />", path);
