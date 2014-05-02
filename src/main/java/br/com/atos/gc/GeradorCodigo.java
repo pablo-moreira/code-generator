@@ -238,112 +238,82 @@ public class GeradorCodigo {
 		components.add(newComponent);
 	}
 
-	public void gerarDaoEhManager() throws Exception {
-		try {
-			makeTarget(new Target("DAO", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_DAO).replace(".", "/")), false));
-			makeTarget(new Target("Manager", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_MANAGER).replace(".", "/")), false));
-		}
-		catch (Exception e) {			
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
-		}
+	public void makeDaoAndManager() throws Exception {
+		makeTarget(new Target("DAO", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_DAO).replace(".", "/")), false));
+		makeTarget(new Target("Manager", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_MANAGER).replace(".", "/")), false));
 	}
 	
-	public void gerarGrid() throws Exception {
-		try {
-			makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true
-					, new TargetConfig(true, true, false, true, false, false)
-					, null
-			));
-		}
-		catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
-		}
+	public void makeGrid() throws Exception {
+		makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true
+				, new TargetConfig(true, true, false, true, false, false)
+				, null
+		));
 	}
 
-	public void gerarWinFrm() throws Exception {
-		try {
-			makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
-					, new TargetConfig(false, false, true, true, true, true)
-					, new TargetConfig(true, false, false, true, false, false)
-			));
-			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true));
-	
-			for (Attribute attribute : getEntity().getAttributes()) {				
-				
-				if (attribute.isRenderForm()) {
-				
-					if (attribute instanceof AttributeManyToOne) {
-						adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) attribute);
-					}
-					else if (attribute instanceof AttributeOneToMany) {
-						
-						AttributeOneToMany attrOneToMany = (AttributeOneToMany) attribute;
-						
-						if (AttributeFormType.INTERNAL.equals(attrOneToMany.getFormType())) {
-							for (Attribute assocAttribute : attrOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
-								if (assocAttribute.isRenderColumn()) {
-									if (assocAttribute instanceof AttributeManyToOne) {
-										adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) assocAttribute);
-									}
-									else if (BaseEnum.class.isAssignableFrom(assocAttribute.getField().getType())) {
-										adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(assocAttribute);
-									}
+	public void makeWinFrm() throws Exception {
+		makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
+				, new TargetConfig(false, false, true, true, true, true)
+				, new TargetConfig(true, false, false, true, false, false)
+		));
+		makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAttributeValue(PACOTE_WINFRM).replace(".", "/")), true));
+
+		for (Attribute attribute : getEntity().getAttributes()) {				
+			
+			if (attribute.isRenderForm()) {
+			
+				if (attribute instanceof AttributeManyToOne) {
+					adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) attribute);
+				}
+				else if (attribute instanceof AttributeOneToMany) {
+					
+					AttributeOneToMany attrOneToMany = (AttributeOneToMany) attribute;
+					
+					if (AttributeFormType.INTERNAL.equals(attrOneToMany.getFormType())) {
+						for (Attribute assocAttribute : attrOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
+							if (assocAttribute.isRenderColumn()) {
+								if (assocAttribute instanceof AttributeManyToOne) {
+									adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) assocAttribute);
+								}
+								else if (BaseEnum.class.isAssignableFrom(assocAttribute.getField().getType())) {
+									adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(assocAttribute);
 								}
 							}
 						}
 					}
-					else if (BaseEnum.class.isAssignableFrom(attribute.getField().getType())) {
-						adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(attribute);
-					}				
 				}
+				else if (BaseEnum.class.isAssignableFrom(attribute.getField().getType())) {
+					adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(attribute);
+				}				
 			}
-		}
-		catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
-		}
-	}
-	
-	public void gerarTelaVisualizacao() throws Exception {
-		try {
-			makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), true));
-			makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
-					, new TargetConfig(false, false, false, true, false, true)
-					, new TargetConfig(true, false, false, true, false, false)
-			));
-		}
-		catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
 		}
 	}
 		
-	public void gerarTelaAdministracao() throws Exception {
-		try {
-			makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAtributoValor(PACOTE_CONTROLADOR).replace(".", "/")), false));
-			makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
-					, new TargetConfig(false, false, false, false, false, false)
-					, null
-			));
-		}
-		catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-			System.exit(0);
-		}
+	public void makePageView() throws Exception {		
+		makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), true));
+		makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+				, new TargetConfig(false, false, false, true, false, true)
+				, new TargetConfig(true, false, false, true, false, false)
+		));		
+	}
+		
+	public void makePageManager() throws Exception {
+		makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), false));
+		makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+				, new TargetConfig(false, false, false, false, false, false)
+				, null
+		));
 	}
 	
-	public void gerarTudo() throws Exception {
-		gerarDaoEhManager();
-		gerarWinFrm();
-		gerarGrid();
-		gerarTelaAdministracao();
-		gerarTelaVisualizacao();
+	public void makeAll() throws Exception {
+		makeDaoAndManager();
+		makeWinFrm();
+		makeGrid();
+		makePageView();
+		makePageManager();
 	}
 
-	public String getAtributoValor(String atributoNome) {
-		return attributesValues.get(atributoNome);
+	public String getAttributeValue(String attributeName) {
+		return attributesValues.get(attributeName);
 	}
 	
 	public Target getTarget() {
@@ -448,7 +418,7 @@ public class GeradorCodigo {
             	restoLinha = restoLinha.substring(restoLinha.indexOf(tplChave) + tplChave.length());
             	
             	if (attributesValues.containsKey(chave)) {	            		
-            		pw.print(parteAtualizar.replace(tplChave, getAtributoValor(chave)));
+            		pw.print(parteAtualizar.replace(tplChave, getAttributeValue(chave)));
             	}
             	else {
             		
@@ -517,7 +487,7 @@ public class GeradorCodigo {
 				return;
 			}
 			
-			Class<?> selectItemsClass = Class.forName(getAtributoValor(PACOTE_CONTROLADOR) + "." + "SelectItems");
+			Class<?> selectItemsClass = Class.forName(getAttributeValue(PACOTE_CONTROLADOR) + "." + "SelectItems");
 	
 			// Verifica se o autoCompleteCtrl possui um metodo public List<AssociacaoClasse> onCompleteAssociacaoClasse()
 			try {
@@ -596,7 +566,7 @@ public class GeradorCodigo {
 				return;
 			}
 			
-			Class<?> autoCompleteClass = Class.forName(getAtributoValor(PACOTE_CONTROLADOR) + "." + "AutoCompleteCtrl");
+			Class<?> autoCompleteClass = Class.forName(getAttributeValue(PACOTE_CONTROLADOR) + "." + "AutoCompleteCtrl");
 
 			Field field = atributo.getField();
 						
@@ -638,8 +608,8 @@ public class GeradorCodigo {
 						linha = arquivoLinhas.get(i);
 						if (linha.contains("package")) {
 							arquivoLinhas.add(i+1, "");
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1};", getAtributoValor(PACOTE_ENTIDADE), field.getType().getSimpleName()));
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1}DAO;", getAtributoValor(PACOTE_DAO), field.getType().getSimpleName()));
+							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1};", getAttributeValue(PACOTE_ENTIDADE), field.getType().getSimpleName()));
+							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1}DAO;", getAttributeValue(PACOTE_DAO), field.getType().getSimpleName()));
 							break;
 						}
 					}
@@ -686,27 +656,27 @@ public class GeradorCodigo {
 	public void gerar() throws Exception {
 		
 		if (JOptionPane.showConfirmDialog(null, "Gerar tudo, WinFrm, Grid, TelaAdministracao, Dao e Manager?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-			gerarTudo();
+			makeAll();
 		}
 		else {
 			if (JOptionPane.showConfirmDialog(null, "Gerar dao e manager?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {		
-				gerarDaoEhManager();
+				makeDaoAndManager();
 			}
 			
 			if (JOptionPane.showConfirmDialog(null, "Gerar WinFrm?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				gerarWinFrm();
+				makeWinFrm();
 			}
 			
 			if (JOptionPane.showConfirmDialog(null, "Gerar Grid?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				gerarGrid();
+				makeGrid();
 			}
 			
 			if (JOptionPane.showConfirmDialog(null, "Gerar TelaAdministração?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				gerarTelaAdministracao();
+				makePageManager();
 			}
 			
 			if (JOptionPane.showConfirmDialog(null, "Gerar TelaVisualização?", "Executar", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-				gerarTelaVisualizacao();
+				makePageView();
 			}
 		}
 	}
