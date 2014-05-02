@@ -108,7 +108,7 @@ public class WinFrmXhtmlComponent extends Component {
 					println(pw, "\t\t\t\t\t\t<p:column headerText=\"Ação\" styleClass=\"col-acao\">");
 					println(pw, "\t\t\t\t\t\t\t<p:commandLink action=\"#'{'cc.attrs.winFrm.associacao{0}.iniciarExclusao'}'\" title=\"Excluir o objeto\" process=\"@this\">", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t\t<h:graphicImage value=\"/resources/img/s.gif\" styleClass=\"link-icone ui-icon-trash\" />");
-					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.associacao{0}.winFrmAssociacao.objeto}\" value=\"#'{'associacao'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.associacao{0}.associacao}\" value=\"#'{'associacao'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t</p:commandLink>");
 					println(pw, "\t\t\t\t\t\t</p:column>");
 					println(pw, "\t\t\t\t\t\t");
