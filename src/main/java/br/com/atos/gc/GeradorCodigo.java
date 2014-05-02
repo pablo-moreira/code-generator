@@ -37,6 +37,7 @@ import br.com.atos.gc.component.WinFrmXhtmlComponent;
 import br.com.atos.gc.gui.WinFrmAttributeOneToMany;
 import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
+import br.com.atos.gc.model.AttributeFormType;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.model.Entity;
@@ -269,12 +270,33 @@ public class GeradorCodigo {
 			));
 			makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAtributoValor(PACOTE_WINFRM).replace(".", "/")), true));
 	
-			for (Attribute atributo : getEntity().getAttributes()) {				
-				if (atributo instanceof AttributeManyToOne) {
-					adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) atributo);
-				}
-				else if (BaseEnum.class.isAssignableFrom(atributo.getField().getType())) {
-					adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(atributo);
+			for (Attribute attribute : getEntity().getAttributes()) {				
+				
+				if (attribute.isRenderForm()) {
+				
+					if (attribute instanceof AttributeManyToOne) {
+						adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) attribute);
+					}
+					else if (attribute instanceof AttributeOneToMany) {
+						
+						AttributeOneToMany attrOneToMany = (AttributeOneToMany) attribute;
+						
+						if (AttributeFormType.INTERNAL.equals(attrOneToMany.getFormType())) {
+							for (Attribute assocAttribute : attrOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
+								if (assocAttribute.isRenderColumn()) {
+									if (assocAttribute instanceof AttributeManyToOne) {
+										adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) assocAttribute);
+									}
+									else if (BaseEnum.class.isAssignableFrom(assocAttribute.getField().getType())) {
+										adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(assocAttribute);
+									}
+								}
+							}
+						}
+					}
+					else if (BaseEnum.class.isAssignableFrom(attribute.getField().getType())) {
+						adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(attribute);
+					}				
 				}
 			}
 		}

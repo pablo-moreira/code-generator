@@ -1,5 +1,7 @@
 package br.com.atos.gc.component;
 
+import static br.com.atos.utils.StringUtils.firstToLowerCase;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -54,7 +56,7 @@ public class GridXhtmlFilterComponent extends Component {
 			println(pw, "\t\t\t\t<atos:filterNumeric operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" type=\"{2}\" />", atributoPath, atributo.getLabel(), field.getType().getSimpleName());	
 		}
 		else if (BaseEnum.class.isAssignableFrom(field.getType())) {
-			println(pw, "\t\t\t\t<atos:filterEnum operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" />", atributoPath, atributo.getLabel());
+			println(pw, "\t\t\t\t<atos:filterEnum operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" options=\"#'{'selectItems.{2}Itens'}'\" />", atributoPath, atributo.getLabel(), firstToLowerCase(field.getType().getSimpleName()));
 		}
 		else if (Date.class.isAssignableFrom(field.getType())) {
 		
