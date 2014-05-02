@@ -42,8 +42,11 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
         jSeparator1 = new javax.swing.JSeparator();
         btnOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
+        lblTarget = new javax.swing.JLabel();
+        txtTarget = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("\"Formulário - \"");
 
         btnOK.setText("OK");
         btnOK.addActionListener(new java.awt.event.ActionListener() {
@@ -59,6 +62,11 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
             }
         });
 
+        lblTarget.setText("Target:");
+
+        txtTarget.setEditable(false);
+        txtTarget.setText("Target");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -72,14 +80,23 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnOK)))
+                        .addComponent(btnOK))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblTarget)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTarget))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -159,7 +176,9 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 	}
 
 	public void start(AttributeOneToMany attributeOneToMany, Target target) {
-        		
+        
+		txtTarget.setText(target.getResource());
+		
 		setTitle("Formulário - " + attributeOneToMany.getEntity().getClazzSimpleName() + "." + attributeOneToMany.getField().getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
 		
 		this.attributeOneToMany = attributeOneToMany;
@@ -205,5 +224,7 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
     private javax.swing.JButton btnOK;
     private br.com.atos.gc.gui.FrmAttributes frmAttributes;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblTarget;
+    private javax.swing.JTextField txtTarget;
     // End of variables declaration//GEN-END:variables
 }

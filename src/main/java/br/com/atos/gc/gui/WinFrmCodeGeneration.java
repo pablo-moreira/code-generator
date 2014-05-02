@@ -5,12 +5,15 @@
 package br.com.atos.gc.gui;
 
 import br.com.atos.gc.GeradorCodigo;
+import br.com.atos.utils.swing.JFrameUtils;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author 205327
  */
 public class WinFrmCodeGeneration extends javax.swing.JDialog {
+	private GeradorCodigo cg;
 
     /**
      * Creates new form WinFrmCodeGeneration
@@ -39,8 +42,11 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
         btnDaoAndManager = new javax.swing.JButton();
         btnAll = new javax.swing.JButton();
         btnOK = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setModal(true);
+        setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Telas"));
         jPanel1.setPreferredSize(new java.awt.Dimension(380, 60));
@@ -68,7 +74,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addComponent(btnPageView)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnPageManage)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -76,7 +82,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPageManage)
                     .addComponent(btnPageView))
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Componentes"));
@@ -148,7 +154,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDaoAndManager)
                     .addComponent(btnAll))
-                .addGap(0, 10, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
 
         btnOK.setText("OK");
@@ -162,6 +168,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -170,8 +177,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnOK)
-                        .addGap(3, 3, 3)))
+                        .addComponent(btnOK)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -184,6 +190,8 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnOK)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -192,31 +200,61 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPageViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPageViewActionPerformed
-        // TODO add your handling code here:
+		try {
+			getCg().makePageView();
+		}
+		catch (Exception e) {
+			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
+		}
     }//GEN-LAST:event_btnPageViewActionPerformed
 
     private void btnDaoAndManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDaoAndManagerActionPerformed
-        // TODO add your handling code here:
+        try {
+			getCg().makeDaoAndManager();
+		}
+		catch (Exception e) {
+			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
+		}
     }//GEN-LAST:event_btnDaoAndManagerActionPerformed
 
     private void btnPageManageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPageManageActionPerformed
-        // TODO add your handling code here:
+		try {
+			getCg().makePageManager();
+		}
+		catch (Exception e) {
+			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
+		}
     }//GEN-LAST:event_btnPageManageActionPerformed
 
     private void btnWinFrmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWinFrmActionPerformed
-        // TODO add your handling code here:
+		try {
+			getCg().makeWinFrm();
+		}
+		catch (Exception e) {
+			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
+		}
     }//GEN-LAST:event_btnWinFrmActionPerformed
 
     private void btnGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGridActionPerformed
-        // TODO add your handling code here:
+		try {
+			getCg().makeGrid();
+		}
+		catch (Exception e) {
+			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
+		}
     }//GEN-LAST:event_btnGridActionPerformed
 
     private void btnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAllActionPerformed
-        // TODO add your handling code here:
+		try {
+			getCg().makeAll();
+		}
+		catch (Exception e) {
+			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
+		}
     }//GEN-LAST:event_btnAllActionPerformed
 
     private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
-        // TODO add your handling code here:
+        setVisible(false);
     }//GEN-LAST:event_btnOKActionPerformed
 
     /**
@@ -271,9 +309,18 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 	
     public void start(GeradorCodigo cg) {
-    	    			
+		
+		this.cg = cg;
+		
+		JFrameUtils.setCenterLocation(this);
+        setVisible(true);
 	}
+
+	public GeradorCodigo getCg() {
+		return cg;
+	}	
 }
