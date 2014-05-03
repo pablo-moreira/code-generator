@@ -12,6 +12,9 @@ import br.com.atos.utils.swing.JFrameUtils;
  * @author 205327
  */
 public class WinFrmCodeGeneration extends javax.swing.JDialog {
+	
+	private static final long serialVersionUID = 1L;
+	
 	private GeradorCodigo cg;
 
     /**

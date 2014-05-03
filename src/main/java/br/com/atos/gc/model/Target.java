@@ -1,6 +1,7 @@
 package br.com.atos.gc.model;
 
 import java.io.File;
+import java.text.MessageFormat;
 
 public class Target {
 
@@ -12,8 +13,10 @@ public class Target {
 	
 	private TargetConfig winFrmEntity;
 	private TargetConfig winFrmAttributeOneToMany;
+	private String name;
 
-	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite) {
+	public Target(String name, String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite) {
+		this.name = name;
 		this.resource = resource;
 		this.type = type;
 		this.resourceStart = resourceStart;
@@ -21,24 +24,24 @@ public class Target {
 		this.allowOverwrite = allowOverwrite;
 	}
 
-	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, TargetConfig winFrmEntity, TargetConfig winFrmAttributeOneToMany) {
-		this(resource, type, resourceStart, destDirectory, allowOverwrite);
+	public Target(String name, String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, TargetConfig winFrmEntity, TargetConfig winFrmAttributeOneToMany) {
+		this(name, resource, type, resourceStart, destDirectory, allowOverwrite);
 		this.winFrmEntity = winFrmEntity;
 		this.winFrmAttributeOneToMany = winFrmAttributeOneToMany;
 	}
 
-	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, TargetConfig winFrmEntity, boolean winFrmAttributeOneToMany) {
-		this(resource, type, resourceStart, destDirectory, allowOverwrite, winFrmEntity, new TargetConfig(winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany));
+	public Target(String name, String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, TargetConfig winFrmEntity, boolean winFrmAttributeOneToMany) {
+		this(name, resource, type, resourceStart, destDirectory, allowOverwrite, winFrmEntity, new TargetConfig(winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany));
 	}
 	
-	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean winFrmEntity, TargetConfig winFrmAttributeOneToMany) {
-		this(resource, type, resourceStart, destDirectory, allowOverwrite
+	public Target(String name, String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean winFrmEntity, TargetConfig winFrmAttributeOneToMany) {
+		this(name, resource, type, resourceStart, destDirectory, allowOverwrite
 				, new TargetConfig(winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity)
 				, winFrmAttributeOneToMany);
 	}
 	
-	public Target(String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean winFrmEntity, boolean winFrmAttributeOneToMany) {
-		this(resource, type, resourceStart, destDirectory, allowOverwrite 
+	public Target(String name, String resource, String type, boolean resourceStart, File destDirectory, boolean allowOverwrite, boolean winFrmEntity, boolean winFrmAttributeOneToMany) {
+		this(name, resource, type, resourceStart, destDirectory, allowOverwrite 
 				, new TargetConfig(winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity, winFrmEntity) 
 				, new TargetConfig(winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany, winFrmAttributeOneToMany));
 	}
@@ -77,5 +80,21 @@ public class Target {
 
 	public TargetConfig getWinFrmEntity() {
 		return winFrmEntity;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getFileName(Entity entity) {
+		return MessageFormat.format(getName(), entity.getClazzSimpleName());
+	}
+		
+	public String getTemplateFileName() {
+		return getDescription() + ".tpl";
+	}
+
+	public String getDescription() {
+		return getName().replace("{0}", ""); 
 	}
 }

@@ -17,9 +17,10 @@ import br.com.atos.utils.swing.JFrameUtils;
  */
 public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 
+	private static final long serialVersionUID = 1L;
+
 	private int status;
 	private AttributeOneToMany attributeOneToMany;
-	private Target target;
 
 	/**
 	 * Creates new form WinFrmAttributeOneToMany
@@ -177,12 +178,11 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 
 	public void start(AttributeOneToMany attributeOneToMany, Target target) {
         
-		txtTarget.setText(target.getResource());
+		txtTarget.setText(target.getDescription());
 		
 		setTitle("Formulário - " + attributeOneToMany.getEntity().getClazzSimpleName() + "." + attributeOneToMany.getField().getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
 		
 		this.attributeOneToMany = attributeOneToMany;
-		this.target = target;
 
         getFrmAttributes().initialize(attributeOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany());
 

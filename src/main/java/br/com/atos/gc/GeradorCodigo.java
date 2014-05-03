@@ -240,23 +240,23 @@ public class GeradorCodigo {
 	}
 
 	public void makeDaoAndManager() throws Exception {
-		makeTarget(new Target("DAO", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_DAO).replace(".", "/")), false));
-		makeTarget(new Target("Manager", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_MANAGER).replace(".", "/")), false));
+		makeTarget(new Target("{0}DAO.java", "DAO", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_DAO).replace(".", "/")), false));
+		makeTarget(new Target("{0}Manager.java", "Manager", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_MANAGER).replace(".", "/")), false));
 	}
 	
 	public void makeGrid() throws Exception {
-		makeTarget(new Target("Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true
+		makeTarget(new Target("Grid{0}.xhtml", "Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true
 				, new TargetConfig(true, true, false, true, false, false)
 				, null
 		));
 	}
 
 	public void makeWinFrm() throws Exception {
-		makeTarget(new Target("WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
+		makeTarget(new Target("WinFrm{0}.xhtml", "WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
 				, new TargetConfig(false, false, true, true, true, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));
-		makeTarget(new Target("WinFrm", JAVA, true, new File(dirSrc, getAttributeValue(PACOTE_WINFRM).replace(".", "/")), true));
+		makeTarget(new Target("WinFrm{0}.java", "WinFrm", JAVA, true, new File(dirSrc, getAttributeValue(PACOTE_WINFRM).replace(".", "/")), true));
 
 		for (Attribute attribute : getEntity().getAttributes()) {				
 			
@@ -290,16 +290,16 @@ public class GeradorCodigo {
 	}
 		
 	public void makePageView() throws Exception {		
-		makeTarget(new Target("VisualizarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), true));
-		makeTarget(new Target("Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+		makeTarget(new Target("{0}VisualizarCtrl.java", "VisualizarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), true));
+		makeTarget(new Target("{0}Visualizar.xhtml", "Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
 				, new TargetConfig(false, false, false, true, false, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));		
 	}
 		
 	public void makePageManager() throws Exception {
-		makeTarget(new Target("AdministrarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), false));
-		makeTarget(new Target("Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+		makeTarget(new Target("{0}AdministrarCtrl.java", "AdministrarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), false));
+		makeTarget(new Target("{0}Administrar.xhtml", "Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
 				, new TargetConfig(false, false, false, false, false, false)
 				, null
 		));
@@ -320,25 +320,25 @@ public class GeradorCodigo {
 	public Target getTarget() {
 		return target;
 	}
-	
+
 	private void makeTarget(Target target) throws Exception {
 
 		this.target = target;
 		
-		String fileName;
-
 		if (!getTarget().getDestinationDirectory().exists()) {
 			getTarget().getDestinationDirectory().mkdirs();
 		}
 		
-		if (JAVA.equals(getTarget().getType())) {
-			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
-		}
-		else {
-			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
-			fileName = fileName.substring(0,1).toLowerCase() + fileName.substring(1);
-		}
+		String fileName = getTarget().getFileName(getEntity());
 
+//		if (JAVA.equals(getTarget().getType())) {
+//			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
+//		}
+//		else {
+//			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
+//			fileName = fileName.substring(0,1).toLowerCase() + fileName.substring(1);
+//		}
+		
 		File file = new File(getTarget().getDestinationDirectory(), fileName);
 
 		// Verifica se o arquivo existe
@@ -364,7 +364,7 @@ public class GeradorCodigo {
             winFrm.start(getEntity(), getTarget());
             
             if (!winFrm.isStatusOK()) {
-            	System.exit(0);
+            	return;
             }
             else {
             	store(getEntity());
@@ -385,7 +385,7 @@ public class GeradorCodigo {
 	            	winFrmAttributeOneToMany.start(attribute, getTarget());
 	
 	                if (!winFrmAttributeOneToMany.isStatusOK()) {
-	                	System.exit(0);
+	                	return;
 	                }
 	                else {
 	                	store(attribute.getAssociationEntity());
@@ -396,7 +396,7 @@ public class GeradorCodigo {
 						
 		System.out.println(" - " + file.getName() + " [GERADO]");
 
-		String path = "/templates/" + target.getResource() + "." + target.getType() + ".tpl";
+		String path = "/templates/" + target.getTemplateFileName();
 			
 		BufferedReader in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)));
 
