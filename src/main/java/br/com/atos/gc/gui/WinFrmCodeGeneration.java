@@ -51,7 +51,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Telas"));
-        jPanel1.setPreferredSize(new java.awt.Dimension(380, 60));
+        jPanel1.setPreferredSize(new java.awt.Dimension(380, 70));
 
         btnPageManage.setText("Tela de Administração");
         btnPageManage.addActionListener(new java.awt.event.ActionListener() {
@@ -84,11 +84,11 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPageManage)
                     .addComponent(btnPageView))
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 21, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Componentes"));
-        jPanel2.setPreferredSize(new java.awt.Dimension(138, 60));
+        jPanel2.setPreferredSize(new java.awt.Dimension(138, 70));
 
         btnWinFrm.setText("WinFrm");
         btnWinFrm.addActionListener(new java.awt.event.ActionListener() {
@@ -111,19 +111,21 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnWinFrm)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnGrid)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(btnWinFrm)
-                .addComponent(btnGrid))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGrid)
+                    .addComponent(btnWinFrm))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Infraestrutura"));
-        jPanel3.setPreferredSize(new java.awt.Dimension(171, 60));
+        jPanel3.setPreferredSize(new java.awt.Dimension(171, 70));
 
         btnDaoAndManager.setText("Gerar DAO e Manager");
         btnDaoAndManager.addActionListener(new java.awt.event.ActionListener() {
@@ -156,7 +158,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDaoAndManager)
                     .addComponent(btnAll))
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 16, Short.MAX_VALUE))
         );
 
         btnOK.setText("OK");
@@ -186,7 +188,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, 75, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -195,7 +197,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnOK)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pack();
