@@ -240,23 +240,23 @@ public class GeradorCodigo {
 	}
 
 	public void makeDaoAndManager() throws Exception {
-		makeTarget(new Target("{0}DAO.java", "DAO", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_DAO).replace(".", "/")), false));
-		makeTarget(new Target("{0}Manager.java", "Manager", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_MANAGER).replace(".", "/")), false));
+		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACOTE_DAO).replace(".", "/")), false));
+		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACOTE_MANAGER).replace(".", "/")), false));
 	}
 	
 	public void makeGrid() throws Exception {
-		makeTarget(new Target("Grid{0}.xhtml", "Grid", XHTML, true, new File(dirWebContent, "resources/components/custom"), true
+		makeTarget(new Target("Grid{0}.xhtml", new File(dirWebContent, "resources/components/custom"), true
 				, new TargetConfig(true, true, false, true, false, false)
 				, null
 		));
 	}
 
 	public void makeWinFrm() throws Exception {
-		makeTarget(new Target("WinFrm{0}.xhtml", "WinFrm", XHTML, true, new File(dirWebContent, "resources/components/custom"), true					 
+		makeTarget(new Target("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/custom"), true					 
 				, new TargetConfig(false, false, true, true, true, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));
-		makeTarget(new Target("WinFrm{0}.java", "WinFrm", JAVA, true, new File(dirSrc, getAttributeValue(PACOTE_WINFRM).replace(".", "/")), true));
+		makeTarget(new Target("WinFrm{0}.java", new File(dirSrc, getAttributeValue(PACOTE_WINFRM).replace(".", "/")), true));
 
 		for (Attribute attribute : getEntity().getAttributes()) {				
 			
@@ -290,16 +290,16 @@ public class GeradorCodigo {
 	}
 		
 	public void makePageView() throws Exception {		
-		makeTarget(new Target("{0}VisualizarCtrl.java", "VisualizarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), true));
-		makeTarget(new Target("{0}Visualizar.xhtml", "Visualizar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+		makeTarget(new Target("{0}VisualizarCtrl.java", new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), true));
+		makeTarget(new Target("{0}Visualizar.xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
 				, new TargetConfig(false, false, false, true, false, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));		
 	}
 		
 	public void makePageManager() throws Exception {
-		makeTarget(new Target("{0}AdministrarCtrl.java", "AdministrarCtrl", JAVA, false, new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), false));
-		makeTarget(new Target("{0}Administrar.xhtml", "Administrar", XHTML, false, new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+		makeTarget(new Target("{0}AdministrarCtrl.java", new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), false));
+		makeTarget(new Target("{0}Administrar.xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
 				, new TargetConfig(false, false, false, false, false, false)
 				, null
 		));
@@ -330,14 +330,6 @@ public class GeradorCodigo {
 		}
 		
 		String fileName = getTarget().getFileName(getEntity());
-
-//		if (JAVA.equals(getTarget().getType())) {
-//			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
-//		}
-//		else {
-//			fileName = (getTarget().isResourceStart() ? getTarget().getResource() + getEntity().getClazzSimpleName() : getEntity().getClazzSimpleName() + getTarget().getResource()) + "." + getTarget().getType();
-//			fileName = fileName.substring(0,1).toLowerCase() + fileName.substring(1);
-//		}
 		
 		File file = new File(getTarget().getDestinationDirectory(), fileName);
 
