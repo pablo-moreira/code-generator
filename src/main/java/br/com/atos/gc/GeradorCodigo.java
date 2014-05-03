@@ -654,6 +654,10 @@ public class GeradorCodigo {
 		pw.println(MessageFormat.format(string, attr));
 	}
 
+	public void gerar() throws Exception {
+		make();
+	}
+	
 	public void make() throws Exception {
 		WinFrmCodeGeneration winFrm = new WinFrmCodeGeneration(null, true);
 		winFrm.start(this);

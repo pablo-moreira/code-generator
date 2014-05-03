@@ -6,7 +6,6 @@ package br.com.atos.gc.gui;
 
 import br.com.atos.gc.GeradorCodigo;
 import br.com.atos.utils.swing.JFrameUtils;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -312,10 +311,8 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 	
-    public void start(GeradorCodigo cg) {
-		
-		this.cg = cg;
-		
+    public void start(GeradorCodigo cg) {		
+		this.cg = cg;		
 		JFrameUtils.setCenterLocation(this);
         setVisible(true);
 	}
