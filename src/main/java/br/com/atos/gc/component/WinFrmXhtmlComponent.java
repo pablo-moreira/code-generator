@@ -86,7 +86,7 @@ public class WinFrmXhtmlComponent extends Component {
 					
 					AttributeId assocAttributeId = attribute.getAssociationEntity().getAttributeId();
 					
-					println(pw, "\t\t\t\t\t\t<p:column headerText=\"{0}\" sortBy=\"#'{'{1}.{2}'}'\" filterBy=\"#'{'{1}.{2}'}'\" style=\"width: 60px\">", assocAttributeId.getLabel(), assocPath, getValue(assocAttributeId));
+					println(pw, "\t\t\t\t\t\t<p:column headerText=\"{0}\" sortBy=\"#'{'{1}.{2}'}'\" filterBy=\"#'{'{1}.{2}'}'\" filterStyle=\"width: 50px\" styleClass=\"width: 50px\">", assocAttributeId.getLabel(), assocPath, getValue(assocAttributeId));
 					println(pw, "\t\t\t\t\t\t\t<h:outputText value=\"#'{'{0}.{1}'}'\" />", assocPath, assocAttributeId.getField().getName());
 					println(pw, "\t\t\t\t\t\t</p:column>");
 					println(pw, "\t\t\t\t\t\t");
