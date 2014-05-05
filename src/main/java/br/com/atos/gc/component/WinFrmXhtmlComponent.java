@@ -48,13 +48,13 @@ public class WinFrmXhtmlComponent extends Component {
 				
 				if (AttributeFormType.EXTERNAL.equals(attribute.getFormType())) {
 										
-					String assocPath = "associacao.";
+					String assocPath = "associacao";
 					
 					for (Attribute assocAttribute : attribute.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
 						
 						if (assocAttribute.isRenderColumn()) {
 							
-							println(pw, "\t\t\t\t\t\t<p:column headerText=\"{0}\">", assocAttribute.getLabel());				
+							println(pw, "\t\t\t\t\t\t<p:column headerText=\"{0}\" sortBy=\"#'{'{1}.{2}'}'\" filterBy=\"#'{'{1}.{2}'}'\">", assocAttribute.getLabel(), assocPath, getValue(assocAttribute));		
 							printot(pw, "\t\t\t\t\t\t\t", assocPath, assocAttribute);
 							println(pw, "\t\t\t\t\t\t</p:column>");
 							println(pw, "\t\t\t\t\t\t");

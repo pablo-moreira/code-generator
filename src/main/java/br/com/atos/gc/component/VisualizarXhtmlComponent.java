@@ -22,7 +22,7 @@ public class VisualizarXhtmlComponent extends Component {
 	public void renderizar(PrintWriter pw) {
 
 		String ctrl = getGc().getAttributeValue("entidadeNome") + "VisualizarCtrl.";
-		String path = ctrl + "entidade.";
+		String path = ctrl + "entidade";
 		
 		println(pw, "\t\t\t\t\t\t\t<p:tab title=\"{0}\">", getGc().getAttributeValue("EntidadeRotulo"));		
 		println(pw, "\t\t\t\t\t\t\t\t<h:panelGrid columns=\"2\" cellpadding=\"5\">");
@@ -47,11 +47,11 @@ public class VisualizarXhtmlComponent extends Component {
 			
 			println(pw, "\t\t\t\t\t\t\t\t<p:dataTable");
 			println(pw, "\t\t\t\t\t\t\t\t\temptyMessage=\"Nenhum objeto cadastrado.\"");
-			println(pw, "\t\t\t\t\t\t\t\t\tvalue=\"#'{'{0}{1}'}'\"", path, attribute.getField().getName());
+			println(pw, "\t\t\t\t\t\t\t\t\tvalue=\"#'{'{0}{1}'}'\"", path + ".", attribute.getField().getName());
 			println(pw, "\t\t\t\t\t\t\t\t\tvar=\"associacao\">");
 			println(pw, "\t\t\t\t\t\t\t\t\t");			
 
-			String assocPath = "associacao.";
+			String assocPath = "associacao";
 			
 			for (Attribute assocAttribute : attribute.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
 				

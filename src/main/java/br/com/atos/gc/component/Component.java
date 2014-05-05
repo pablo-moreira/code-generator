@@ -66,37 +66,11 @@ abstract public class Component {
 			return attribute.getField().getName();
 		}
 	}
-	
-	protected void printOutputText(PrintWriter pw, String indentacao, Field field, String value) {
 		
-		if (BaseEnum.class.isAssignableFrom(field.getType())) {
-			println(pw, "{0}<h:outputText value=\"#'{'{1}.descricao'}'\" />", indentacao, value);
-		}
-		else if (Date.class.isAssignableFrom(field.getType())) {
-			
-			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\">", indentacao, value);
-			
-			if (field.getAnnotation(Temporal.class).value() == TemporalType.DATE) {
-				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"date\" />", indentacao);
-			}
-			else if (field.getAnnotation(Temporal.class).value() == TemporalType.TIME) {
-				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"time\" />", indentacao);
-			}
-			else {
-				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"both\" />", indentacao);
-			}
-			
-			println(pw, "{0}</h:outputText>", indentacao);
-		}
-		else {
-			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\" />", indentacao, value);
-		}
-	}
-	
 	protected void printot(PrintWriter pw, String indentation, String path, Attribute attribute) {
 
 		Field field = getField(attribute);
-		String value = path + getValue(attribute);
+		String value = path + "." + getValue(attribute);
 
 		if (BaseEnum.class.isAssignableFrom(field.getType())) {
 			println(pw, "{0}<h:outputText value=\"#'{'{1}.descricao'}'\" />", indentation, value);

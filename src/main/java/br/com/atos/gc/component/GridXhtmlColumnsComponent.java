@@ -20,7 +20,7 @@ public class GridXhtmlColumnsComponent extends Component {
 	@Override
 	public void renderizar(PrintWriter pw) {
 		
-		String path = "objeto.";
+		String path = "objeto";
 		
 		for (Attribute attribute : getGc().getEntity().getAttributes()) {
 			
