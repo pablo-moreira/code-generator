@@ -15,7 +15,7 @@
 	   	<ui:param name="pgTitulo" value="Visualizando ${artigoDefinido} ${entidadeRotulo}" />
 		<ui:define name="conteudo">
 			<h:form id="frm">
-				<p:tabView dynamic="true" cache="false">								
+				<p:tabView>								
 					${visualizarXhtml}
 				</p:tabView>
 			</h:form>
