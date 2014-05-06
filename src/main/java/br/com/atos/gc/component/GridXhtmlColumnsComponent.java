@@ -30,7 +30,7 @@ public class GridXhtmlColumnsComponent extends Component {
 				// Ignora as associacoes OneToMany
 				if (!AttributeOneToMany.class.isInstance(attribute)) {
 					println(pw, "\t\t\t");
-					println(pw, "\t\t\t<p:column sortBy=\"#'{'{0}'}'\">", path + getValue(attribute));
+					println(pw, "\t\t\t<p:column sortBy=\"#'{'{0}.{1}'}'\">", path, getValue(attribute));
 					println(pw, "\t\t\t\t<f:facet name=\"header\"><h:outputText value=\"{0}\" /></f:facet>", attribute.getLabel());
 					printot(pw, "\t\t\t\t", path, attribute);
 					println(pw, "\t\t\t</p:column>");
