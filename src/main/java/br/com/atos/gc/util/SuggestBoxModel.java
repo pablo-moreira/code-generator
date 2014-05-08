@@ -8,25 +8,30 @@ package br.com.atos.gc.util;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-import br.com.atos.utils.StringUtils;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+
+import br.com.atos.utils.StringUtils;
 
 /**
  *
  * @author pablo-moreira
  */
-abstract public class SuggestBoxModel<E> extends AbstractListModel implements ComboBoxModel, KeyListener {
+abstract public class SuggestBoxModel extends AbstractListModel implements ComboBoxModel, KeyListener {
 
-    private List<String> suggestions = new ArrayList<String>();
+	private static final long serialVersionUID = 1L;
+
+	private List<String> suggestions = new ArrayList<String>();
     private String selectedItem;
     private JComboBox comboBox;
     private ComboBoxEditor comboBoxEditor;
@@ -69,62 +74,52 @@ abstract public class SuggestBoxModel<E> extends AbstractListModel implements Co
             public void run() {
 
                 String text = editorTextField.getText();
+                
 
-                if(text.length()==0) {
-                    comboBox.hidePopup();
-                    loadSuggestions("");
+//                if(text.length()==0) {
+//                    comboBox.hidePopup();
+//                    loadSuggestions("");
                     
                     // Hack
-                    comboBox.setModel(comboBox.getModel());
-                    comboBox.setSelectedIndex(-1);
-                    editorTextField.setText("");
-                }
-                else {
+                    //comboBox.setModel(comboBox.getModel());
+                    //comboBox.setSelectedIndex(-1);
+                    //editorTextField.setText("");
+//                }
+//                else {
                     loadSuggestions(text);
                     
-                    if(suggestions.isEmpty() || hideFlag) {
-                        comboBox.hidePopup();
-                        hideFlag = false;
-                    }
-                    else{                        
+//                    if(suggestions.isEmpty() || hideFlag) {
+//                        //comboBox.hidePopup();
+//                        hideFlag = false;
+//                    }
+//                    else{                        
                         // Hack
-                        comboBox.setModel(comboBox.getModel()); 
-                        comboBox.setSelectedIndex(-1);
-                        editorTextField.setText(text);
-                        comboBox.showPopup();
-                    }
-                }
+                    comboBox.setModel(comboBox.getModel()); 
+                    comboBox.setSelectedIndex(-1);
+                    editorTextField.setText(text);
+                        
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                        	comboBox.showPopup();
+                        }
+                    });
+//                    }
+//                }
             }
         });
     }
     
     @Override
     public void keyPressed(KeyEvent e) {
-        
-        String text = editorTextField.getText();
-                
+                        
         int code = e.getKeyCode();
                 
         if (code==KeyEvent.VK_ENTER) {
-//            if(!v.contains(text)) {
-//                v.addElement(text);
-//                Collections.sort(v);
-//                setModel(getSuggestedModel(v, text), text);
-//            }
             hideFlag = true; 
         }
         else if(code==KeyEvent.VK_ESCAPE) {
             hideFlag = true; 
-        }
-        else if(code==KeyEvent.VK_RIGHT) {
-            for(int i=0; i < suggestions.size();i++) {
-                String str = suggestions.get(i);
-                if(str.startsWith(text)) {
-                    comboBox.setSelectedIndex(-1);
-                    editorTextField.setText(str);
-                    return;
-                }
-            }
         }
     }
 
@@ -132,37 +127,34 @@ abstract public class SuggestBoxModel<E> extends AbstractListModel implements Co
     public void keyReleased(KeyEvent e) {}
 
     private void loadSuggestions(String suggest) {
-
+		
         suggestions.clear();
 
         if (!StringUtils.isNullOrEmpty(suggest)) {
             
-            suggest = StringUtils.substituiCaracteresAcentuadosPorNaoAcentuados(suggest.toLowerCase());    
-            
-            for(E entity : getEntities()) {
-                
-                String label = getEntityLabel(entity);
-                
-                if (!StringUtils.isNullOrEmpty(suggest)) {
-                    label = StringUtils.substituiCaracteresAcentuadosPorNaoAcentuados(label.toLowerCase());
-                }
-                
-                if(label.startsWith(suggest)) {
-                    suggestions.add(getEntityLabel(entity));
+            for(String option : getOptions(suggest)) {
+                if(option.startsWith(suggest)) {
+                    suggestions.add(option);
                 }
             }
         }
-        else {        
-            for(E entity : getEntities()) {
-                suggestions.add(getEntityLabel(entity)); 
-            }
+        else {
+            suggestions.addAll(getOptions(suggest));
         }
+        
+        DefaultComboBoxModel model = (DefaultComboBoxModel) (comboBox).getModel();
+        model.removeAllElements();
+        
+        for (String s : suggestions) {
+        	model.addElement(s);
+        }
+    
     }
     
     private void init() {
         
         //set the model on the combobox
-        comboBox.setModel(this);
+        //comboBox.setModel();
         comboBox.setEditable(true);
         
         comboBoxEditor = comboBox.getEditor();
@@ -173,7 +165,6 @@ abstract public class SuggestBoxModel<E> extends AbstractListModel implements Co
         
         loadSuggestions("");
     }
-    
-    abstract public List<E> getEntities();
-    abstract public String getEntityLabel(E entity);
+	
+	public abstract List<String> getOptions(String suggest);
 }

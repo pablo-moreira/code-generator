@@ -4,26 +4,30 @@
  */
 package br.com.atos.gc.gui.tablemodel;
 
-import br.com.atos.gc.gui.WinFrmEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.OneToMany;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
+import br.com.atos.gc.gui.WinFrmEntity;
 import br.com.atos.gc.model.Attribute;
 import br.com.atos.gc.model.AttributeFormType;
 import br.com.atos.gc.model.AttributeManyToOne;
 import br.com.atos.gc.model.AttributeOneToMany;
 import br.com.atos.gc.util.ColumnMetadata;
+import br.com.atos.gc.util.ComboBoxCellEditor;
 import br.com.atos.gc.util.EntityColumnWidthTableModel;
 import br.com.atos.gc.util.EntityComboBoxModel;
+import br.com.atos.gc.util.SuggestBoxModel;
 import br.com.atos.utils.ReflectionUtils;
 
 /**
@@ -38,9 +42,9 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     public static final ColumnMetadata COL_LABEL = new ColumnMetadata(1, "Rótulo", 200);
     public static final ColumnMetadata COL_RENDER_COLUMN = new ColumnMetadata(2, "Coluna", 60, "Renderizar uma coluna para atributo");
     public static final ColumnMetadata COL_RENDER_FILTER = new ColumnMetadata(3, "Filtro", 60, "Renderizar um filtro para atributo");
-    public static final ColumnMetadata COL_RENDER_FORM = new ColumnMetadata(4, "Form.", 60, "Renderizar um campo no formulário para atributo");
-    public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(5, "Atrib. Descrição da Associação", 220);
-    public static final ColumnMetadata COL_FORM_TYPE = new ColumnMetadata(6, "Tipo de Formulário", 150);
+    public static final ColumnMetadata COL_RENDER_FORM = new ColumnMetadata(4, "Form.", 60, "Renderizar um campo no formulário para atributo");    
+    public static final ColumnMetadata COL_FORM_TYPE = new ColumnMetadata(5, "Tipo de Formulário", 150);
+    public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(6, "Atrib. Descrição da Associação", 350);
   
     private List<Attribute> attributes = new ArrayList<Attribute>();
 
@@ -62,13 +66,6 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             case 4 :
                 return attribute.isRenderForm();
             case 5 :
-            	if (attribute instanceof AttributeManyToOne) {
-		    return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
-            	}
-            	else {
-		    return null;
-            	}
-            case 6 :
                 if (attribute instanceof AttributeOneToMany) {
                     return ((AttributeOneToMany) attribute).getFormType().getDescription();
                 }
@@ -77,6 +74,14 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 }
             default :
                 return null;
+            case 6 :
+            	if (attribute instanceof AttributeManyToOne) {
+		    return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
+            	}
+            	else {
+		    return null;
+            	}
+
         }
     }
         
@@ -234,9 +239,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             
             final Attribute attribute = getEntityByRow(row);
 
-            List<String> entities = new ArrayList<String>();
-            
-            Class<?> associationClass = null;
+            final Class<?> associationClass;
             
             if (attribute.getField() != null) {
                 associationClass = attribute.getField().getType();
@@ -244,26 +247,20 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             else {
             	associationClass = WinFrmEntity.class;
             }
-            
-            List<Field> associationAttributes = ReflectionUtils.getFieldsRecursive(associationClass);
     		
-            for (Field field : associationAttributes) {    	
-                if (!Modifier.isStatic(field.getModifiers())) {
-                        entities.add(field.getName());
-                }
-            }
-    		
-            JComboBox cbbAttributeDescription = new JComboBox(new EntityComboBoxModel<String>(entities) {
+            JComboBox cbbAttributeDescription = new JComboBox();
+
+			new SuggestBoxModel(cbbAttributeDescription) {
 
 				private static final long serialVersionUID = 1L;
-		
-				@Override
-				public String getLabel(String item) {
-					return item;
-				}    			
-            });			
 
-            return new DefaultCellEditor(cbbAttributeDescription);
+				@Override
+				public List<String> getOptions(String suggest) {
+					return AttributeTableModel.getOptions(associationClass, suggest);
+				}
+			};			
+
+            return new ComboBoxCellEditor(cbbAttributeDescription);
         }
         else if (COL_FORM_TYPE.getIndex() == col) {
         	
@@ -272,9 +269,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         	if (attribute instanceof AttributeOneToMany) {
         		
         		AttributeOneToMany attrOneToMany = (AttributeOneToMany) attribute;
-        	              
-        		//AttributeFormType.values()
-        		
+        	                     		
         		AttributeFormType[] types;
         		
         		if (attrOneToMany.isAllowedFormTypeInternal()) {
@@ -283,7 +278,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         		else {
         			types = new AttributeFormType[] { AttributeFormType.EXTERNAL, AttributeFormType.INTERNAL };
         		}
-        			
+        		
 		        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<AttributeFormType>(types) {
 		
 					private static final long serialVersionUID = 1L;
@@ -300,4 +295,53 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         
         return null;
     }
+	
+	public static List<String> getOptions(Class<?> clazz, String suggestion) {
+
+		if (suggestion == null) {
+			suggestion = "";
+		}
+		
+		String[] items = suggestion.split("\\.");
+				
+		return getOptions(clazz, items, 0);
+	}
+
+	public static List<String> getOptions(Class<?> clazz, String[] items, int level) {
+				
+		String levelField;
+
+		if (level >= items.length) {
+			levelField = "";
+		}
+		else {
+			levelField = items[level];
+		}
+				
+		String path = "";
+		
+		for (int i = 0; i < level; i++) {
+			path += items[i] + ".";
+		}
+		
+		List<Field> fields = ReflectionUtils.getFieldsRecursive(clazz);
+
+		List<String> options = new ArrayList<String>();
+						
+		for (Field f : fields) {
+
+			if (!(Modifier.isStatic(f.getModifiers())
+					|| Collection.class.isAssignableFrom(f.getType())
+					|| f.getAnnotation(OneToMany.class) != null)) {
+								
+				options.add(path + f.getName());	
+						
+				if (f.getName().equals(levelField)) {
+					options.addAll(getOptions(f.getType(), items, level + 1));
+				}
+			}
+		}		
+		
+		return options;
+	}
 }
