@@ -60,11 +60,13 @@ public class GridXhtmlFilterComponent extends Component {
 		}
 		else if (Date.class.isAssignableFrom(field.getType())) {
 		
-			if (field.getAnnotation(Temporal.class).value() == TemporalType.DATE) {
-				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA);
-			}
-			else if (field.getAnnotation(Temporal.class).value() == TemporalType.TIMESTAMP) {
+			Temporal annotation = field.getAnnotation(Temporal.class);
+			
+			if (annotation == null || annotation.value() == TemporalType.TIMESTAMP) {
 				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA_HORARIO);
+			}
+			else if (annotation.value() == TemporalType.DATE) {
+				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA);
 			}
 			else {
 				// Nao faz nada...

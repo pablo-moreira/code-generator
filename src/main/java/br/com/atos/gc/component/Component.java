@@ -11,6 +11,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -79,15 +80,17 @@ abstract public class Component {
 			
 			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\">", indentation, value);
 			
-			if (field.getAnnotation(Temporal.class).value() == TemporalType.DATE) {
-				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"date\" />", indentation);
-			}
-			else if (field.getAnnotation(Temporal.class).value() == TemporalType.TIME) {
-				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"time\" />", indentation);
-			}
-			else {
+			Temporal annotation = field.getAnnotation(Temporal.class);
+			
+			if (annotation == null || annotation.value() == TemporalType.TIMESTAMP) {
 				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"both\" />", indentation);
 			}
+			else if (annotation.value() == TemporalType.DATE) {
+				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"date\" />", indentation);
+			}
+			else if (annotation.value() == TemporalType.TIME) {
+				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"time\" />", indentation);
+			}			
 			
 			println(pw, "{0}</h:outputText>", indentation);
 		}
@@ -107,10 +110,13 @@ abstract public class Component {
 		Class<?> type = attribute.getField().getType();
 		String value = path + "." + attribute.getField().getName();
 		
-		String required = "true";
+		String required = "false";
 	
 		if (attribute.getField().getAnnotation(Column.class) != null) {
 			required = attribute.getField().getAnnotation(Column.class).nullable() ? "false" : "true";
+		}
+		else if (attribute.getField().getAnnotation(OneToOne.class) != null) {
+			required = attribute.getField().getAnnotation(OneToOne.class).optional() ? "false" : "true";
 		}
 		else if (attribute.getField().getAnnotation(ManyToOne.class) != null) {
 			required = attribute.getField().getAnnotation(ManyToOne.class).optional() ? "false" : "true";
@@ -126,14 +132,16 @@ abstract public class Component {
 		}
 		else if (Date.class.isAssignableFrom(type) || Calendar.class.isAssignableFrom(type)) {
 
-			if (attribute.getField().getAnnotation(Temporal.class).value() == TemporalType.DATE) {
+			Temporal annotation = attribute.getField().getAnnotation(Temporal.class);
+			
+			if (annotation == null || annotation.value() == TemporalType.TIMESTAMP) {
+				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" showOn=\"button\" locale=\"pt_BR\" pattern=\"dd/MM/yyyy HH:mm\" required=\"{3}\" onkeypress=\"Mask.valid(this, ''dataHorario'')\" />", id, label, value, required);
+			}
+			else if (annotation.value() == TemporalType.DATE) {
 				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" showOn=\"button\" locale=\"pt_BR\" pattern=\"dd/MM/yyyy\" required=\"{3}\" onkeypress=\"Mask.valid(this, ''data'')\" />", id, label, value, required);
 			}
 			else if (attribute.getField().getAnnotation(Temporal.class).value() == TemporalType.TIME) {
 				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" size=\"4\" showOn=\"button\" locale=\"pt_BR\" pattern=\"HH:mm\" timeOnly=\"true\" required=\"{3}\" onkeypress=\"Mask.valid(this, ''horario'')\" />", id, label, value, required);
-			}
-			else {
-				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" showOn=\"button\" locale=\"pt_BR\" pattern=\"dd/MM/yyyy HH:mm\" required=\"{3}\" onkeypress=\"Mask.valid(this, ''dataHorario'')\" />", id, label, value, required);
 			}
 		}
 		else if (IBaseEntity.class.isAssignableFrom(type)) {
