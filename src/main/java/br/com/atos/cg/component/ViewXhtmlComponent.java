@@ -7,22 +7,22 @@ import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.utils.StringUtils;
 
-public class VisualizarXhtmlComponent extends Component {
+public class ViewXhtmlComponent extends Component {
 
-	public VisualizarXhtmlComponent(CodeGenerator gc) {
+	public ViewXhtmlComponent(CodeGenerator gc) {
 		super(gc);
 	}
 
 	@Override
 	public String getComponenteChave() {
-		return "visualizarXhtml";
+		return "viewXhtml";
 	}
 	
 	@Override
 	public void renderizar(PrintWriter pw) {
 
-		String ctrl = getGc().getAttributeValue("entidadeNome") + "VisualizarCtrl.";
-		String path = ctrl + "entidade";
+		String ctrl = getGc().getAttributeValue("EntityName") + "VisualizarCtrl.";
+		String path = ctrl + "entity";
 		
 		println(pw, "\t\t\t\t\t\t\t<p:tab title=\"{0}\">", getGc().getAttributeValue("EntidadeRotulo"));		
 		println(pw, "\t\t\t\t\t\t\t\t<h:panelGrid columns=\"2\" cellpadding=\"5\">");

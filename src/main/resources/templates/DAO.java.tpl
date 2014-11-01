@@ -1,13 +1,13 @@
-package ${pacoteDAO};
+package ${packageDAO};
 
 import javax.persistence.EntityManager;
 
-import ${pacoteDAO}.AppDAO;
-import ${pacoteEntidade}.${EntidadeNome};
+import ${packageDAO}.AppDAO;
+import ${packageModel}.${EntityName};
 
-public class ${EntidadeNome}DAO extends AppDAO<${EntidadeNome}, ${entidadeIdClass}> {
+public class ${EntityName}DAO extends AppDAO<${EntityName}, ${entityIdClass}> {
 
-	public ${EntidadeNome}DAO(EntityManager entityManager) {
-		super(entityManager, ${EntidadeNome}.class);
+	public ${EntityName}DAO(EntityManager entityManager) {
+		super(entityManager, ${EntityName}.class);
 	}
 }

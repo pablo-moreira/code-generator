@@ -11,9 +11,9 @@
 	   	<ui:param name="pgTitulo" value="Administração de ${entidadeRotulo}s" />
 		<ui:define name="conteudo">
 			<h:form id="frm">				
-				<custom:grid${EntidadeNome} grid="#{${entidadeNome}AdministrarCtrl.grid}" winFrm="#{${entidadeNome}AdministrarCtrl.winFrm}" />				
+				<custom:grid${EntityName} grid="#{${EntityName}AdministrarCtrl.grid}" winFrm="#{${EntityName}AdministrarCtrl.winFrm}" />				
 			</h:form>
-			<custom:winFrm${EntidadeNome} winFrm="#{${entidadeNome}AdministrarCtrl.winFrm}" salvarAction="#{${entidadeNome}AdministrarCtrl.salvar}" excluirAction="#{${entidadeNome}AdministrarCtrl.excluir}" />
+			<custom:winFrm${EntityName} winFrm="#{${EntityName}AdministrarCtrl.winFrm}" salvarAction="#{${EntityName}AdministrarCtrl.salvar}" excluirAction="#{${EntityName}AdministrarCtrl.excluir}" />
 		</ui:define>
 	</ui:composition>
 </html>

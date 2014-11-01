@@ -9,7 +9,7 @@
     xmlns:custom="http://java.sun.com/jsf/composite/components/custom">
 
 	<composite:interface>
-		<composite:attribute name="winFrm" required="true" type="${pacoteWinFrm}.WinFrm${EntidadeNome}" />
+		<composite:attribute name="winFrm" required="true" type="${packageWinFrm}.WinFrm${EntityName}" />
 		<composite:attribute name="salvarAction" required="false" default="#{cc.attrs.winFrm.salvar}" method-signature="void action()" />
 		<composite:attribute name="excluirAction" required="false" default="#{cc.attrs.winFrm.excluir}" method-signature="void action()" />
 	</composite:interface>

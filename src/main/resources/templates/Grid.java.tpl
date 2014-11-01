@@ -1,14 +1,14 @@
-package ${pacoteGrid};
+package ${packageGrid};
 
 import br.com.atosdamidia.comuns.controlador.componente.Grid;
-import ${pacoteDAO}.${EntidadeNome}DAO;
-import ${pacoteEntidade}.${EntidadeNome};
+import ${packageDAO}.${EntityName}DAO;
+import ${packageModel}.${EntityName};
 
-public class Grid${EntidadeNome} extends Grid<${EntidadeNome}>  {
+public class Grid${EntityName} extends Grid<${EntityName}>  {
 
 	private static final long serialVersionUID = 1L;
 
-	public Grid${EntidadeNome}() {
-		super(${EntidadeNome}DAO.class);
+	public Grid${EntityName}() {
+		super(${EntityName}DAO.class);
 	}
 }

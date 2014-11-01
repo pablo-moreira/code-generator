@@ -10,7 +10,7 @@
 
 	<composite:interface>
 		<composite:attribute name="grid" required="true" type="br.com.atosdamidia.comuns.controlador.componente.Grid" />
-		<composite:attribute name="winFrm" required="false" type="${pacoteWinFrm}.WinFrm${EntidadeNome}" />
+		<composite:attribute name="winFrm" required="false" type="${packageWinFrm}.WinFrm${EntityName}" />
 	</composite:interface>
 
 	<composite:implementation>
@@ -26,7 +26,7 @@
 	       	${gridXhtmlColunas}	       
 			<p:column styleClass="col-acao" rendered="#{cc.attrs.winFrm != null}" exportable="false">
 				<f:facet name="header"><h:outputText value="Ação" /></f:facet>
-				<h:link outcome="/pages/${entidadeNome}/${entidadeNome}Visualizar.jsf" title="Visualizar o objeto">
+				<h:link outcome="/pages/${EntityName}/${EntityName}Visualizar.jsf" title="Visualizar o objeto">
 					<f:param name="id" value="#{objeto.id}" />
 					<h:graphicImage value="/resources/img/s.gif" styleClass="link-icone ui-icon-zoomin" />
 				</h:link>

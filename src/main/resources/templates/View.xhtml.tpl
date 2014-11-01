@@ -8,15 +8,15 @@
     xmlns:custom="http://java.sun.com/jsf/composite/components/custom"
     xmlns:u="http://www.atosdamidia.com.br/facelets">
     <f:metadata>
-		<f:viewParam name="id" value="#{${entidadeNome}VisualizarCtrl.id}" required="true" />
-		<f:event type="preRenderView" listener="#{${entidadeNome}VisualizarCtrl.iniciar}" />
+		<f:viewParam name="id" value="#{${EntityName}VisualizarCtrl.id}" required="true" />
+		<f:event type="preRenderView" listener="#{${EntityName}VisualizarCtrl.initialize}" />
 	</f:metadata>
 	<ui:composition template="/templates/padrao.xhtml">    
-	   	<ui:param name="pgTitulo" value="Visualizando ${artigoDefinido} ${entidadeRotulo}" />
+	   	<ui:param name="pgTitulo" value="Visualizando ${gender} ${entityLabel}" />
 		<ui:define name="conteudo">
 			<h:form id="frm">
-				<p:tabView>								
-					${visualizarXhtml}
+				<p:tabView>					
+					${viewXhtml}
 				</p:tabView>
 			</h:form>
 		</ui:define>

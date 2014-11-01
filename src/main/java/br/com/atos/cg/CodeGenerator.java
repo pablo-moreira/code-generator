@@ -28,7 +28,7 @@ import javax.swing.UIManager;
 import br.com.atos.cg.component.Component;
 import br.com.atos.cg.component.GridXhtmlColumnsComponent;
 import br.com.atos.cg.component.GridXhtmlFilterComponent;
-import br.com.atos.cg.component.VisualizarXhtmlComponent;
+import br.com.atos.cg.component.ViewXhtmlComponent;
 import br.com.atos.cg.component.WinFrmJavaAttributesComponent;
 import br.com.atos.cg.component.WinFrmJavaImportsComponent;
 import br.com.atos.cg.component.WinFrmJavaMethodsComponent;
@@ -54,24 +54,25 @@ import br.com.atos.utils.StringUtils;
 
 public class CodeGenerator {
 
-	public static final String PACOTE_BASE = "pacoteBase";
-	public static final String PACOTE_ENTIDADE = "pacoteEntidade";
-	public static final String PACOTE_DAO = "pacoteDAO";
-	public static final String PACOTE_MANAGER = "pacoteManager";
-	public static final String PACOTE_GRID = "pacoteGrid";
-	public static final String PACOTE_WINGRID = "pacoteWinGrid";
-	public static final String PACOTE_WINFRM = "pacoteWinFrm";
-	public static final String PACOTE_CONTROLADOR = "pacoteControlador";	
+	public static final String PACKAGE_BASE = "packageBase";
+	public static final String PACKAGE_MODEL = "packageModel";
+	public static final String PACKAGE_DAO = "packageDAO";
+	public static final String PACKAGE_MANAGER = "packageManager";	
+	public static final String PACKAGE_WINFRM = "packageWinFrm";
+	public static final String PACKAGE_CONTROLLER = "packageController";	
 	public static final String DIR_SRC = "dirSrc";
 	public static final String DIR_RESOURCES = "dirResources";
 	public static final String DIR_WEBCONTENT = "dirWebContent";	
 	public static final String JAVA = "java";
 	public static final String XHTML = "xhtml";
-	public static final String ATRIBUTO_ENTIDADE_NOME_UC = "EntidadeNome";
-	public static final String ATRIBUTO_ENTIDADE_NOME = "entidadeNome";
-	public static final String ATRIBUTO_ENTIDADE_AUDITADA = "entidadeAuditada";	
-	public static final String GC_PROPERTIES_FILENAME = "gc.properties";
+	public static final String ATTRIBUTE_ENTITY_NAME_UC = "EntityName";
+	public static final String ATTRIBUTE_ENTITY_NAME = "entityName";
+	public static final String ATTRIBUTE_ENTITY_AUDIT = "entityAudit";	
+	public static final String GC_PROPERTIES_FILENAME = "cg.properties";
 	public static final String MESSAGES_PROPERTIES_FILENAME = "messages.properties";
+	
+	public static final String PAGE_VIEW_SUFFIX = "page.view.suffix";
+	public static final String PAGE_MANAGER_SUFFIX = "page.manager.suffix";
 		
 	public Pattern pattern = Pattern.compile("\\$\\{([a-zA-Z]*)\\}");	
 	private File dirSrc;	
@@ -128,17 +129,21 @@ public class CodeGenerator {
 		loadIgnoredAttributes();
 		
 		entity = new Entity(entidadeClass, this);
-					
+			
+		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
+		attributesValues.put(PAGE_VIEW_SUFFIX, "View");		
+		
+		// Copia do gcProperties
 		Iterator<Entry<String, String>> iterator = gcProperties.iterator();
 		while (iterator.hasNext()) {
 			Entry<String, String> key = iterator.next();
 			attributesValues.put(key.getKey(), key.getValue());
 		}
 		
-		attributesValues.put(ATRIBUTO_ENTIDADE_AUDITADA, getEntity().isAudited() ? "true" : "false");
-		attributesValues.put(ATRIBUTO_ENTIDADE_NOME_UC, getEntity().getClazzSimpleName());
-		attributesValues.put(ATRIBUTO_ENTIDADE_NOME, firstToLowerCase(getEntity().getClazzSimpleName()));
-		attributesValues.put(PACOTE_ENTIDADE, entidadeClass.getPackage().getName());
+		attributesValues.put(ATTRIBUTE_ENTITY_AUDIT, getEntity().isAudited() ? "true" : "false");
+		attributesValues.put(ATTRIBUTE_ENTITY_NAME_UC, getEntity().getClazzSimpleName());
+		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClazzSimpleName()));
+		attributesValues.put(PACKAGE_MODEL, entidadeClass.getPackage().getName());
 				
 		components = new ArrayList<Component>();
 		components.add(new WinFrmXhtmlComponent(this));
@@ -148,13 +153,13 @@ public class CodeGenerator {
 		components.add(new WinFrmJavaImportsComponent(this));
 		components.add(new GridXhtmlFilterComponent(this));
 		components.add(new GridXhtmlColumnsComponent(this));
-		components.add(new VisualizarXhtmlComponent(this));
+		components.add(new ViewXhtmlComponent(this));
 
 		try {
-			attributesValues.put("entidadeIdClass",  entity.getAttributeId().getField().getType().getSimpleName());			
+			attributesValues.put("entityIdClass",  entity.getAttributeId().getField().getType().getSimpleName());			
 		}
 		catch (Exception e) {
-			throw new Exception("Erro ao obter o atributo 'entidadeIdClass' da classe " + getEntity().getClazzSimpleName());
+			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClazzSimpleName());
 		}
                 
         try {
@@ -170,7 +175,7 @@ public class CodeGenerator {
 	
 	private void loadIgnoredAttributes() {
 
-		String value = gcProperties.getProperty("atributosIgnorados");
+		String value = gcProperties.getProperty("ignoredAttributes");
 		
 		if (value != null && !value.isEmpty()) {
 
@@ -240,23 +245,23 @@ public class CodeGenerator {
 	}
 
 	public void makeDaoAndManager() throws Exception {
-		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACOTE_DAO).replace(".", "/")), false));
-		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACOTE_MANAGER).replace(".", "/")), false));
+		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACKAGE_DAO).replace(".", "/")), "DAO.java.tpl", false));
+		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACKAGE_MANAGER).replace(".", "/")), "Manager.java.tpl", false));
 	}
 	
 	public void makeGrid() throws Exception {
-		makeTarget(new Target("Grid{0}.xhtml", new File(dirWebContent, "resources/components/custom"), true
+		makeTarget(new Target("Grid{0}.xhtml", new File(dirWebContent, "resources/components/custom"), "Grid.xhtml.tpl", true
 				, new TargetConfig(true, true, false, true, false, false)
 				, null
 		));
 	}
 
 	public void makeWinFrm() throws Exception {
-		makeTarget(new Target("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/custom"), true					 
+		makeTarget(new Target("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/custom"), "WinFrm.xhtml.tpl", true					 
 				, new TargetConfig(false, false, true, true, true, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));
-		makeTarget(new Target("WinFrm{0}.java", new File(dirSrc, getAttributeValue(PACOTE_WINFRM).replace(".", "/")), true));
+		makeTarget(new Target("WinFrm{0}.java", new File(dirSrc, getAttributeValue(PACKAGE_WINFRM).replace(".", "/")), "WinFrm.java.tpl", true));
 
 		for (Attribute attribute : getEntity().getAttributes()) {				
 			
@@ -289,17 +294,17 @@ public class CodeGenerator {
 		}
 	}
 		
-	public void makePageView() throws Exception {		
-		makeTarget(new Target("{0}VisualizarCtrl.java", new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), true));
-		makeTarget(new Target("{0}Visualizar.xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+	public void makePageView() throws Exception {				
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), "View.xhtml.tpl", true
 				, new TargetConfig(false, false, false, true, false, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));		
 	}
 		
 	public void makePageManager() throws Exception {
-		makeTarget(new Target("{0}AdministrarCtrl.java", new File(dirSrc, getAttributeValue(PACOTE_CONTROLADOR).replace(".", "/")), false));
-		makeTarget(new Target("{0}Administrar.xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), true
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ManagerCtrl.java.tpl", false));
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), "Manager.xhtml.tpl", true
 				, new TargetConfig(false, false, false, false, false, false)
 				, null
 		));
@@ -480,7 +485,7 @@ public class CodeGenerator {
 				return;
 			}
 			
-			Class<?> selectItemsClass = Class.forName(getAttributeValue(PACOTE_CONTROLADOR) + "." + "SelectItems");
+			Class<?> selectItemsClass = Class.forName(getAttributeValue(PACKAGE_CONTROLLER) + "." + "SelectItems");
 	
 			// Verifica se o autoCompleteCtrl possui um metodo public List<AssociacaoClasse> onCompleteAssociacaoClasse()
 			try {
@@ -515,7 +520,7 @@ public class CodeGenerator {
 						}
 					}												
 					
-					// Procura o index da declaracao do pacote
+					// Procura o index da declaracao do package
 					for (int i = 0, t = arquivoLinhas.size(); i < t; i++) {
 						linha = arquivoLinhas.get(i);
 						if (linha.contains("package")) {
@@ -559,7 +564,7 @@ public class CodeGenerator {
 				return;
 			}
 			
-			Class<?> autoCompleteClass = Class.forName(getAttributeValue(PACOTE_CONTROLADOR) + "." + "AutoCompleteCtrl");
+			Class<?> autoCompleteClass = Class.forName(getAttributeValue(PACKAGE_CONTROLLER) + "." + "AutoCompleteCtrl");
 
 			Field field = atributo.getField();
 						
@@ -596,13 +601,13 @@ public class CodeGenerator {
 						}
 					}												
 					
-					// Procura o index da declaracao do pacote
+					// Procura o index da declaracao do package
 					for (int i = 0, t = arquivoLinhas.size(); i < t; i++) {
 						linha = arquivoLinhas.get(i);
 						if (linha.contains("package")) {
 							arquivoLinhas.add(i+1, "");
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1};", getAttributeValue(PACOTE_ENTIDADE), field.getType().getSimpleName()));
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1}DAO;", getAttributeValue(PACOTE_DAO), field.getType().getSimpleName()));
+							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1};", getAttributeValue(PACKAGE_MODEL), field.getType().getSimpleName()));
+							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1}DAO;", getAttributeValue(PACKAGE_DAO), field.getType().getSimpleName()));
 							break;
 						}
 					}

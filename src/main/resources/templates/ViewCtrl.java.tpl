@@ -1,4 +1,4 @@
-package ${pacoteControlador};
+package ${packageController};
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
@@ -8,43 +8,43 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import br.com.atosdamidia.comuns.visao.interceptors.annotations.TrataErro;
-import ${pacoteDAO}.${EntidadeNome}DAO;
-import ${pacoteEntidade}.${EntidadeNome};
+import ${packageDAO}.${EntityName}DAO;
+import ${packageModel}.${EntityName};
 
 @Named
 @ConversationScoped
 @TrataErro
-public class ${EntidadeNome}VisualizarCtrl extends AppCtrl {
+public class ${EntityName}VisualizarCtrl extends AppCtrl {
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private Conversation conversation;
-	private ${EntidadeNome} entidade;
-	private ${entidadeIdClass} id;
+	private ${EntityName} entity;
+	private ${entityIdClass} id;
 		
 	@PostConstruct
-    public void inicializarConversation() {
+    public void initializeConversation() {
         if (conversation.isTransient()) {
         	this.conversation.begin();
         }
     }
 	
-	public void iniciar() {
+	public void initialize() {
 		if (!FacesContext.getCurrentInstance().isPostback() && !FacesContext.getCurrentInstance().isValidationFailed()) {
-			entidade = getDAO(${EntidadeNome}DAO.class).recuperarPorId(getId());
+			entity = getDAO(${EntityName}DAO.class).retrieveById(getId());
 		}
 	}
 
-	public ${entidadeIdClass} getId() {
+	public ${entityIdClass} getId() {
 		return id;
 	}
 	
-	public void setId(${entidadeIdClass} id) {
+	public void setId(${entityIdClass} id) {
 		this.id = id;
 	}
 	
-	public ${EntidadeNome} getEntidade() {
-		return entidade;
+	public ${EntityName} getEntity() {
+		return entity;
 	}
 }

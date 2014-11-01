@@ -1,13 +1,13 @@
-package ${pacoteManager};
+package ${packageManager};
 
-import ${pacoteManager}.AppManager;
-import br.com.atosdamidia.comuns.modelo.Repositorio;
-import ${pacoteDAO}.${EntidadeNome}DAO;
-import ${pacoteEntidade}.${EntidadeNome};
+import ${packageManager}.AppManager;
+import br.com.atos.core.Repository;
+import ${packageDAO}.${EntityName}DAO;
+import ${packageModel}.${EntityName};
 
-public class ${EntidadeNome}Manager extends AppManager<${EntidadeNome}DAO, ${EntidadeNome}, ${entidadeIdClass}> {
+public class ${EntityName}Manager extends AppManager<${EntityName}DAO, ${EntityName}, ${entityIdClass}> {
 
-	public ${EntidadeNome}Manager(Repositorio repositorio) {
-		super(${EntidadeNome}DAO.class, repositorio);
+	public ${EntityName}Manager(Repository repository) {
+		super(${EntityName}DAO.class, repository);
 	}
 }

@@ -1,4 +1,4 @@
-package ${pacoteControlador};
+package ${packageController};
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Conversation;
@@ -6,30 +6,30 @@ import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import ${pacoteEntidade}.${EntidadeNome};
-import ${pacoteControlador}.AppCtrl;
+import ${packageModel}.${EntityName};
+import ${packageController}.AppCtrl;
 import br.com.atosdamidia.comuns.controlador.componente.Grid;
 import br.com.atosdamidia.comuns.visao.interceptors.annotations.TrataErro;
-import ${pacoteDAO}.${EntidadeNome}DAO;
-import ${pacoteWinFrm}.WinFrm${EntidadeNome};
+import ${packageDAO}.${EntityName}DAO;
+import ${packageWinFrm}.WinFrm${EntityName};
 
 @Named
 @ConversationScoped
 @TrataErro
-public class ${EntidadeNome}AdministrarCtrl extends AppCtrl {
+public class ${EntityName}AdministrarCtrl extends AppCtrl {
 
 	private static final long serialVersionUID = 1L;
 
-	private Grid<${EntidadeNome}> grid;
+	private Grid<${EntityName}> grid;
 
 	@Inject
 	private Conversation conversation;
 	
 	@Inject
-	private WinFrm${EntidadeNome} winFrm;
+	private WinFrm${EntityName} winFrm;
 
-	public ${EntidadeNome}AdministrarCtrl() {
-		grid = new Grid<${EntidadeNome}>(${EntidadeNome}DAO.class);
+	public ${EntityName}AdministrarCtrl() {
+		grid = new Grid<${EntityName}>(${EntityName}DAO.class);
 	}
 	
 	@PostConstruct
@@ -39,7 +39,7 @@ public class ${EntidadeNome}AdministrarCtrl extends AppCtrl {
         }
     }
 
-	public WinFrm${EntidadeNome} getWinFrm() {
+	public WinFrm${EntityName} getWinFrm() {
 		return winFrm;
 	}
 
@@ -57,7 +57,7 @@ public class ${EntidadeNome}AdministrarCtrl extends AppCtrl {
 		getGrid().atualizar();
 	}
 
-	public Grid<${EntidadeNome}> getGrid() {
+	public Grid<${EntityName}> getGrid() {
 		return grid;
 	}
 }
