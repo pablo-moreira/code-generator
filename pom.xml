@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>br.com.atos</groupId>
-			<artifactId>atos-jsf</artifactId>
+			<artifactId>atos-faces</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>

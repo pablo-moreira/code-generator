@@ -14,7 +14,7 @@ import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.core.model.BaseEnum;
-import br.com.atosdamidia.componente.model.FilterDate;
+import br.com.atos.faces.component.model.FilterDate;
 
 public class GridXhtmlFilterComponent extends Component {
 
