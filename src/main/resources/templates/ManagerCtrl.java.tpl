@@ -8,32 +8,28 @@ import javax.inject.Named;
 
 import ${packageModel}.${EntityName};
 import ${packageController}.AppCtrl;
-import br.com.atosdamidia.comuns.controlador.componente.Grid;
-import br.com.atosdamidia.comuns.visao.interceptors.annotations.TrataErro;
+import br.com.atos.faces.controller.component.Grid;
+import br.com.atos.faces.view.interceptors.annotations.HandlesError;
 import ${packageDAO}.${EntityName}DAO;
 import ${packageWinFrm}.WinFrm${EntityName};
 
 @Named
 @ConversationScoped
-@TrataErro
-public class ${EntityName}AdministrarCtrl extends AppCtrl {
+@HandlesError
+public class ${EntityName}${page.manager.suffix}Ctrl extends AppCtrl {
 
 	private static final long serialVersionUID = 1L;
 
-	private Grid<${EntityName}> grid;
+	private Grid<${EntityName}> grid = new Grid<${EntityName}>(${EntityName}DAO.class);
 
 	@Inject
 	private Conversation conversation;
 	
 	@Inject
 	private WinFrm${EntityName} winFrm;
-
-	public ${EntityName}AdministrarCtrl() {
-		grid = new Grid<${EntityName}>(${EntityName}DAO.class);
-	}
 	
 	@PostConstruct
-    public void inicializarConversation() {
+    public void initializeConversation() {
         if (conversation.isTransient()) {
         	this.conversation.begin();
         }
@@ -43,18 +39,18 @@ public class ${EntityName}AdministrarCtrl extends AppCtrl {
 		return winFrm;
 	}
 
-	public void salvar() throws Exception {
+	public void save() throws Exception {
 
-		getWinFrm().salvar();
+		getWinFrm().save();
 	
-		getGrid().atualizar();
+		getGrid().refresh();
 	}
 	
-	public void excluir() throws Exception {
+	public void delete() throws Exception {
 		
-		getWinFrm().excluir();
+		getWinFrm().delete();
 		
-		getGrid().atualizar();
+		getGrid().refresh();
 	}
 
 	public Grid<${EntityName}> getGrid() {

@@ -5,15 +5,15 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:composite="http://java.sun.com/jsf/composite"
     xmlns:p="http://primefaces.org/ui"  
-    xmlns:custom="http://java.sun.com/jsf/composite/components/custom"
+    xmlns:app="http://java.sun.com/jsf/composite/components/app"
     xmlns:u="http://www.atosdamidia.com.br/facelets">	
-	<ui:composition template="/templates/padrao.xhtml">    
-	   	<ui:param name="pgTitulo" value="Administração de ${entidadeRotulo}s" />
-		<ui:define name="conteudo">
+	<ui:composition template="/templates/default.xhtml">    
+	   	<ui:param name="pageTitle" value="Administração de ${entityLabel}s" />
+		<ui:define name="content">
 			<h:form id="frm">				
-				<custom:grid${EntityName} grid="#{${EntityName}AdministrarCtrl.grid}" winFrm="#{${EntityName}AdministrarCtrl.winFrm}" />				
+				<app:grid${EntityName} grid="#{${EntityName}AdministrarCtrl.grid}" winFrm="#{${EntityName}AdministrarCtrl.winFrm}" />				
 			</h:form>
-			<custom:winFrm${EntityName} winFrm="#{${EntityName}AdministrarCtrl.winFrm}" salvarAction="#{${EntityName}AdministrarCtrl.salvar}" excluirAction="#{${EntityName}AdministrarCtrl.excluir}" />
+			<app:winFrm${EntityName} winFrm="#{${EntityName}${page.manager.suffix}Ctrl.winFrm}" saveAction="#{${EntityName}${page.manager.suffix}Ctrl.salvar}" deleteAction="#{${EntityName}${page.manager.suffix}Ctrl.delete}" />
 		</ui:define>
 	</ui:composition>
 </html>

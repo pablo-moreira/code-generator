@@ -74,7 +74,7 @@ public class CodeGenerator {
 	public static final String PAGE_VIEW_SUFFIX = "page.view.suffix";
 	public static final String PAGE_MANAGER_SUFFIX = "page.manager.suffix";
 		
-	public Pattern pattern = Pattern.compile("\\$\\{([a-zA-Z]*)\\}");	
+	public Pattern pattern = Pattern.compile("\\$\\{([a-z\\.A-Z]*)\\}");	
 	private File dirSrc;	
 	private File dirWebContent;	
 	private HashMap<String,String> attributesValues = new HashMap<String,String>();
@@ -295,7 +295,7 @@ public class CodeGenerator {
 	}
 		
 	public void makePageView() throws Exception {				
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
 		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), "View.xhtml.tpl", true
 				, new TargetConfig(false, false, false, true, false, true)
 				, new TargetConfig(true, false, false, true, false, false)
@@ -303,7 +303,7 @@ public class CodeGenerator {
 	}
 		
 	public void makePageManager() throws Exception {
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ManagerCtrl.java.tpl", false));
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ManagerCtrl.java.tpl", false));
 		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), "Manager.xhtml.tpl", true
 				, new TargetConfig(false, false, false, false, false, false)
 				, null
@@ -367,10 +367,10 @@ public class CodeGenerator {
             	store(getEntity());
             }
 
-            attributesValues.put("ArtigoDefinido", getEntity().getGender().getArticle().toUpperCase());
-            attributesValues.put("artigoDefinido", getEntity().getGender().getArticle());
-            attributesValues.put("entidadeRotulo", getEntity().getLabel());
-            attributesValues.put("EntidadeRotulo", StringUtils.firstToUpperCase(getEntity().getLabel()));
+            attributesValues.put("Gender", getEntity().getGender().getArticle().toUpperCase());
+            attributesValues.put("gender", getEntity().getGender().getArticle());
+            attributesValues.put("entityLabel", getEntity().getLabel());
+            attributesValues.put("EntityLabel", StringUtils.firstToUpperCase(getEntity().getLabel()));
                              
             if (getTarget().isShowWinFrmAttributeOneToMany()) { 
 	            

@@ -7,14 +7,14 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import br.com.atosdamidia.comuns.visao.interceptors.annotations.TrataErro;
+import br.com.atos.faces.view.interceptors.annotations.HandlesError;
 import ${packageDAO}.${EntityName}DAO;
 import ${packageModel}.${EntityName};
 
 @Named
 @ConversationScoped
-@TrataErro
-public class ${EntityName}VisualizarCtrl extends AppCtrl {
+@HandlesError
+public class ${EntityName}${page.view.suffix}Ctrl extends AppCtrl {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class ${EntityName}VisualizarCtrl extends AppCtrl {
         }
     }
 	
-	public void initialize() {
+	public void start() {
 		if (!FacesContext.getCurrentInstance().isPostback() && !FacesContext.getCurrentInstance().isValidationFailed()) {
 			entity = getDAO(${EntityName}DAO.class).retrieveById(getId());
 		}

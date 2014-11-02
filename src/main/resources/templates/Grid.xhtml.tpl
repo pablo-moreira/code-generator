@@ -6,38 +6,38 @@
     xmlns:composite="http://java.sun.com/jsf/composite"
     xmlns:p="http://primefaces.org/ui"  
     xmlns:atos="http://java.sun.com/jsf/composite/components/atos"
-    xmlns:custom="http://java.sun.com/jsf/composite/components/custom">
+    xmlns:app="http://java.sun.com/jsf/composite/components/app">
 
 	<composite:interface>
-		<composite:attribute name="grid" required="true" type="br.com.atosdamidia.comuns.controlador.componente.Grid" />
+		<composite:attribute name="grid" required="true" type="br.com.atos.faces.controller.component.Grid" />
 		<composite:attribute name="winFrm" required="false" type="${packageWinFrm}.WinFrm${EntityName}" />
 	</composite:interface>
 
 	<composite:implementation>
 		<p:outputPanel layout="block" styleClass="form-menu" rendered="#{cc.attrs.winFrm != null}">
-			<p:commandButton icon="ui-icon-document" value="Novo" action="#{cc.attrs.winFrm.iniciarInsercao}" />
+			<p:commandButton icon="ui-icon-document" value="Novo" action="#{cc.attrs.winFrm.startInsert}" />
 		</p:outputPanel>
 					
 		<atos:gridFilters grid="#{cc.attrs.grid}">
-			${gridXhtmlFiltros}			
+			${gridXhtmlFilters}
 		</atos:gridFilters>
 		
 		<atos:grid grid="#{cc.attrs.grid}" dataExporter="#{dataExporterCtrl}">
-	       	${gridXhtmlColunas}	       
+	       	${gridXhtmlColumns}	       
 			<p:column styleClass="col-acao" rendered="#{cc.attrs.winFrm != null}" exportable="false">
 				<f:facet name="header"><h:outputText value="Ação" /></f:facet>
-				<h:link outcome="/pages/${EntityName}/${EntityName}Visualizar.jsf" title="Visualizar o objeto">
-					<f:param name="id" value="#{objeto.id}" />
+				<h:link outcome="/pages/${EntityName}/${EntityName}{page.view.suffix}.jsf" title="Visualizar o objeto">
+					<f:param name="id" value="#{entity.id}" />
 					<h:graphicImage value="/resources/img/s.gif" styleClass="link-icone ui-icon-zoomin" />
 				</h:link>
-	        	<p:commandLink action="#{cc.attrs.winFrm.iniciarEdicao}" title="Alterar o objeto">
+	        	<p:commandLink action="#{cc.attrs.winFrm.startUpdate}" title="Alterar o objeto">
 	        		<h:graphicImage value="/resources/img/s.gif" styleClass="link-icone ui-icon-pencil" />
-	        		<f:setPropertyActionListener target="#{cc.attrs.winFrm.objeto}" value="#{objeto}" />
+	        		<f:setPropertyActionListener target="#{cc.attrs.winFrm.entity}" value="#{entity}" />
 	        	</p:commandLink>
-				<p:commandLink action="#{cc.attrs.winFrm.iniciarExclusao}" title="Excluir o objeto">
+				<p:commandLink action="#{cc.attrs.winFrm.startDelete}" title="Excluir o objeto">
 					<h:graphicImage value="/resources/img/s.gif" styleClass="link-icone ui-icon-trash" />
-	        		<f:setPropertyActionListener target="#{cc.attrs.winFrm.objeto}" value="#{objeto}" />
-	        	</p:commandLink>				        
+	        		<f:setPropertyActionListener target="#{cc.attrs.winFrm.entity}" value="#{entity}" />
+	        	</p:commandLink>
 	        </p:column>
 		</atos:grid>
 	</composite:implementation>

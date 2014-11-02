@@ -6,24 +6,24 @@
     xmlns:composite="http://java.sun.com/jsf/composite"
     xmlns:p="http://primefaces.org/ui"  
     xmlns:atos="http://java.sun.com/jsf/composite/components/atos"
-    xmlns:custom="http://java.sun.com/jsf/composite/components/custom">
+    xmlns:app="http://java.sun.com/jsf/composite/components/app">
 
 	<composite:interface>
 		<composite:attribute name="winFrm" required="true" type="${packageWinFrm}.WinFrm${EntityName}" />
-		<composite:attribute name="salvarAction" required="false" default="#{cc.attrs.winFrm.salvar}" method-signature="void action()" />
-		<composite:attribute name="excluirAction" required="false" default="#{cc.attrs.winFrm.excluir}" method-signature="void action()" />
+		<composite:attribute name="saveAction" required="false" default="#{cc.attrs.winFrm.save}" method-signature="void action()" />
+		<composite:attribute name="deleteAction" required="false" default="#{cc.attrs.winFrm.delete}" method-signature="void action()" />
 	</composite:interface>
 
 	<composite:implementation>
 		<atos:winFrmCrud 
-			dialogoTitulo="Formulário para cadastro de ${entidadeRotulo}."
-			dialogoExclusaoTitulo="Exclusão de ${entidadeRotulo}."
-			dialogoExclusaoMensagem="Você tem certeza que deseja excluir ${artigoDefinido} ${entidadeRotulo}?"
+			dialogTitle="Formulário para cadastro de ${entityLabel}."
+			dialogDeleteTitle="Exclusão de ${entityLabel}."
+			dialogDeleteMessage="Você tem certeza que deseja excluir ${gender} ${entityLabel}?"
 			winFrmCrud="#{cc.attrs.winFrm}"
-			salvarAction="#{cc.attrs.salvarAction}"
-			excluirAction="#{cc.attrs.excluirAction}">			
+			saveAction="#{cc.attrs.saveAction}"
+			deleteAction="#{cc.attrs.deleteAction}">			
 			${winFrmXhtml}
 		</atos:winFrmCrud>
-		${winFrmXhtmlAssociacoes}
+		${winFrmXhtmlAssociations}
 	</composite:implementation>
 </html>
