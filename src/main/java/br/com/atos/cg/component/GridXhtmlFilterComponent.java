@@ -23,12 +23,12 @@ public class GridXhtmlFilterComponent extends Component {
 	}
 
 	@Override
-	public String getComponenteChave() {
-		return "gridXhtmlFiltros";
+	public String getComponentKey() {
+		return "gridXhtmlFilters";
 	}
 
 	@Override
-	public void renderizar(PrintWriter pw) {
+	public void render(PrintWriter pw) {
 
 		for (Attribute attribute : getGc().getEntity().getAttributes()) {
 			
@@ -50,30 +50,30 @@ public class GridXhtmlFilterComponent extends Component {
 		}
 	}
 	
-	private void printFilter(PrintWriter pw, Attribute atributo, Field field, String atributoPath) {
+	private void printFilter(PrintWriter pw, Attribute attribute, Field field, String attributePath) {
 		
 		if (Number.class.isAssignableFrom(field.getType())) {				
-			println(pw, "\t\t\t\t<atos:filterNumeric operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" type=\"{2}\" />", atributoPath, atributo.getLabel(), field.getType().getSimpleName());	
+			println(pw, "\t\t\t\t<atos:filterNumeric operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" type=\"{2}\" />", attributePath, attribute.getLabel(), field.getType().getSimpleName());	
 		}
 		else if (BaseEnum.class.isAssignableFrom(field.getType())) {
-			println(pw, "\t\t\t\t<atos:filterEnum operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" options=\"#'{'selectItems.{2}Itens'}'\" />", atributoPath, atributo.getLabel(), firstToLowerCase(field.getType().getSimpleName()));
+			println(pw, "\t\t\t\t<atos:filterEnum operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" options=\"#'{'selectItems.{2}Itens'}'\" />", attributePath, attribute.getLabel(), firstToLowerCase(field.getType().getSimpleName()));
 		}
 		else if (Date.class.isAssignableFrom(field.getType())) {
 		
 			Temporal annotation = field.getAnnotation(Temporal.class);
 			
 			if (annotation == null || annotation.value() == TemporalType.TIMESTAMP) {
-				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA_HORARIO);
+				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", attributePath, attribute.getLabel(), FilterDate.DATE_PATTERN_DATA_HORARIO);
 			}
 			else if (annotation.value() == TemporalType.DATE) {
-				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", atributoPath, atributo.getLabel(), FilterDate.DATE_PATTERN_DATA);
+				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", attributePath, attribute.getLabel(), FilterDate.DATE_PATTERN_DATA);
 			}
 			else {
 				// Nao faz nada...
 			}
 		}
 		else {
-			println(pw, "\t\t\t\t<atos:filterString operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" />", atributoPath, atributo.getLabel());
+			println(pw, "\t\t\t\t<atos:filterString operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" />", attributePath, attribute.getLabel());
 		}
 	}
 }

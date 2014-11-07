@@ -13,14 +13,14 @@ public class GridXhtmlColumnsComponent extends Component {
 	}
 
 	@Override
-	public String getComponenteChave() {
-		return "gridXhtmlColunas";
+	public String getComponentKey() {
+		return "gridXhtmlColumns";
 	}
 
 	@Override
-	public void renderizar(PrintWriter pw) {
+	public void render(PrintWriter pw) {
 		
-		String path = "objeto";
+		String path = "entity";
 		
 		for (Attribute attribute : getGc().getEntity().getAttributes()) {
 			

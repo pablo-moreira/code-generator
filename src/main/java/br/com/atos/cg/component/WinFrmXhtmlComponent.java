@@ -20,12 +20,12 @@ public class WinFrmXhtmlComponent extends Component {
 	}
 
 	@Override
-	public String getComponenteChave() {
+	public String getComponentKey() {
 		return "winFrmXhtml";
 	}
 
 	@Override
-	public void renderizar(PrintWriter pw) {
+	public void render(PrintWriter pw) {
 		
 		println(pw, "\t\t\t<p:tabView id=\"tbView\" activeIndex=\"#{cc.attrs.winFrm.tabViewIndex}\">");	
 		
@@ -42,8 +42,8 @@ public class WinFrmXhtmlComponent extends Component {
 				println(pw, "\t\t\t\t\t<p:dataTable");
 				println(pw, "\t\t\t\t\t\tid=\"{0}\"", dataTableId);
 				println(pw, "\t\t\t\t\t\temptyMessage=\"Nenhum objeto cadastrado.\"");
-				println(pw, "\t\t\t\t\t\tvalue=\"#'{'cc.attrs.winFrm.objeto.{0}'}'\"", attribute.getField().getName());
-				println(pw, "\t\t\t\t\t\tvar=\"associacao\">");
+				println(pw, "\t\t\t\t\t\tvalue=\"#'{'cc.attrs.winFrm.entity.{0}'}'\"", attribute.getField().getName());
+				println(pw, "\t\t\t\t\t\tvar=\"association\">");
 				println(pw, "\t\t\t\t\t\t");
 				
 				if (AttributeFormType.EXTERNAL.equals(attribute.getFormType())) {
@@ -62,27 +62,27 @@ public class WinFrmXhtmlComponent extends Component {
 					}
 
 					println(pw, "\t\t\t\t\t\t<p:column headerText=\"Ação\" styleClass=\"col-acao\">");
-					println(pw, "\t\t\t\t\t\t\t<p:commandLink action=\"#'{'cc.attrs.winFrm.associacao{0}.iniciarEdicao'}'\" title=\"Alterar o objeto\" process=\"@this\">", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t<p:commandLink action=\"#'{'cc.attrs.winFrm.association{0}.startUpdate'}'\" title=\"Alterar o objeto\" process=\"@this\">", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t\t<h:graphicImage value=\"/resources/img/s.gif\" styleClass=\"link-icone ui-icon-pencil\" />");
-					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.associacao{0}.winFrmAssociacao.objeto}\" value=\"#'{'associacao'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.association{0}.winFrmAssociation.entity}\" value=\"#'{'association'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t</p:commandLink>");
 					println(pw, "\t\t\t\t\t\t\t");
-					println(pw, "\t\t\t\t\t\t\t<p:commandLink action=\"#'{'cc.attrs.winFrm.associacao{0}.iniciarExclusao'}'\" title=\"Excluir o objeto\" process=\"@this\">", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t<p:commandLink action=\"#'{'cc.attrs.winFrm.association{0}.startDelete'}'\" title=\"Excluir o objeto\" process=\"@this\">", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t\t<h:graphicImage value=\"/resources/img/s.gif\" styleClass=\"link-icone ui-icon-trash\" />");
-					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.associacao{0}.winFrmAssociacao.objeto}\" value=\"#'{'associacao'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.association{0}.winFrmAssociation.entity}\" value=\"#'{'association'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t</p:commandLink>");
 					println(pw, "\t\t\t\t\t\t</p:column>");					
 					println(pw, "\t\t\t\t\t\t");
 					println(pw, "\t\t\t\t\t\t<f:facet name=\"footer\">");
 					println(pw, "\t\t\t\t\t\t\t<p:outputPanel styleClass=\"datatable-menu\" layout=\"block\">");
-					println(pw, "\t\t\t\t\t\t\t\t<p:commandButton value=\"Adicionar\" action=\"#'{'cc.attrs.winFrm.associacao{0}.iniciarInsercao'}'\" title=\"Adiconar um ojbeto\" icon=\"ui-icon-document\" process=\"@this\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t\t<p:commandButton value=\"Adicionar\" action=\"#'{'cc.attrs.winFrm.association{0}.startInsert'}'\" title=\"Adiconar um ojbeto\" icon=\"ui-icon-document\" process=\"@this\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t</p:outputPanel>");
 					println(pw, "\t\t\t\t\t\t</f:facet>");
 					println(pw, "\t\t\t\t\t</p:dataTable>");	
 				}
 				else {
 					
-					String assocPath = "associacao";
+					String assocPath = "association";
 					
 					AttributeId assocAttributeId = attribute.getAssociationEntity().getAttributeId();
 					
@@ -106,23 +106,23 @@ public class WinFrmXhtmlComponent extends Component {
 					}
 					
 					println(pw, "\t\t\t\t\t\t<p:column headerText=\"Ação\" styleClass=\"col-acao\">");
-					println(pw, "\t\t\t\t\t\t\t<p:commandLink action=\"#'{'cc.attrs.winFrm.associacao{0}.iniciarExclusao'}'\" title=\"Excluir o objeto\" process=\"@this\">", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t<p:commandLink action=\"#'{'cc.attrs.winFrm.association{0}.startUpdate'}'\" title=\"Excluir o objeto\" process=\"@this\">", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t\t<h:graphicImage value=\"/resources/img/s.gif\" styleClass=\"link-icone ui-icon-trash\" />");
-					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.associacao{0}.associacao}\" value=\"#'{'associacao'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\t\t\t<f:setPropertyActionListener target=\"#'{'cc.attrs.winFrm.association{0}.association}\" value=\"#'{'association'}'\" />", StringUtils.firstToUpperCase(attribute.getField().getName()));
 					println(pw, "\t\t\t\t\t\t\t</p:commandLink>");
 					println(pw, "\t\t\t\t\t\t</p:column>");
 					println(pw, "\t\t\t\t\t\t");
 					println(pw, "\t\t\t\t\t\t<f:facet name=\"footer\">");
 					println(pw, "\t\t\t\t\t\t\t<p:outputPanel styleClass=\"datatable-menu\" layout=\"block\">");
-					println(pw, "\t\t\t\t\t\t\t\t<p:commandButton value=\"Adicionar\" action=\"#'{'cc.attrs.winFrm.associacao{0}.iniciarInsercao'}'\" title=\"Adiconar um ojbeto\" icon=\"ui-icon-document\" process=\"{1}\" update=\"{1}\" />", StringUtils.firstToUpperCase(attribute.getField().getName()), dataTableId);
+					println(pw, "\t\t\t\t\t\t\t\t<p:commandButton value=\"Adicionar\" action=\"#'{'cc.attrs.winFrm.association{0}.startInsert'}'\" title=\"Adiconar um ojbeto\" icon=\"ui-icon-document\" process=\"{1}\" update=\"{1}\" />", StringUtils.firstToUpperCase(attribute.getField().getName()), dataTableId);
 					println(pw, "\t\t\t\t\t\t\t</p:outputPanel>");
 					println(pw, "\t\t\t\t\t\t</f:facet>");
 					println(pw, "\t\t\t\t\t</p:dataTable>");
 					println(pw, "\t\t\t\t\t");
-					println(pw, "\t\t\t\t\t<atos:winFrmAssociacaoExcluir");
-					println(pw, "\t\t\t\t\t\tfrmAssociacao=\"#'{'cc.attrs.winFrm.associacao{0}'}'\"", StringUtils.firstToUpperCase(attribute.getField().getName()));
-					println(pw, "\t\t\t\t\t\ttitulo=\"Exclusão de {0}.\"", attribute.getLabel());
-					println(pw, "\t\t\t\t\t\tmensagem=\"Você tem certeza que deseja excluir {0}?\" />", attribute.getLabel());
+					println(pw, "\t\t\t\t\t<atos:winFrmAssociationDelete");
+					println(pw, "\t\t\t\t\t\tfrmAssociation=\"#'{'cc.attrs.winFrm.association{0}'}'\"", StringUtils.firstToUpperCase(attribute.getField().getName()));
+					println(pw, "\t\t\t\t\t\ttitle=\"Exclusão de {0}.\"", attribute.getLabel());
+					println(pw, "\t\t\t\t\t\tmessage=\"Você tem certeza que deseja excluir {0}?\" />", attribute.getLabel());
 				}
 		
 				println(pw, "\t\t\t\t</p:tab>");
@@ -134,9 +134,9 @@ public class WinFrmXhtmlComponent extends Component {
 
 	private void gerarTabEntidade(PrintWriter pw) {
 
-		String path = "cc.attrs.winFrm.objeto";
+		String path = "cc.attrs.winFrm.entity";
 		
-		println(pw, "\t\t\t\t<p:tab title=\"{0}\">", getGc().getAttributeValue("EntidadeRotulo"));
+		println(pw, "\t\t\t\t<p:tab title=\"{0}\">", getGc().getAttributeValue("EntityLabel"));
 		println(pw, "\t\t\t\t\t<h:panelGrid columns=\"3\" cellpadding=\"5\" style=\"width: 100%\">");
 		println(pw, "\t\t\t\t\t\t<h:outputLabel value=\"Id:\" for=\"id\" />");
 		println(pw, "\t\t\t\t\t\t<p:inputText id=\"id\" label=\"Id.\" value=\"#'{'{0}.id'}'\" disabled=\"true\" />", path);

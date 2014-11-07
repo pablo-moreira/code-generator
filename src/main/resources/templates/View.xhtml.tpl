@@ -5,7 +5,7 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:composite="http://java.sun.com/jsf/composite"
     xmlns:p="http://primefaces.org/ui"  
-    xmlns:custom="http://java.sun.com/jsf/composite/components/custom"
+    xmlns:app="http://java.sun.com/jsf/composite/components/app"
     xmlns:u="http://www.atosdamidia.com.br/facelets">
     <f:metadata>
 		<f:viewParam name="id" value="#{${entityName}${page.view.suffix}Ctrl.id}" required="true" />

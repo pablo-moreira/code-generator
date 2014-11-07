@@ -34,8 +34,9 @@ abstract public class Component {
 		return gc;
 	}
 	
-	abstract public String getComponenteChave();
-	abstract public void renderizar(PrintWriter pw);
+	abstract public String getComponentKey();
+	
+	abstract public void render(PrintWriter pw);
 	
 	protected void print(PrintWriter pw, String string) {
 		pw.print(string);
@@ -74,7 +75,7 @@ abstract public class Component {
 		String value = path + "." + getValue(attribute);
 
 		if (BaseEnum.class.isAssignableFrom(field.getType())) {
-			println(pw, "{0}<h:outputText value=\"#'{'{1}.descricao'}'\" />", indentation, value);
+			println(pw, "{0}<h:outputText value=\"#'{'{1}.description'}'\" />", indentation, value);
 		}
 		else if (Date.class.isAssignableFrom(field.getType())) {
 			
@@ -159,7 +160,7 @@ abstract public class Component {
 			println(pw, indentation + "<p:autoComplete id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" required=\"{3}\" forceSelection=\"true\"", id, label, value, required);
 
 			if (entityTab) {
-				println(pw, indentation + "\tdisabled=\"#'{'cc.attrs.winFrm.entidadeAssociada != null and cc.attrs.winFrm.entidadeAssociada == cc.attrs.winFrm.objeto.{0}'}'\"", attribute.getField().getName());
+				println(pw, indentation + "\tdisabled=\"#'{'cc.attrs.winFrm.entityAssociated != null and cc.attrs.winFrm.entityAssociated == cc.attrs.winFrm.entity.{0}'}'\"", attribute.getField().getName());
 			}
 			
 			println(pw, indentation + "\tcompleteMethod=\"#'{'autoCompleteCtrl.onComplete{0}'}'\" dropdown=\"true\" converter=\"lazyEntityConverter\"", type.getSimpleName());
@@ -167,6 +168,7 @@ abstract public class Component {
 			println(pw, indentation + "\tsize=\"{0}\" scrollHeight=\"200\">", entityTab ? "40" : "35");
 			println(pw, indentation + "\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(type.getSimpleName()), associacaoFieldId.getName());
 			println(pw, indentation + "\t<p:column><h:outputText value=\"#'{'{0}.{1}'}'\" /></p:column>", firstToLowerCase(type.getSimpleName()), atributoManyToOne.getDescriptionAttributeOfAssociation());
+			println(pw, indentation + "\t<p:ajax event=\"query\" global=\"false\" />");
 			println(pw, indentation + "</p:autoComplete>");
 		}
 		else {

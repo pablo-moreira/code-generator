@@ -14,15 +14,15 @@ public class WinFrmXhtmlAssociationsComponent extends Component {
 	}
 
 	@Override
-	public String getComponenteChave() {
-		return "winFrmXhtmlAssociacoes";
+	public String getComponentKey() {
+		return "winFrmXhtmlAssociations";
 	}
 
 	@Override
-	public void renderizar(PrintWriter pw) {
-		for (AttributeOneToMany atributo : getGc().getEntity().getAttributesOneToMany()) {
-			if (AttributeFormType.EXTERNAL.equals(atributo.getFormType())) {
-				println(pw, "\t\t<custom:winFrm{0} winFrm=\"#'{'cc.attrs.winFrm.associacao{1}.winFrmAssociacao'}'\" salvarAction=\"#'{'cc.attrs.winFrm.associacao{1}.salvar'}'\" excluirAction=\"#'{'cc.attrs.winFrm.associacao{1}.excluir'}'\" />", atributo.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(atributo.getField().getName()));
+	public void render(PrintWriter pw) {
+		for (AttributeOneToMany attribute : getGc().getEntity().getAttributesOneToMany()) {
+			if (AttributeFormType.EXTERNAL.equals(attribute.getFormType())) {
+				println(pw, "\t\t<custom:winFrm{0} winFrm=\"#'{'cc.attrs.winFrm.association{1}.winFrmAssociation'}'\" saveAction=\"#'{'cc.attrs.winFrm.association{1}.save'}'\" deleteAction=\"#'{'cc.attrs.winFrm.association{1}.delete'}'\" />", attribute.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(attribute.getField().getName()));
 			}
 		}
 	}

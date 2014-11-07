@@ -26,7 +26,7 @@
 	       	${gridXhtmlColumns}	       
 			<p:column styleClass="col-acao" rendered="#{cc.attrs.winFrm != null}" exportable="false">
 				<f:facet name="header"><h:outputText value="Ação" /></f:facet>
-				<h:link outcome="/pages/${EntityName}/${EntityName}{page.view.suffix}.jsf" title="Visualizar o objeto">
+				<h:link outcome="/pages/${entityName}/${entityName}${page.view.suffix}.jsf" title="Visualizar o objeto">
 					<f:param name="id" value="#{entity.id}" />
 					<h:graphicImage value="/resources/img/s.gif" styleClass="link-icone ui-icon-zoomin" />
 				</h:link>

@@ -235,7 +235,7 @@ public class CodeGenerator {
 
 	public void addComponent(Component newComponent) {
 		
-		Component component = recuperarComponentePorChave(newComponent.getComponenteChave());
+		Component component = recuperarComponentePorChave(newComponent.getComponentKey());
 		
 		if (component != null) {
 			components.remove(component);
@@ -250,14 +250,14 @@ public class CodeGenerator {
 	}
 	
 	public void makeGrid() throws Exception {
-		makeTarget(new Target("Grid{0}.xhtml", new File(dirWebContent, "resources/components/custom"), "Grid.xhtml.tpl", true
+		makeTarget(new Target("Grid{0}.xhtml", new File(dirWebContent, "resources/components/app"), "Grid.xhtml.tpl", true
 				, new TargetConfig(true, true, false, true, false, false)
 				, null
 		));
 	}
 
 	public void makeWinFrm() throws Exception {
-		makeTarget(new Target("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/custom"), "WinFrm.xhtml.tpl", true					 
+		makeTarget(new Target("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/app"), "WinFrm.xhtml.tpl", true					 
 				, new TargetConfig(false, false, true, true, true, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));
@@ -423,7 +423,7 @@ public class CodeGenerator {
             		Component componente = recuperarComponentePorChave(chave);
             		
             		if (componente != null) {
-            			componente.renderizar(pw);
+            			componente.render(pw);
             		}
             		else {
             			pw.print(parteAtualizar);
@@ -466,7 +466,7 @@ public class CodeGenerator {
 	private Component recuperarComponentePorChave(String chave) {
 		
 		for (Component componente : components) {
-			if (componente.getComponenteChave().equals(chave)) {
+			if (componente.getComponentKey().equals(chave)) {
 				return componente;
 			}
 		}

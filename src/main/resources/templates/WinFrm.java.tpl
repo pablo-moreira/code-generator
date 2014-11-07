@@ -3,7 +3,6 @@ package ${packageWinFrm};
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Named;
 
-import br.com.atos.faces.controller.component.WinFrmCrud;
 import br.com.atos.faces.view.interceptors.annotations.HandlesError;
 import ${packageDAO}.${EntityName}DAO;
 import ${packageModel}.${EntityName};

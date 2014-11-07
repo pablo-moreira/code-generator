@@ -43,14 +43,14 @@ public class ${EntityName}${page.manager.suffix}Ctrl extends AppCtrl {
 
 		getWinFrm().save();
 	
-		getGrid().refresh();
+		getGrid().update();
 	}
 	
 	public void delete() throws Exception {
 		
 		getWinFrm().delete();
 		
-		getGrid().refresh();
+		getGrid().update();
 	}
 
 	public Grid<${EntityName}> getGrid() {

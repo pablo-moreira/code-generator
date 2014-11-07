@@ -14,12 +14,12 @@ public class WinFrmJavaImportsComponent extends Component {
 	}
 
 	@Override
-	public String getComponenteChave() {
-		return "winFrmEntidadeImports";
+	public String getComponentKey() {
+		return "winFrmEntityImports";
 	}
 
 	@Override
-	public void renderizar(PrintWriter pw) {
+	public void render(PrintWriter pw) {
 		
 		List<AttributeOneToMany> atributosOneToMany = getGc().getEntity().getAttributesOneToMany();
 		
@@ -46,11 +46,11 @@ public class WinFrmJavaImportsComponent extends Component {
 			if (temTipoFormularioExterno) {
 				println(pw, "import javax.enterprise.inject.New;");
 				println(pw, "import javax.inject.Inject;");
-				println(pw, "import br.com.atosdamidia.comuns.controlador.componente.WinFrmAssociacaoOneToMany;");
+				println(pw, "import br.com.atos.faces.controller.component.WinFrmAssociationOneToMany;");
 			}
 			
 			if (temTipoFormularioEmbutido) {
-				println(pw, "import br.com.atosdamidia.comuns.controlador.componente.FrmAssociacaoOneToMany;");
+				println(pw, "import br.com.atos.faces.controller.component.FrmAssociationOneToMany;");
 			}
 		}		
 	}

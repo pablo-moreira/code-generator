@@ -11,9 +11,9 @@
 	   	<ui:param name="pageTitle" value="Administração de ${entityLabel}s" />
 		<ui:define name="content">
 			<h:form id="frm">				
-				<app:grid${EntityName} grid="#{${EntityName}AdministrarCtrl.grid}" winFrm="#{${EntityName}AdministrarCtrl.winFrm}" />				
+				<app:grid${EntityName} grid="#{${entityName}${page.manager.suffix}Ctrl.grid}" winFrm="#{${entityName}${page.manager.suffix}Ctrl.winFrm}" />				
 			</h:form>
-			<app:winFrm${EntityName} winFrm="#{${EntityName}${page.manager.suffix}Ctrl.winFrm}" saveAction="#{${EntityName}${page.manager.suffix}Ctrl.salvar}" deleteAction="#{${EntityName}${page.manager.suffix}Ctrl.delete}" />
+			<app:winFrm${EntityName} winFrm="#{${entityName}${page.manager.suffix}Ctrl.winFrm}" saveAction="#{${entityName}${page.manager.suffix}Ctrl.save}" deleteAction="#{${entityName}${page.manager.suffix}Ctrl.delete}" />
 		</ui:define>
 	</ui:composition>
 </html>
