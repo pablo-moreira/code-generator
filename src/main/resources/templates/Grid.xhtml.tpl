@@ -1,23 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:composite="http://java.sun.com/jsf/composite"
-    xmlns:p="http://primefaces.org/ui"  
-    xmlns:atos="http://java.sun.com/jsf/composite/components/atos"
-    xmlns:app="http://java.sun.com/jsf/composite/components/app">
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:cc="http://xmlns.jcp.org/jsf/composite"    
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:atos="http://xmlns.jcp.org/jsf/composite/components/atos"
+    xmlns:app="http://xmlns.jcp.org/jsf/composite/components/app">
 
-	<composite:interface>
-		<composite:attribute name="grid" required="true" type="br.com.atos.faces.controller.component.Grid" />
-		<composite:attribute name="winFrm" required="false" type="${packageWinFrm}.WinFrm${EntityName}" />
-	</composite:interface>
+	<cc:interface>
+		<cc:attribute name="grid" required="true" type="br.com.atos.faces.controller.component.Grid" />
+		<cc:attribute name="winFrm" required="false" type="${packageWinFrm}.WinFrm${EntityName}" />
+	</cc:interface>
 
-	<composite:implementation>
-		<p:outputPanel layout="block" styleClass="form-menu" rendered="#{cc.attrs.winFrm != null}">
-			<p:commandButton icon="ui-icon-document" value="Novo" action="#{cc.attrs.winFrm.startInsert}" />
-		</p:outputPanel>
-					
+	<cc:implementation>				
 		<atos:gridFilters grid="#{cc.attrs.grid}">
 			${gridXhtmlFilters}
 		</atos:gridFilters>
@@ -39,6 +36,12 @@
 	        		<f:setPropertyActionListener target="#{cc.attrs.winFrm.entity}" value="#{entity}" />
 	        	</p:commandLink>
 	        </p:column>
+	        
+			<f:facet name="footer">
+	        	<p:outputPanel layout="block" styleClass="action-left" rendered="#{cc.attrs.winFrm != null}">
+					<p:commandButton icon="ui-icon-document" value="Novo" action="#{cc.attrs.winFrm.startInsert}" />
+				</p:outputPanel>
+	        </f:facet>
 		</atos:grid>
-	</composite:implementation>
+	</cc:implementation>
 </html>
