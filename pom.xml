@@ -4,8 +4,8 @@
 	<groupId>br.com.atos</groupId>
 	<artifactId>atos-cg</artifactId>
 	<version>0.1.0</version>
-	<name>Gerador de Codigo</name>
-	<description>Gerador de Codigo</description>
+	<name>Code Generator</name>
+	<description>Code Generator</description>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>br.com.atos</groupId>
 			<artifactId>atos-utils</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>br.com.atos</groupId>
