@@ -1,13 +1,15 @@
 package br.com.atos.cg.model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import br.com.atos.cg.CodeGenerator;
 import br.com.atos.utils.StringUtils;
 
 public class Attribute {
 
-	private Field field;	
+	private Field field;
+	private Method method;	
 	private String label;
 	
 	private Boolean renderColumn = true;
@@ -15,21 +17,48 @@ public class Attribute {
 	private Boolean renderForm = true;
 	
 	private Entity entity;
+	private String propertyName;
 
-        public Attribute() {}
-        
+	public Attribute() {}
+    
+	public Attribute(Method method, Entity entity) {
+		this.method = method;
+		this.entity = entity;
+		init();
+		load();
+	}
+	
 	public Attribute(Field field, Entity entity) {
 		this.field = field;
 		this.entity = entity;
+		init();
 		load();
 	}
 
+	private void init() {
+		if (field != null) {
+			propertyName = field.getName();
+		}
+		else {
+			String methodName = method.getName();
+			
+			methodName = methodName.replace("set", "").replace("get", "");
+			methodName = StringUtils.firstToLowerCase(methodName);
+			
+			propertyName = methodName;
+		}
+	}
+	
 	protected CodeGenerator getGc() {
 		return getEntity().getGc();
 	}
 	
+	public String getPropertyName() {
+		return propertyName;		
+	}
+	
 	protected String getPropertiesKeyBase() {
-		return getEntity().getClazz().getName() + "." + getField().getName();
+		return getEntity().getClazz().getName() + "." + getPropertyName();
 	}
 		
 	public Attribute(Field field, String label) {

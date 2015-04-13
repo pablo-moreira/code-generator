@@ -1,6 +1,7 @@
 package br.com.atos.cg.model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import br.com.atos.utils.ReflectionUtils;
@@ -23,7 +24,11 @@ public class AttributeManyToOne extends Attribute {
     	super(field, entity);
     }
 
-    public String getDescriptionAttributeOfAssociation() {
+    public AttributeManyToOne(Method method, Entity entity) {
+    	super(method, entity);
+	}
+
+	public String getDescriptionAttributeOfAssociation() {
     	return descriptionAttributeOfAssociation;
     }    
 	

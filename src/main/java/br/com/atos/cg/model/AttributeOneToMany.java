@@ -1,6 +1,7 @@
 package br.com.atos.cg.model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -30,6 +31,17 @@ public class AttributeOneToMany extends Attribute {
 		}
 	}	
 	
+	public AttributeOneToMany(Method method, Entity entity) {
+		
+		super(method, entity);
+		
+		load();
+
+		if (!IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
+			throw new RuntimeException("A classe da associação " + getField().getName() + " não implementa a interface IBaseEntity!");
+		}
+	}
+
 	public void initializeAssociationEntity() {
 
 		if (IBaseEntity.class.isAssignableFrom(getAssociationClass())) {

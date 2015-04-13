@@ -1,10 +1,13 @@
 package br.com.atos.cg.model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.AccessType;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -14,6 +17,7 @@ import org.hibernate.envers.Audited;
 
 import br.com.atos.cg.CodeGenerator;
 import br.com.atos.core.model.IBaseEntity;
+import br.com.atos.core.util.JpaReflectionUtils;
 import br.com.atos.utils.ReflectionUtils;
 import br.com.atos.utils.StringUtils;
 
@@ -23,6 +27,7 @@ public class Entity {
 	private Gender gender;
 	private String label;
 	private CodeGenerator gc;
+	private AccessType accessType;
 	private List<Attribute> attributes = new ArrayList<Attribute>();
 	
 	public Entity(Class<? extends IBaseEntity<?>> clazz, CodeGenerator gc) {
@@ -61,28 +66,58 @@ public class Entity {
 		
 	private void initializeAttributes() {
 
-		List<Field> fields = ReflectionUtils.getFieldsRecursive(getClazz());
-
-		for (Field field : fields) {
-	
-			if (!Modifier.isStatic(field.getModifiers())) {
-									
-				if (field.getAnnotation(Id.class) != null) {
-					attributes.add(new AttributeId(field, this));
-				}
-				else {
-					if (field.getAnnotation(OneToMany.class) != null) {
-						attributes.add(new AttributeOneToMany(field, this));
-					}
-					else if (field.getAnnotation(ManyToOne.class) != null || field.getAnnotation(OneToOne.class) != null) {
-						attributes.add(new AttributeManyToOne(field, this));
+		accessType = JpaReflectionUtils.determineAccessType(getClazz());
+		
+		if (AccessType.FIELD.equals(accessType)) {
+		
+			List<Field> fields = ReflectionUtils.getFieldsRecursive(getClazz());
+			
+			for (Field field : fields) {
+				
+				if (!Modifier.isStatic(field.getModifiers())) {
+										
+					if (field.getAnnotation(Id.class) != null || field.getAnnotation(EmbeddedId.class) != null) {
+						attributes.add(new AttributeId(field, this));
 					}
 					else {
-						attributes.add(new Attribute(field, this));
+						if (field.getAnnotation(OneToMany.class) != null) {
+							attributes.add(new AttributeOneToMany(field, this));
+						}
+						else if (field.getAnnotation(ManyToOne.class) != null || field.getAnnotation(OneToOne.class) != null) {
+							attributes.add(new AttributeManyToOne(field, this));
+						}
+						else {
+							attributes.add(new Attribute(field, this));
+						}
 					}
 				}
 			}
 		}
+		else if (AccessType.PROPERTY.equals(accessType)) {
+			
+			List<Method> methods = ReflectionUtils.getMethodsRecursive(getClazz());
+			
+			for (Method method : methods) {
+				
+				if (!Modifier.isStatic(method.getModifiers())) {
+										
+					if (method.getAnnotation(Id.class) != null || method.getAnnotation(EmbeddedId.class) != null) {
+						attributes.add(new AttributeId(method, this));
+					}
+					else {
+						if (method.getAnnotation(OneToMany.class) != null) {
+							attributes.add(new AttributeOneToMany(method, this));
+						}
+						else if (method.getAnnotation(ManyToOne.class) != null || method.getAnnotation(OneToOne.class) != null) {
+							attributes.add(new AttributeManyToOne(method, this));
+						}
+						else {
+							attributes.add(new Attribute(method, this));
+						}
+					}
+				}
+			}
+		}	
 	}
 		
 	public String getClazzSimpleName() {
@@ -193,4 +228,8 @@ public class Entity {
 		
 		return attributes;
 	}
+
+	public AccessType getAccessType() {
+		return accessType;
+	}	
 }
