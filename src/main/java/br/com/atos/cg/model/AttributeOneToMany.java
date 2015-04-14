@@ -27,7 +27,7 @@ public class AttributeOneToMany extends Attribute {
 		load();
 				
 		if (!IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
-			throw new RuntimeException("A classe da associação " + getField().getName() + " não implementa a interface IBaseEntity!");
+			throw new RuntimeException("A classe da associação " + getName() + " não implementa a interface IBaseEntity!");
 		}
 	}	
 	
@@ -38,7 +38,7 @@ public class AttributeOneToMany extends Attribute {
 		load();
 
 		if (!IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
-			throw new RuntimeException("A classe da associação " + getField().getName() + " não implementa a interface IBaseEntity!");
+			throw new RuntimeException("A classe da associação " + getName() + " não implementa a interface IBaseEntity!");
 		}
 	}
 
@@ -52,7 +52,7 @@ public class AttributeOneToMany extends Attribute {
 			associationEntity = new Entity(clazz, getEntity().getGc());			
 		}
 		else {
-			throw new RuntimeException("A classe da associação " + getField().getName() + " não implementa a interface IBaseEntity!");
+			throw new RuntimeException("A classe da associação " + getName() + " não implementa a interface IBaseEntity!");
 		}
 	}
 		
@@ -84,7 +84,7 @@ public class AttributeOneToMany extends Attribute {
 	
 	public String getAssociationClassName() {
 		
-		Type type = getField().getGenericType();
+		Type type = isAccessTypeField() ? field.getGenericType() : propertyGetter.getGenericReturnType();
 		
 		if (type instanceof ParameterizedType) {
 			ParameterizedType pt = (ParameterizedType) type; 
@@ -98,20 +98,20 @@ public class AttributeOneToMany extends Attribute {
 			}			
 		}
 
-		return getField().getType().getName();
+		return getType().getName();
 	}
 
 	public String getAssociationMappedBy() {
 		
 		String mappedBy = "";
 		
-		if (getField().getAnnotation(OneToMany.class) != null) {
-			mappedBy = getField().getAnnotation(OneToMany.class).mappedBy();
+		if (getAnnotation(OneToMany.class) != null) {
+			mappedBy = getAnnotation(OneToMany.class).mappedBy();
 		}
 		
 		return mappedBy;
 	}
-	
+
 	@Override
 	protected void load() {
 	
@@ -142,7 +142,7 @@ public class AttributeOneToMany extends Attribute {
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		
 		for (Attribute attribute : getAssociationEntity().getAttributesWithoutAttributesOneToMany()) {
-			if (!attribute.getField().getName().equals(getAssociationMappedBy())) {
+			if (!attribute.getName().equals(getAssociationMappedBy())) {
 				attributes.add(attribute);
 			}
 		}

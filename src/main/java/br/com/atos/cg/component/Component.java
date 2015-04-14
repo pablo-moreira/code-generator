@@ -50,39 +50,46 @@ abstract public class Component {
 		pw.println(MessageFormat.format(string, attr));
 	}
 	
-	public Field getField(Attribute attribute) {
+	public Class<?> getType(Attribute attribute) {
 		
 		if (AttributeManyToOne.class.isInstance(attribute)) {
-			return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociationField();
+			return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociationType();
 		}
 		else {
-			return attribute.getField();
+			return attribute.getType();
 		}
 	}
 	
 	public String getValue(Attribute attribute) {		
 		if (AttributeManyToOne.class.isInstance(attribute)) {
-			return attribute.getField().getName() + "." + ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
+			return attribute.getName() + "." + ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
 		}
 		else {
-			return attribute.getField().getName();
+			return attribute.getName();
 		}
 	}
 		
 	protected void printot(PrintWriter pw, String indentation, String path, Attribute attribute) {
 
-		Field field = getField(attribute);
+		Class<?> type = getType(attribute);
 		String value = path + "." + getValue(attribute);
 
-		if (BaseEnum.class.isAssignableFrom(field.getType())) {
+		if (BaseEnum.class.isAssignableFrom(type)) {
 			println(pw, "{0}<h:outputText value=\"#'{'{1}.description'}'\" />", indentation, value);
 		}
-		else if (Date.class.isAssignableFrom(field.getType())) {
+		else if (Date.class.isAssignableFrom(type)) {
 			
 			println(pw, "{0}<h:outputText value=\"#'{'{1}'}'\">", indentation, value);
 			
-			Temporal annotation = field.getAnnotation(Temporal.class);
+			Temporal annotation;
 			
+			if (AttributeManyToOne.class.isInstance(attribute)) {
+				annotation = ((AttributeManyToOne) attribute).getAnnotationOfDescriptionAttributeOfAssociation(Temporal.class);
+			}
+			else {
+				annotation = attribute.getAnnotation(Temporal.class);
+			}
+
 			if (annotation == null || annotation.value() == TemporalType.TIMESTAMP) {
 				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"both\" />", indentation);
 			}
@@ -91,7 +98,7 @@ abstract public class Component {
 			}
 			else if (annotation.value() == TemporalType.TIME) {
 				println(pw, "{0}\t<f:convertDateTime locale=\"pt_BR\" type=\"time\" />", indentation);
-			}			
+			}
 			
 			println(pw, "{0}</h:outputText>", indentation);
 		}
@@ -106,24 +113,24 @@ abstract public class Component {
 	
 	protected void printin(PrintWriter pw, String indentation, String path, Attribute attribute, boolean entityTab) {
 			
-		String id = attribute.getField().getName();
+		String id = attribute.getName();
 		String label = attribute.getLabel();
-		Class<?> type = attribute.getField().getType();
-		String value = path + "." + attribute.getField().getName();
+		Class<?> type = attribute.getType();
+		String value = path + "." + attribute.getName();
 		
 		String required = "false";
 	
-		if (attribute.getField().getAnnotation(Column.class) != null) {
-			required = attribute.getField().getAnnotation(Column.class).nullable() ? "false" : "true";
+		if (attribute.getAnnotation(Column.class) != null) {
+			required = attribute.getAnnotation(Column.class).nullable() ? "false" : "true";
 		}
-		else if (attribute.getField().getAnnotation(OneToOne.class) != null) {
-			required = attribute.getField().getAnnotation(OneToOne.class).optional() ? "false" : "true";
+		else if (attribute.getAnnotation(OneToOne.class) != null) {
+			required = attribute.getAnnotation(OneToOne.class).optional() ? "false" : "true";
 		}
-		else if (attribute.getField().getAnnotation(ManyToOne.class) != null) {
-			required = attribute.getField().getAnnotation(ManyToOne.class).optional() ? "false" : "true";
+		else if (attribute.getAnnotation(ManyToOne.class) != null) {
+			required = attribute.getAnnotation(ManyToOne.class).optional() ? "false" : "true";
 		}
-		else if (attribute.getField().getAnnotation(JoinColumn.class) != null) {
-			required = attribute.getField().getAnnotation(JoinColumn.class).nullable() ? "false" : "true";
+		else if (attribute.getAnnotation(JoinColumn.class) != null) {
+			required = attribute.getAnnotation(JoinColumn.class).nullable() ? "false" : "true";
 		}
 		
 		if (BaseEnum.class.isAssignableFrom(type)) {
@@ -133,7 +140,7 @@ abstract public class Component {
 		}
 		else if (Date.class.isAssignableFrom(type) || Calendar.class.isAssignableFrom(type)) {
 
-			Temporal annotation = attribute.getField().getAnnotation(Temporal.class);
+			Temporal annotation = attribute.getAnnotation(Temporal.class);
 			
 			if (annotation == null || annotation.value() == TemporalType.TIMESTAMP) {
 				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" showOn=\"button\" locale=\"pt_BR\" pattern=\"dd/MM/yyyy HH:mm\" required=\"{3}\" onkeypress=\"Mask.valid(this, ''dataHorario'')\" />", id, label, value, required);
@@ -141,7 +148,7 @@ abstract public class Component {
 			else if (annotation.value() == TemporalType.DATE) {
 				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" showOn=\"button\" locale=\"pt_BR\" pattern=\"dd/MM/yyyy\" required=\"{3}\" onkeypress=\"Mask.valid(this, ''data'')\" />", id, label, value, required);
 			}
-			else if (attribute.getField().getAnnotation(Temporal.class).value() == TemporalType.TIME) {
+			else if (attribute.getAnnotation(Temporal.class).value() == TemporalType.TIME) {
 				println(pw, indentation + "<p:calendar id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" size=\"4\" showOn=\"button\" locale=\"pt_BR\" pattern=\"HH:mm\" timeOnly=\"true\" required=\"{3}\" onkeypress=\"Mask.valid(this, ''horario'')\" />", id, label, value, required);
 			}
 		}
@@ -160,7 +167,7 @@ abstract public class Component {
 			println(pw, indentation + "<p:autoComplete id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" required=\"{3}\" forceSelection=\"true\"", id, label, value, required);
 
 			if (entityTab) {
-				println(pw, indentation + "\tdisabled=\"#'{'cc.attrs.winFrm.entityAssociated != null and cc.attrs.winFrm.entityAssociated == cc.attrs.winFrm.entity.{0}'}'\"", attribute.getField().getName());
+				println(pw, indentation + "\tdisabled=\"#'{'cc.attrs.winFrm.entityAssociated == cc.attrs.winFrm.entity.{0}'}'\"", attribute.getName());
 			}
 			
 			println(pw, indentation + "\tcompleteMethod=\"#'{'autoCompleteCtrl.onComplete{0}'}'\" dropdown=\"true\" converter=\"lazyEntityConverter\"", type.getSimpleName());

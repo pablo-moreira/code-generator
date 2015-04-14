@@ -133,7 +133,7 @@ public class FrmAttributes extends javax.swing.JPanel {
 				AttributeManyToOne attribute = (AttributeManyToOne) attr;
 				
 				if (StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
-					JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação " + attribute.getField().getName() + " não foi informado!");
+					JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação " + attribute.getName() + " não foi informado!");
 					return false;
 				}
 			}

@@ -56,7 +56,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     public Object getValueAt(Attribute attribute, int columnIndex) {
         switch (columnIndex) {
             case 0 :         
-                return attribute.getField() != null ? attribute.getField().getName() : null;
+                return attribute.getName();
             case 1 :
                 return attribute.getLabel();
             case 2 :
@@ -76,7 +76,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 return null;
             case 6 :
             	if (attribute instanceof AttributeManyToOne) {
-		    return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
+            		return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
             	}
             	else {
 		    return null;
@@ -193,8 +193,8 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             attribute.setRenderForm((Boolean)value);
         }
         else if (COL_ATTRIBUTE_DESCRIPTION.getIndex() == col) {
-	    AttributeManyToOne attributeManyToOne = (AttributeManyToOne) attribute;
-	    attributeManyToOne.setDescriptionAttributeOfAssociation((String) value);
+        	AttributeManyToOne attributeManyToOne = (AttributeManyToOne) attribute;
+        	attributeManyToOne.setDescriptionAttributeOfAssociation((String) value);
         }
         else if (COL_FORM_TYPE.getIndex() == col) {
         	
@@ -241,8 +241,8 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 
             final Class<?> associationClass;
             
-            if (attribute.getField() != null) {
-                associationClass = attribute.getField().getType();
+            if (attribute.getType() != null) {
+                associationClass = attribute.getType();
             }
             else {
             	associationClass = WinFrmEntity.class;

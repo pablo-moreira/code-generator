@@ -1,5 +1,6 @@
 package br.com.atos.cg.model;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -8,8 +9,8 @@ import br.com.atos.utils.StringUtils;
 
 public class Attribute {
 
-	private Field field;
-	private Method method;	
+	protected Field field;
+	protected Method propertyGetter;	
 	private String label;
 	
 	private Boolean renderColumn = true;
@@ -17,12 +18,12 @@ public class Attribute {
 	private Boolean renderForm = true;
 	
 	private Entity entity;
-	private String propertyName;
+	private String name;
 
 	public Attribute() {}
     
-	public Attribute(Method method, Entity entity) {
-		this.method = method;
+	public Attribute(Method propertyGetter, Entity entity) {
+		this.propertyGetter = propertyGetter;
 		this.entity = entity;
 		init();
 		load();
@@ -34,31 +35,31 @@ public class Attribute {
 		init();
 		load();
 	}
+	
+	public boolean isAccessTypeField() {
+		return field != null;
+	}
 
 	private void init() {
-		if (field != null) {
-			propertyName = field.getName();
+		if (isAccessTypeField()) {
+			name = field.getName();
 		}
 		else {
-			String methodName = method.getName();
+			String aux = propertyGetter.getName();
 			
-			methodName = methodName.replace("set", "").replace("get", "");
-			methodName = StringUtils.firstToLowerCase(methodName);
+			aux = aux.replace("is", "").replace("get", "");
+			aux = StringUtils.firstToLowerCase(aux);
 			
-			propertyName = methodName;
+			name = aux;
 		}
 	}
 	
 	protected CodeGenerator getGc() {
 		return getEntity().getGc();
 	}
-	
-	public String getPropertyName() {
-		return propertyName;		
-	}
-	
+		
 	protected String getPropertiesKeyBase() {
-		return getEntity().getClazz().getName() + "." + getPropertyName();
+		return getEntity().getClazz().getName() + "." + getName();
 	}
 		
 	public Attribute(Field field, String label) {
@@ -66,15 +67,7 @@ public class Attribute {
 		this.field = field;
 		this.label = label;
 	}
-
-	public Field getField() {
-		return field;
-	}
-
-	public void setField(Field field) {
-		this.field = field;
-	}
-
+	
 	public String getLabel() {
 		return label;
 	}
@@ -156,6 +149,23 @@ public class Attribute {
 		
 		if (getLabel() != null) {
 			getGc().getMessagesProperties().setProperty(getPropertiesKeyBase(), getLabel());	
+		}
+	}
+
+	public String getName() {
+		return name; 
+	}
+
+	public Class<?> getType() {
+		return isAccessTypeField() ? field.getType() : propertyGetter.getReturnType();
+	}
+		
+	public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+		if (isAccessTypeField()) {
+			return field.getAnnotation(annotationClass);
+		}
+		else {
+			return propertyGetter.getAnnotation(annotationClass);
 		}
 	}
 }

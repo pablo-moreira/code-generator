@@ -16,12 +16,12 @@ public class AttributeId extends Attribute {
 		}
 	}
 
-	public AttributeId(Method method, Entity entity) {
-		
-		super(method, entity);
+	public AttributeId(Method propertyGetter, Entity entity) {
+
+		super(propertyGetter, entity);
 		
 		if (StringUtils.isNullOrEmpty(getLabel())) {
 			setLabel("Id");
 		}
-	}	
+	}
 }

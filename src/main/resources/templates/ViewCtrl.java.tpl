@@ -30,7 +30,7 @@ public class ${EntityName}${page.view.suffix}Ctrl extends AppCtrl {
         }
     }
 	
-	public void start() {
+	public void start(ComponentSystemEvent event) {
 		if (!FacesContext.getCurrentInstance().isPostback() && !FacesContext.getCurrentInstance().isValidationFailed()) {
 			entity = getDAO(${EntityName}DAO.class).retrieveById(getId());
 		}

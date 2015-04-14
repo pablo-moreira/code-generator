@@ -84,7 +84,7 @@ public class WinFrmEntity extends javax.swing.JDialog {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Formulário de Entidade");
 		setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-		setPreferredSize(new java.awt.Dimension(1024, 800));
+		setPreferredSize(new java.awt.Dimension(800, 600));
 
 		jLabel1.setText("Rótulo:");
 

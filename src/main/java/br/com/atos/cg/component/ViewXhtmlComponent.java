@@ -47,7 +47,7 @@ public class ViewXhtmlComponent extends Component {
 			
 			println(pw, "\t\t\t\t\t\t<p:dataTable");
 			println(pw, "\t\t\t\t\t\t\temptyMessage=\"Nenhum objeto cadastrado.\"");
-			println(pw, "\t\t\t\t\t\t\tvalue=\"#'{'{0}{1}'}'\"", path + ".", attribute.getField().getName());
+			println(pw, "\t\t\t\t\t\t\tvalue=\"#'{'{0}{1}'}'\"", path + ".", attribute.getName());
 			println(pw, "\t\t\t\t\t\t\tvar=\"associacao\">");
 			println(pw, "\t\t\t\t\t\t\t");			
 

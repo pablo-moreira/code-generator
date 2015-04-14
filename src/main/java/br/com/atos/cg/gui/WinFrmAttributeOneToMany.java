@@ -180,7 +180,7 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
         
 		txtTarget.setText(target.getDescription());
 		
-		setTitle("Formulário - " + attributeOneToMany.getEntity().getClazzSimpleName() + "." + attributeOneToMany.getField().getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
+		setTitle("Formulário - " + attributeOneToMany.getEntity().getClazzSimpleName() + "." + attributeOneToMany.getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
 		
 		this.attributeOneToMany = attributeOneToMany;
 

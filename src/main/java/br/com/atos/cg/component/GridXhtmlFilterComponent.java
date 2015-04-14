@@ -3,7 +3,6 @@ package br.com.atos.cg.component;
 import static br.com.atos.utils.StringUtils.firstToLowerCase;
 
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.util.Date;
 
 import javax.persistence.Temporal;
@@ -40,28 +39,26 @@ public class GridXhtmlFilterComponent extends Component {
 					
 					if (AttributeManyToOne.class.isInstance(attribute)) {
 						AttributeManyToOne atributoManyToOne =  (AttributeManyToOne) attribute;
-						printFilter(pw, attribute, atributoManyToOne.getDescriptionAttributeOfAssociationField(), attribute.getField().getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
+						printFilter(pw, attribute, atributoManyToOne.getDescriptionAttributeOfAssociationType(), atributoManyToOne.getAnnotationOfDescriptionAttributeOfAssociation(Temporal.class), attribute.getName() + "." + atributoManyToOne.getDescriptionAttributeOfAssociation());
 					}
-					else {				
-						printFilter(pw, attribute, attribute.getField(), attribute.getField().getName());
+					else {												
+						printFilter(pw, attribute, attribute.getType(), attribute.getAnnotation(Temporal.class), attribute.getName());
 					}
 				}
 			}
 		}
 	}
 	
-	private void printFilter(PrintWriter pw, Attribute attribute, Field field, String attributePath) {
+	private void printFilter(PrintWriter pw, Attribute attribute, Class<?> type, Temporal annotation, String attributePath) {
 		
-		if (Number.class.isAssignableFrom(field.getType())) {				
-			println(pw, "\t\t\t\t<atos:filterNumeric operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" type=\"{2}\" />", attributePath, attribute.getLabel(), field.getType().getSimpleName());	
+		if (Number.class.isAssignableFrom(type)) {				
+			println(pw, "\t\t\t\t<atos:filterNumeric operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" type=\"{2}\" />", attributePath, attribute.getLabel(), type.getSimpleName());	
 		}
-		else if (BaseEnum.class.isAssignableFrom(field.getType())) {
-			println(pw, "\t\t\t\t<atos:filterEnum operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" options=\"#'{'selectItems.{2}Itens'}'\" />", attributePath, attribute.getLabel(), firstToLowerCase(field.getType().getSimpleName()));
+		else if (BaseEnum.class.isAssignableFrom(type)) {
+			println(pw, "\t\t\t\t<atos:filterEnum operatorDefault=\"=\" attribute=\"{0}\" label=\"{1}\" options=\"#'{'selectItems.{2}Itens'}'\" />", attributePath, attribute.getLabel(), firstToLowerCase(type.getSimpleName()));
 		}
-		else if (Date.class.isAssignableFrom(field.getType())) {
-		
-			Temporal annotation = field.getAnnotation(Temporal.class);
-			
+		else if (Date.class.isAssignableFrom(type)) {
+				
 			if (annotation == null || annotation.value() == TemporalType.TIMESTAMP) {
 				println(pw, "\t\t\t\t<atos:filterDate operatorDefault=\"contains\" attribute=\"{0}\" label=\"{1}\" datePattern=\"{2}\" />", attributePath, attribute.getLabel(), FilterDate.DATE_PATTERN_DATA_HORARIO);
 			}

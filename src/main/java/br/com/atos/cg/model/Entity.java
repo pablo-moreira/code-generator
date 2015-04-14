@@ -95,25 +95,22 @@ public class Entity {
 		}
 		else if (AccessType.PROPERTY.equals(accessType)) {
 			
-			List<Method> methods = ReflectionUtils.getMethodsRecursive(getClazz());
+			List<Method> propertiesGetters = JpaReflectionUtils.getPropertiesGettersRecursive(getClazz());
 			
-			for (Method method : methods) {
+			for (Method propertyGetter : propertiesGetters) {
 				
-				if (!Modifier.isStatic(method.getModifiers())) {
-										
-					if (method.getAnnotation(Id.class) != null || method.getAnnotation(EmbeddedId.class) != null) {
-						attributes.add(new AttributeId(method, this));
+				if (propertyGetter.getAnnotation(Id.class) != null || propertyGetter.getAnnotation(EmbeddedId.class) != null) {
+					attributes.add(new AttributeId(propertyGetter, this));
+				}
+				else {
+					if (propertyGetter.getAnnotation(OneToMany.class) != null) {
+						attributes.add(new AttributeOneToMany(propertyGetter, this));
+					}
+					else if (propertyGetter.getAnnotation(ManyToOne.class) != null || propertyGetter.getAnnotation(OneToOne.class) != null) {
+						attributes.add(new AttributeManyToOne(propertyGetter, this));
 					}
 					else {
-						if (method.getAnnotation(OneToMany.class) != null) {
-							attributes.add(new AttributeOneToMany(method, this));
-						}
-						else if (method.getAnnotation(ManyToOne.class) != null || method.getAnnotation(OneToOne.class) != null) {
-							attributes.add(new AttributeManyToOne(method, this));
-						}
-						else {
-							attributes.add(new Attribute(method, this));
-						}
+						attributes.add(new Attribute(propertyGetter, this));
 					}
 				}
 			}

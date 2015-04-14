@@ -22,7 +22,7 @@ public class WinFrmXhtmlAssociationsComponent extends Component {
 	public void render(PrintWriter pw) {
 		for (AttributeOneToMany attribute : getGc().getEntity().getAttributesOneToMany()) {
 			if (AttributeFormType.EXTERNAL.equals(attribute.getFormType())) {
-				println(pw, "\t\t<app:winFrm{0} winFrm=\"#'{'cc.attrs.winFrm.association{1}.winFrmAssociation'}'\" saveAction=\"#'{'cc.attrs.winFrm.association{1}.save'}'\" deleteAction=\"#'{'cc.attrs.winFrm.association{1}.delete'}'\" />", attribute.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(attribute.getField().getName()));
+				println(pw, "\t\t<app:winFrm{0} winFrm=\"#'{'cc.attrs.winFrm.association{1}.winFrmAssociation'}'\" saveAction=\"#'{'cc.attrs.winFrm.association{1}.save'}'\" deleteAction=\"#'{'cc.attrs.winFrm.association{1}.delete'}'\" />", attribute.getAssociationClassSimpleName(), StringUtils.firstToUpperCase(attribute.getName()));
 			}
 		}
 	}

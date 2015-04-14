@@ -10,7 +10,6 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,7 +79,7 @@ public class CodeGenerator {
 	private HashMap<String,String> attributesValues = new HashMap<String,String>();
 	private List<Component> components;	
 	private Entity entity;
-	private List<String> metodoCriadosEmAutoCompleteCtrl = new ArrayList<String>();
+	private List<String> methodsCreatedsInAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
 	private List<String> ignoredAttributes = new ArrayList<String>();
 	private LinkedProperties gcProperties;
@@ -156,12 +155,12 @@ public class CodeGenerator {
 		components.add(new ViewXhtmlComponent(this));
 
 		try {
-			attributesValues.put("entityIdClass",  entity.getAttributeId().getField().getType().getSimpleName());			
+			attributesValues.put("entityIdClass",  entity.getAttributeId().getType().getSimpleName());			
 		}
 		catch (Exception e) {
 			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClazzSimpleName());
 		}
-                
+
         try {
             if (OsUtil.isOsLinux()) {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -268,7 +267,7 @@ public class CodeGenerator {
 			if (attribute.isRenderForm()) {
 			
 				if (attribute instanceof AttributeManyToOne) {
-					adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) attribute);
+					addMethodOnCompleteAttributeManytoOneOnClassAutoCompleteCtrlIfNecessary((AttributeManyToOne) attribute);
 				}
 				else if (attribute instanceof AttributeOneToMany) {
 					
@@ -278,18 +277,18 @@ public class CodeGenerator {
 						for (Attribute assocAttribute : attrOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
 							if (assocAttribute.isRenderColumn()) {
 								if (assocAttribute instanceof AttributeManyToOne) {
-									adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario((AttributeManyToOne) assocAttribute);
+									addMethodOnCompleteAttributeManytoOneOnClassAutoCompleteCtrlIfNecessary((AttributeManyToOne) assocAttribute);
 								}
-								else if (BaseEnum.class.isAssignableFrom(assocAttribute.getField().getType())) {
-									adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(assocAttribute);
+								else if (BaseEnum.class.isAssignableFrom(assocAttribute.getType())) {
+									addMethodGetEntityItemsOnClassSelectItemsIfNecessary(assocAttribute);
 								}
 							}
 						}
 					}
 				}
-				else if (BaseEnum.class.isAssignableFrom(attribute.getField().getType())) {
-					adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(attribute);
-				}				
+				else if (BaseEnum.class.isAssignableFrom(attribute.getType())) {
+					addMethodGetEntityItemsOnClassSelectItemsIfNecessary(attribute);
+				}
 			}
 		}
 	}
@@ -475,10 +474,10 @@ public class CodeGenerator {
 	}	
 	
 
-	private void adicionaMetodoGetEntidadeItensNaClasseSelectItensSeNecessario(Attribute atributo) {
+	private void addMethodGetEntityItemsOnClassSelectItemsIfNecessary(Attribute atributo) {
 		
 		try {
-			String metodoNome = "get" + atributo.getField().getType().getSimpleName() + "Itens";
+			String metodoNome = "get" + atributo.getType().getSimpleName() + "Itens";
 		
 			// Verifica se o metodo foi criado nesta nessao
 			if (metodoCriadosEmSelectItemsCtrl.contains(metodoNome)) {
@@ -525,14 +524,14 @@ public class CodeGenerator {
 						linha = arquivoLinhas.get(i);
 						if (linha.contains("package")) {
 							arquivoLinhas.add(i+1, "");
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0};", atributo.getField().getType().getName()));
+							arquivoLinhas.add(i+1, MessageFormat.format("import {0};", atributo.getType().getName()));
 							break;
 						}
 					}
 					
 					arquivoLinhas.add("\t");
-					arquivoLinhas.add(MessageFormat.format("\tpublic List<SelectItem> get{0}Itens() '{'", atributo.getField().getType().getSimpleName()));
-					arquivoLinhas.add(MessageFormat.format("\t\treturn getEnumSelectItens({0}.class);", atributo.getField().getType().getSimpleName()));
+					arquivoLinhas.add(MessageFormat.format("\tpublic List<SelectItem> get{0}Itens() '{'", atributo.getType().getSimpleName()));
+					arquivoLinhas.add(MessageFormat.format("\t\treturn getEnumSelectItens({0}.class);", atributo.getType().getSimpleName()));
 					arquivoLinhas.add("\t}");
 					arquivoLinhas.add("}");
 					
@@ -554,24 +553,24 @@ public class CodeGenerator {
 		}		
 	}
 	
-	private void adicionaMetodoOnCompleteAtributoManytoOneNaClasseAutoCompleteCtrlSeNecessario(AttributeManyToOne atributo) {
+	private void addMethodOnCompleteAttributeManytoOneOnClassAutoCompleteCtrlIfNecessary(AttributeManyToOne attribute) {
 				
 		try {
-			String metodoNome = "onComplete" + atributo.getField().getType().getSimpleName();
+			String methodName = "onComplete" + attribute.getType().getSimpleName();
 
 			// Verifica se o metodo foi criado nesta sessao
-			if (metodoCriadosEmAutoCompleteCtrl.contains(metodoNome)) {
+			if (methodsCreatedsInAutoCompleteCtrl.contains(methodName)) {
 				return;
 			}
 			
 			Class<?> autoCompleteClass = Class.forName(getAttributeValue(PACKAGE_CONTROLLER) + "." + "AutoCompleteCtrl");
 
-			Field field = atributo.getField();
+			Class<?> attributeType = attribute.getType();
 						
 			// Verifica se o autoCompleteCtrl possui um metodo public List<AssociacaoClasse> onCompleteAssociacaoClasse()
 			try {
 				// Se achar nao faz nada
-				autoCompleteClass.getMethod(metodoNome, String.class);									
+				autoCompleteClass.getMethod(methodName, String.class);
 			}
 			catch (Exception e) {
 
@@ -581,55 +580,55 @@ public class CodeGenerator {
 					
 					BufferedReader in = new BufferedReader(new FileReader(autoCompletePath));
 					
-					List<String> arquivoLinhas = new ArrayList<String>();
+					List<String> fileLines = new ArrayList<String>();
 					
-			        String linha;
+			        String line;
 
-			        while ((linha = in.readLine()) != null) {
-						arquivoLinhas.add(linha);
+			        while ((line = in.readLine()) != null) {
+						fileLines.add(line);
 					}
 			        
 					in.close();
 
 					// Remove a ultima chave												
-					for (int i = arquivoLinhas.size() -1; i >= 0; i--) {
-						linha = arquivoLinhas.get(i);
-						if (linha.lastIndexOf("}") != -1) {
-							linha = linha.substring(0, linha.lastIndexOf("}"));
-							arquivoLinhas.set(i, linha);
+					for (int i = fileLines.size() -1; i >= 0; i--) {
+						line = fileLines.get(i);
+						if (line.lastIndexOf("}") != -1) {
+							line = line.substring(0, line.lastIndexOf("}"));
+							fileLines.set(i, line);
 							break;
 						}
 					}												
 					
 					// Procura o index da declaracao do package
-					for (int i = 0, t = arquivoLinhas.size(); i < t; i++) {
-						linha = arquivoLinhas.get(i);
-						if (linha.contains("package")) {
-							arquivoLinhas.add(i+1, "");
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1};", getAttributeValue(PACKAGE_MODEL), field.getType().getSimpleName()));
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0}.{1}DAO;", getAttributeValue(PACKAGE_DAO), field.getType().getSimpleName()));
+					for (int i = 0, t = fileLines.size(); i < t; i++) {
+						line = fileLines.get(i);
+						if (line.contains("package")) {
+							fileLines.add(i+1, "");
+							fileLines.add(i+1, MessageFormat.format("import {0}.{1};", getAttributeValue(PACKAGE_MODEL), attributeType.getSimpleName()));
+							fileLines.add(i+1, MessageFormat.format("import {0}.{1}DAO;", getAttributeValue(PACKAGE_DAO), attributeType.getSimpleName()));
 							break;
 						}
 					}
 					
-					String id = JpaReflectionUtils.getFieldId(field.getType()).getName();
-					String rotulo = atributo.getDescriptionAttributeOfAssociation();					
+					String id = JpaReflectionUtils.getFieldOrPropertyIdName(attributeType);
+					String description = attribute.getDescriptionAttributeOfAssociation();					
 
-					arquivoLinhas.add("\t");
-					arquivoLinhas.add(MessageFormat.format("\tpublic List<{0}> onComplete{0}(String sugestao) '{'", field.getType().getSimpleName()));
-					arquivoLinhas.add(MessageFormat.format("\t\treturn getDAO({0}DAO.class).recuperarResumoPorSugestaoOrdenadasPorRotulo(sugestao, \"{1}\", \"{2}\");", field.getType().getSimpleName(), id, rotulo));
-					arquivoLinhas.add("\t}");
-					arquivoLinhas.add("}");
+					fileLines.add("\t");
+					fileLines.add(MessageFormat.format("\tpublic List<{0}> onComplete{0}(String sugestao) '{'", attributeType.getSimpleName()));
+					fileLines.add(MessageFormat.format("\t\treturn getDAO({0}DAO.class).retrieveLightBySuggestionOrderByLabel(sugestao, \"{1}\", \"{2}\");", attributeType.getSimpleName(), id, description));
+					fileLines.add("\t}");
+					fileLines.add("}");
 					
 					PrintWriter pw = new PrintWriter(new File(autoCompletePath));
 					
-					for (String arquivoLinha : arquivoLinhas) {
+					for (String arquivoLinha : fileLines) {
 						pw.println(arquivoLinha);
 					}
 					
 					pw.close();		
 					
-					metodoCriadosEmAutoCompleteCtrl.add(metodoNome);
+					methodsCreatedsInAutoCompleteCtrl.add(methodName);
 				}
 				catch (Exception e2) {}											
 			}
@@ -671,7 +670,7 @@ public class CodeGenerator {
 	
 	public boolean isIgnoredAttribute(Attribute attribute) {
 		for (String attributeIgnored : getIgnoredAttributes()) {
-			if (attribute.getField().getName().equals(attributeIgnored)) {
+			if (attribute.getName().equals(attributeIgnored)) {
 				return true;
 			}
 		}
