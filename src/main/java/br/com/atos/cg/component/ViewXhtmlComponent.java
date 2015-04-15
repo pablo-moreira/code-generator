@@ -21,11 +21,11 @@ public class ViewXhtmlComponent extends Component {
 	@Override
 	public void render(PrintWriter pw) {
 
-		String ctrl = getGc().getAttributeValue("EntityName") + getGc().getAttributeValue("page.view.suffix") + "Ctrl.";
+		String ctrl = getGc().getAttributeValue("entityName") + getGc().getAttributeValue("page.view.suffix") + "Ctrl.";
 		String path = ctrl + "entity";
 		
 		println(pw, "\t\t\t\t\t<p:tab title=\"{0}\">", getGc().getAttributeValue("EntityLabel"));		
-		println(pw, "\t\t\t\t\t\t<h:panelGrid columns=\"2\" cellpadding=\"5\">");
+		println(pw, "\t\t\t\t\t\t<p:panelGrid layout=\"grid\" columns=\"2\" columnClasses=\"ui-grid-col-2 col-label,ui-grid-col-10 col-info\">");
 		
 		for (Attribute attribute : getGc().getEntity().getAttributes()) {
 			
@@ -33,12 +33,12 @@ public class ViewXhtmlComponent extends Component {
 			if (!AttributeOneToMany.class.isInstance(attribute)) {
 		
 				println(pw, "\t\t\t\t\t\t");
-				println(pw, "\t\t\t\t\t\t\t<h:outputText value=\"{0}\" />", attribute.getLabel());
+				println(pw, "\t\t\t\t\t\t\t<h:outputText value=\"{0}:\" />", attribute.getLabel());
 				printot(pw, "\t\t\t\t\t\t\t", path, attribute);
 			}
 		}
 
-		println(pw, "\t\t\t\t\t\t</h:panelGrid>");		
+		println(pw, "\t\t\t\t\t\t</p:panelGrid>");		
 		println(pw, "\t\t\t\t\t</p:tab>");
 		
 		for (AttributeOneToMany attribute : getGc().getEntity().getAttributesOneToMany()) {
@@ -46,6 +46,7 @@ public class ViewXhtmlComponent extends Component {
 			println(pw, "\t\t\t\t\t<p:tab title=\"{0}\">", attribute.getLabel());
 			
 			println(pw, "\t\t\t\t\t\t<p:dataTable");
+			println(pw, "\t\t\t\t\t\t\treflow=\"true\"");
 			println(pw, "\t\t\t\t\t\t\temptyMessage=\"Nenhum objeto cadastrado.\"");
 			println(pw, "\t\t\t\t\t\t\tvalue=\"#'{'{0}{1}'}'\"", path + ".", attribute.getName());
 			println(pw, "\t\t\t\t\t\t\tvar=\"associacao\">");
@@ -62,13 +63,11 @@ public class ViewXhtmlComponent extends Component {
 					println(pw, "\t\t\t\t\t\t\t");
 				}
 			}
-		
+					
 			println(pw, "\t\t\t\t\t\t\t<p:column headerText=\"Ação\" styleClass=\"col-acao\">");
-			println(pw, "\t\t\t\t\t\t\t\t<h:link outcome=\"/pages/{0}/{0}Visualizar.jsf\" title=\"Visualizar o objeto\">", StringUtils.firstToLowerCase(attribute.getAssociationClassSimpleName()));
+			println(pw, "\t\t\t\t\t\t\t\t<p:button outcome=\"/pages/{0}/{0}{1}.jsf\" title=\"Visualizar o objeto\" icon=\"ui-icon-zoomin\">", StringUtils.firstToLowerCase(attribute.getAssociationClassSimpleName()), getGc().getAttributeValue("page.view.suffix"));
 			println(pw, "\t\t\t\t\t\t\t\t\t<f:param name=\"id\" value=\"#{associacao.id}\" />");
-			println(pw, "\t\t\t\t\t\t\t\t\t<f:param name=\"revisaoId\" value=\"#'{'{0}'}'\" rendered=\"#'{'{1}'}'\" />", ctrl + "revisaoId", ctrl + "revisaoId != null");
-			println(pw, "\t\t\t\t\t\t\t\t\t<h:graphicImage value=\"/resources/img/s.gif\" styleClass=\"link-icone ui-icon-zoomin\" />");
-			println(pw, "\t\t\t\t\t\t\t\t</h:link>");
+			println(pw, "\t\t\t\t\t\t\t\t</p:button>");
 			println(pw, "\t\t\t\t\t\t\t</p:column>");			
 			
 			println(pw, "\t\t\t\t\t\t</p:dataTable>");
