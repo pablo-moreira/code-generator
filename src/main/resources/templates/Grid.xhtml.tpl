@@ -3,18 +3,19 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:cc="http://xmlns.jcp.org/jsf/composite"    
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"    
     xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
     xmlns:p="http://primefaces.org/ui"
     xmlns:atos="http://xmlns.jcp.org/jsf/composite/components/atos"
     xmlns:app="http://xmlns.jcp.org/jsf/composite/components/app">
 
-	<cc:interface>
-		<cc:attribute name="grid" required="true" type="br.com.atos.faces.controller.component.Grid" />
-		<cc:attribute name="winFrm" required="false" type="${packageWinFrm}.WinFrm${EntityName}" />
-	</cc:interface>
+	<composite:interface>
+		<composite:attribute name="grid" required="true" type="br.com.atos.faces.controller.component.Grid" />
+		<composite:attribute name="winFrm" required="false" type="${packageWinFrm}.WinFrm${EntityName}" />
+		<composite:attribute name="editPage" required="false" type="java.lang.String" />
+	</composite:interface>
 
-	<cc:implementation>				
+	<composite:implementation>				
 		<atos:gridFilters grid="#{cc.attrs.grid}">
 			${gridXhtmlFilters}
 		</atos:gridFilters>
@@ -38,10 +39,11 @@
 	        </p:column>
 	        
 			<f:facet name="footer">
-	        	<p:outputPanel layout="block" styleClass="action-left" rendered="#{cc.attrs.winFrm != null}">
+	        	<p:outputPanel layout="block" styleClass="action-left" rendered="#{cc.attrs.winFrm != null || cc.attrs.editPage}">
 					<p:commandButton icon="ui-icon-document" value="Novo" action="#{cc.attrs.winFrm.startInsert}" />
+					<p:button icon="ui-icon-document" value="Novo" outcome="#{cc.attrs.editPage}" rendered="#{cc.attrs.editPage != null}" />
 				</p:outputPanel>
 	        </f:facet>
 		</atos:grid>
-	</cc:implementation>
+	</composite:implementation>
 </html>
