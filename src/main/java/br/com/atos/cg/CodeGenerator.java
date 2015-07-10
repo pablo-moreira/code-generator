@@ -25,14 +25,6 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import br.com.atos.cg.component.Component;
-import br.com.atos.cg.component.GridXhtmlColumnsComponent;
-import br.com.atos.cg.component.GridXhtmlFilterComponent;
-import br.com.atos.cg.component.ViewXhtmlComponent;
-import br.com.atos.cg.component.WinFrmJavaAttributesComponent;
-import br.com.atos.cg.component.WinFrmJavaImportsComponent;
-import br.com.atos.cg.component.WinFrmJavaMethodsComponent;
-import br.com.atos.cg.component.WinFrmXhtmlAssociationsComponent;
-import br.com.atos.cg.component.WinFrmXhtmlComponent;
 import br.com.atos.cg.gui.WinFrmAttributeOneToMany;
 import br.com.atos.cg.gui.WinFrmCodeGeneration;
 import br.com.atos.cg.gui.WinFrmEntity;
@@ -52,6 +44,8 @@ import br.com.atos.utils.OsUtil;
 import br.com.atos.utils.StringUtils;
 
 public class CodeGenerator {
+	
+	private static HashMap<String,Class<? extends Component>> COMPONENTS = new HashMap<String,Class<? extends Component>>(); 
 
 	public static final String PACKAGE_BASE = "packageBase";
 	public static final String PACKAGE_MODEL = "packageModel";
@@ -76,8 +70,7 @@ public class CodeGenerator {
 	public Pattern pattern = Pattern.compile("\\$\\{([a-z\\.A-Z]*)\\}");	
 	private File dirSrc;	
 	private File dirWebContent;	
-	private HashMap<String,String> attributesValues = new HashMap<String,String>();
-	private List<Component> components;	
+	private HashMap<String,String> attributesValues = new HashMap<String,String>();		
 	private Entity entity;
 	private List<String> methodsCreatedsInAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
@@ -144,16 +137,6 @@ public class CodeGenerator {
 		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClazzSimpleName()));
 		attributesValues.put(PACKAGE_MODEL, entidadeClass.getPackage().getName());
 				
-		components = new ArrayList<Component>();
-		components.add(new WinFrmXhtmlComponent(this));
-		components.add(new WinFrmXhtmlAssociationsComponent(this));
-		components.add(new WinFrmJavaAttributesComponent(this));
-		components.add(new WinFrmJavaMethodsComponent(this));
-		components.add(new WinFrmJavaImportsComponent(this));
-		components.add(new GridXhtmlFilterComponent(this));
-		components.add(new GridXhtmlColumnsComponent(this));
-		components.add(new ViewXhtmlComponent(this));
-
 		try {
 			attributesValues.put("entityIdClass",  entity.getAttributeId().getType().getSimpleName());			
 		}
@@ -230,17 +213,6 @@ public class CodeGenerator {
 	private void loadGcProperties(InputStream is) throws Exception {
 		gcProperties = new LinkedProperties();
 		gcProperties.load(is);		
-	}
-
-	public void addComponent(Component newComponent) {
-		
-		Component component = recuperarComponentePorChave(newComponent.getComponentKey());
-		
-		if (component != null) {
-			components.remove(component);
-		}
-		
-		components.add(newComponent);
 	}
 
 	public void makeDaoAndManager() throws Exception {
@@ -419,10 +391,12 @@ public class CodeGenerator {
             	}
             	else {
             		
-            		Component componente = recuperarComponentePorChave(chave);
-            		
-            		if (componente != null) {
-            			componente.render(pw);
+            		Class<? extends Component> componentClass = COMPONENTS.get(chave);
+
+            		if (componentClass != null) {
+                		Component component = componentClass.newInstance();
+                		component.initialize(this);            			
+            			component.render(pw);
             		}
             		else {
             			pw.print(parteAtualizar);
@@ -461,18 +435,6 @@ public class CodeGenerator {
 			throw new RuntimeException("Erro ao gravar os arquivos gc.properties e messages.properties, msg interna: " + e.getMessage());
 		}
 	}
-
-	private Component recuperarComponentePorChave(String chave) {
-		
-		for (Component componente : components) {
-			if (componente.getComponentKey().equals(chave)) {
-				return componente;
-			}
-		}
-		
-		return null;
-	}	
-	
 
 	private void addMethodGetEntityItemsOnClassSelectItemsIfNecessary(Attribute atributo) {
 		
@@ -676,4 +638,13 @@ public class CodeGenerator {
 		}
 		return false;
 	}
+	
+	public static void addComponent(String key, Class<? extends Component> componentClass) {
+
+		if (COMPONENTS.containsKey(key)) {		
+			COMPONENTS.remove(key);
+		}
+			
+		COMPONENTS.put(key, componentClass);
+	}	
 }

@@ -24,14 +24,14 @@ import br.com.atos.core.util.JpaReflectionUtils;
 
 abstract public class Component {
 
-	private CodeGenerator gc;
-	
-	public Component(CodeGenerator gc) {
-		this.gc = gc;
+	private CodeGenerator cg;
+
+	public void initialize(CodeGenerator cg) {
+		this.cg = cg;
 	}
 
-	public CodeGenerator getGc() {
-		return gc;
+	public CodeGenerator getCg() {
+		return cg;
 	}
 	
 	abstract public String getComponentKey();
@@ -155,12 +155,7 @@ abstract public class Component {
 		else if (IBaseEntity.class.isAssignableFrom(type)) {
 			
 			AttributeManyToOne atributoManyToOne = (AttributeManyToOne) attribute;
-
-			// Imprime um selectOneMenu
-			//println(pw, indentation + "<p:selectOneMenu id=\"{0}\" label=\"{1}\" value=\"#'{'{2}'}'\" effectDuration=\"0\" required=\"{3}\" converter=\"simpleEntityConverter\">", atributo.getField().getName(), atributoLabel);
-			//println(pw, indentation + "\t<f:selectItems value=\"#'{'selectItems.{0}Itens'}'\" />", firstToLowerCase(atributo.getField().getType().getSimpleName()));
-			//println(pw, indentation + "</p:selectOneMenu>");
-			
+		
 			Field associacaoFieldId = JpaReflectionUtils.getFieldId(type);
 
 			// Imprime um autocomplete
