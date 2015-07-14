@@ -10,6 +10,8 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +26,11 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+
 import br.com.atos.cg.component.Component;
 import br.com.atos.cg.gui.WinFrmAttributeOneToMany;
 import br.com.atos.cg.gui.WinFrmCodeGeneration;
@@ -33,6 +40,7 @@ import br.com.atos.cg.model.AttributeFormType;
 import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.model.Entity;
+import br.com.atos.cg.model.NewTarget;
 import br.com.atos.cg.model.Target;
 import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.LinkedProperties;
@@ -44,8 +52,6 @@ import br.com.atos.utils.OsUtil;
 import br.com.atos.utils.StringUtils;
 
 public class CodeGenerator {
-	
-	private static HashMap<String,Class<? extends Component>> COMPONENTS = new HashMap<String,Class<? extends Component>>(); 
 
 	public static final String PACKAGE_BASE = "packageBase";
 	public static final String PACKAGE_MODEL = "packageModel";
@@ -70,7 +76,8 @@ public class CodeGenerator {
 	public Pattern pattern = Pattern.compile("\\$\\{([a-z\\.A-Z]*)\\}");	
 	private File dirSrc;	
 	private File dirWebContent;	
-	private HashMap<String,String> attributesValues = new HashMap<String,String>();		
+	private HashMap<String,String> attributesValues = new HashMap<String,String>();
+	private List<Component> components;	
 	private Entity entity;
 	private List<String> methodsCreatedsInAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
@@ -80,6 +87,7 @@ public class CodeGenerator {
 	private File dirProject;
 	private File dirResources;
 	private Target target;
+	private VelocityEngine velocityEngine;
 	
 	public Entity getEntity() {
 		return entity;
@@ -133,15 +141,17 @@ public class CodeGenerator {
 		}
 		
 		attributesValues.put(ATTRIBUTE_ENTITY_AUDIT, getEntity().isAudited() ? "true" : "false");
-		attributesValues.put(ATTRIBUTE_ENTITY_NAME_UC, getEntity().getClazzSimpleName());
-		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClazzSimpleName()));
+		attributesValues.put(ATTRIBUTE_ENTITY_NAME_UC, getEntity().getClassSimpleName());
+		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClassSimpleName()));
 		attributesValues.put(PACKAGE_MODEL, entidadeClass.getPackage().getName());
 				
+		components = new ArrayList<Component>();
+
 		try {
 			attributesValues.put("entityIdClass",  entity.getAttributeId().getType().getSimpleName());			
 		}
 		catch (Exception e) {
-			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClazzSimpleName());
+			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
 		}
 
         try {
@@ -153,8 +163,24 @@ public class CodeGenerator {
             }  
         }
         catch (Exception e) {}
+        
+        initVelocityEngine();
 	}
 	
+	private void initVelocityEngine() {
+
+		velocityEngine = new VelocityEngine();
+		
+		URL url = CodeGenerator.class.getResource("/com.github.cg.templates");
+
+		File file = new File(url.getFile());
+
+		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file");
+		velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, file.getAbsolutePath());
+		velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true");						
+		velocityEngine.init();
+	}
+
 	private void loadIgnoredAttributes() {
 
 		String value = gcProperties.getProperty("ignoredAttributes");
@@ -215,6 +241,19 @@ public class CodeGenerator {
 		gcProperties.load(is);		
 	}
 
+	public void addComponent(Component newComponent) {
+		
+		Component component = recuperarComponentePorChave(newComponent.getComponentKey());
+		
+		if (component != null) {
+			components.remove(component);
+		}
+		
+		newComponent.initialize(this);
+		
+		components.add(newComponent);
+	}
+
 	public void makeDaoAndManager() throws Exception {
 		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACKAGE_DAO).replace(".", "/")), "DAO.java.tpl", false));
 		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACKAGE_MANAGER).replace(".", "/")), "Manager.java.tpl", false));
@@ -267,7 +306,7 @@ public class CodeGenerator {
 		
 	public void makePageView() throws Exception {				
 		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), "View.xhtml.tpl", true
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "View.xhtml.tpl", true
 				, new TargetConfig(false, false, false, true, false, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));		
@@ -275,7 +314,7 @@ public class CodeGenerator {
 		
 	public void makePageManager() throws Exception {
 		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ManagerCtrl.java.tpl", false));
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClazzSimpleName())), "Manager.xhtml.tpl", true
+		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "Manager.xhtml.tpl", true
 				, new TargetConfig(false, false, false, false, false, false)
 				, null
 		));
@@ -295,6 +334,30 @@ public class CodeGenerator {
 	
 	public Target getTarget() {
 		return target;
+	}
+	
+	protected void execute(NewTarget target) {
+		
+		VelocityContext context = new VelocityContext();
+				
+		Template template = velocityEngine.getTemplate(target.getTemplate());
+		
+		context.put("entity", entity);
+		
+		for (String key : attributesValues.keySet()) {
+			context.put(key, attributesValues.get(key));
+		}
+
+		for (Component component : components) {
+			context.put(component.getComponentKey(), component);
+		}
+				
+		StringWriter writer = new StringWriter();
+
+		// mistura o contexto com o template
+		template.merge(context, writer);
+
+		System.out.println(writer.toString());		
 	}
 
 	private void makeTarget(Target target) throws Exception {
@@ -391,12 +454,10 @@ public class CodeGenerator {
             	}
             	else {
             		
-            		Class<? extends Component> componentClass = COMPONENTS.get(chave);
-
-            		if (componentClass != null) {
-                		Component component = componentClass.newInstance();
-                		component.initialize(this);            			
-            			component.render(pw);
+            		Component componente = recuperarComponentePorChave(chave);
+            		
+            		if (componente != null) {
+            			componente.render(pw);
             		}
             		else {
             			pw.print(parteAtualizar);
@@ -435,6 +496,18 @@ public class CodeGenerator {
 			throw new RuntimeException("Erro ao gravar os arquivos gc.properties e messages.properties, msg interna: " + e.getMessage());
 		}
 	}
+
+	private Component recuperarComponentePorChave(String chave) {
+		
+		for (Component componente : components) {
+			if (componente.getComponentKey().equals(chave)) {
+				return componente;
+			}
+		}
+		
+		return null;
+	}	
+	
 
 	private void addMethodGetEntityItemsOnClassSelectItemsIfNecessary(Attribute atributo) {
 		
@@ -638,13 +711,4 @@ public class CodeGenerator {
 		}
 		return false;
 	}
-	
-	public static void addComponent(String key, Class<? extends Component> componentClass) {
-
-		if (COMPONENTS.containsKey(key)) {		
-			COMPONENTS.remove(key);
-		}
-			
-		COMPONENTS.put(key, componentClass);
-	}	
 }

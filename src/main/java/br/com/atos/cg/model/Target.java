@@ -75,7 +75,7 @@ public class Target {
 
 	public String getFileName(Entity entity) {
 		
-		String fileName = MessageFormat.format(getName(), entity.getClazzSimpleName()); 
+		String fileName = MessageFormat.format(getName(), entity.getClassSimpleName()); 
 		
 		if (getName().endsWith(".xhtml")) {
 			return StringUtils.firstToLowerCase(fileName);

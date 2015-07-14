@@ -27,6 +27,11 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate-core.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>		
 	</dependencies>
 	<build>
 		<finalName>atos-cg</finalName>

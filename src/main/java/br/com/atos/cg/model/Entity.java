@@ -117,7 +117,11 @@ public class Entity {
 		}	
 	}
 		
-	public String getClazzSimpleName() {
+	public String getClassSimpleName() {
+		return getClazz().getSimpleName();
+	}
+	
+	public String getName() {
 		return getClazz().getSimpleName();
 	}
 	
@@ -205,7 +209,7 @@ public class Entity {
 	}
 
 	public void setLabelDefault() {
-		this.label = getClazzSimpleName();
+		this.label = getClassSimpleName();
 	}
 	
 	public boolean isHaveAttributeOneToMany() {
