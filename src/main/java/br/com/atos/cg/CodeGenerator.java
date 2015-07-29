@@ -8,8 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -20,38 +20,47 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.RuntimeServices;
+import org.apache.velocity.runtime.RuntimeSingleton;
+import org.apache.velocity.runtime.parser.node.SimpleNode;
 
 import br.com.atos.cg.component.Component;
-import br.com.atos.cg.gui.WinFrmAttributeOneToMany;
 import br.com.atos.cg.gui.WinFrmCodeGeneration;
-import br.com.atos.cg.gui.WinFrmEntity;
 import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeFormType;
 import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.model.Entity;
-import br.com.atos.cg.model.NewTarget;
 import br.com.atos.cg.model.Target;
 import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.LinkedProperties;
+import br.com.atos.cg.util.Util;
 import br.com.atos.core.model.BaseEnum;
 import br.com.atos.core.model.IBaseEntity;
 import br.com.atos.core.util.JpaReflectionUtils;
 import br.com.atos.utils.DataUtils;
 import br.com.atos.utils.OsUtil;
-import br.com.atos.utils.StringUtils;
+
+import com.github.cg.model.NewTarget;
+import com.github.cg.model.Plugin;
+import com.github.cg.model.TargetContext;
+import com.github.cg.model.TargetTask;
+import com.github.cg.task.Task;
+import com.github.cg.task.TaskResult;
 
 public class CodeGenerator {
+	
+	private static final Logger log = Logger.getLogger(CodeGenerator.class);
 
 	public static final String PACKAGE_BASE = "packageBase";
 	public static final String PACKAGE_MODEL = "packageModel";
@@ -59,15 +68,15 @@ public class CodeGenerator {
 	public static final String PACKAGE_MANAGER = "packageManager";	
 	public static final String PACKAGE_WINFRM = "packageWinFrm";
 	public static final String PACKAGE_CONTROLLER = "packageController";	
-	public static final String DIR_SRC = "dirSrc";
-	public static final String DIR_RESOURCES = "dirResources";
-	public static final String DIR_WEBCONTENT = "dirWebContent";	
+	public static final String DIRS_SRC = "dirs.src";
+	public static final String DIRS_RESOURCES = "dirs.resources";
+	public static final String DIRS_WEBCONTENT = "dirs.web";	
 	public static final String JAVA = "java";
 	public static final String XHTML = "xhtml";
 	public static final String ATTRIBUTE_ENTITY_NAME_UC = "EntityName";
 	public static final String ATTRIBUTE_ENTITY_NAME = "entityName";
 	public static final String ATTRIBUTE_ENTITY_AUDIT = "entityAudit";	
-	public static final String GC_PROPERTIES_FILENAME = "cg.properties";
+	public static final String CG_PROPERTIES_FILENAME = "cg.properties";
 	public static final String MESSAGES_PROPERTIES_FILENAME = "messages.properties";
 	
 	public static final String PAGE_VIEW_SUFFIX = "page.view.suffix";
@@ -82,17 +91,49 @@ public class CodeGenerator {
 	private List<String> methodsCreatedsInAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
 	private List<String> ignoredAttributes = new ArrayList<String>();
-	private LinkedProperties gcProperties;
+	private LinkedProperties cgProperties;
 	private LinkedProperties messagesProperties;
-	private File dirProject;
+	private File dirBase;
 	private File dirResources;
 	private Target target;
 	private VelocityEngine velocityEngine;
+	private HashMap<String, Object> app;
+	private List<Plugin> plugins = new ArrayList<Plugin>();
+	private TargetContext currentTarget;
 	
 	public Entity getEntity() {
 		return entity;
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void createAppItem(String key, String value) {
 		
+		String[] split = key.split("\\.");
+		
+		HashMap<String,Object> parent = app;
+		
+		for (int i=0; i < split.length - 1; i++) {
+			
+			HashMap<String,Object> child;
+			
+			if (!parent.containsKey(split[i])) {
+				child = new HashMap<String,Object>();
+				parent.put(split[i], child);				
+			}
+			else {
+				child = (HashMap<String, Object>) parent.get(split[i]);
+			}
+			
+			parent = child;
+		}
+		
+		int last = split.length - 1;
+		
+		parent.put(split[last], value);
+	}
+	
+	
+	
 	/**
 	 * Exemplo de utilizacao do gerador:
 	 *	GeradorCodigo gerador = new GeradorCodigo(Produto.class);
@@ -100,27 +141,38 @@ public class CodeGenerator {
 	 */
 	public CodeGenerator(Class<? extends IBaseEntity<?>> entidadeClass) throws Exception {
 	
-		dirProject = new File(System.getProperty("user.dir"));
-
-		loadGcProperties();
+		dirBase = new File(System.getProperty("user.dir"));
 		
-		dirSrc = new File(dirProject, gcProperties.getProperty(DIR_SRC));
-		dirResources = new File(dirProject,  gcProperties.getProperty(DIR_RESOURCES, "src/main/resources"));
-		dirWebContent = new File(dirProject, gcProperties.getProperty(DIR_WEBCONTENT));
-
+		app = new HashMap<String, Object>();
+		
+		createAppItem("dirs.base", dirBase.getAbsolutePath());
+		
+		loadCgProperties();
+		
+		Iterator<Entry<String, String>> iterator = cgProperties.iterator();
+		
+		while (iterator.hasNext()) {
+			Entry<String, String> entry = iterator.next();
+			createAppItem(entry.getKey(), entry.getValue());
+		}		
+		
+		dirSrc = new File(dirBase, cgProperties.getProperty(DIRS_SRC, ""));
+		dirResources = new File(dirBase,  cgProperties.getProperty(DIRS_RESOURCES, ""));
+		dirWebContent = new File(dirBase, cgProperties.getProperty(DIRS_WEBCONTENT, ""));
+		
 		// Verifica se os diretorios existe se nao existir mostrar msg de erro
 		if (!dirSrc.exists() || !dirSrc.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de codigo fonte ({0}) configurado no arquivo gc.properties é inválido!", gcProperties.getProperty(DIR_SRC)), "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de codigo fonte ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(DIRS_SRC)), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		
 		if (!dirWebContent.exists() || !dirWebContent.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de recursos ({0}) configurado no arquivo gc.properties é inválido!", gcProperties.getProperty(DIR_RESOURCES)), "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de recursos ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(DIRS_RESOURCES)), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		
 		if (!dirWebContent.exists() || !dirWebContent.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório do conteudo WEB ({0}) configurado no arquivo gc.properties é inválido!", gcProperties.getProperty(DIR_WEBCONTENT)), "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório do conteudo WEB ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(DIRS_WEBCONTENT)), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		
@@ -133,12 +185,11 @@ public class CodeGenerator {
 		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
 		attributesValues.put(PAGE_VIEW_SUFFIX, "View");		
 		
-		// Copia do gcProperties
-		Iterator<Entry<String, String>> iterator = gcProperties.iterator();
-		while (iterator.hasNext()) {
-			Entry<String, String> key = iterator.next();
-			attributesValues.put(key.getKey(), key.getValue());
-		}
+//		// Copia do gcProperties
+//		Set<String> propertyNames = gcProperties.stringPropertyNames();
+//		for (String propertyName : propertyNames) {			
+//			attributesValues.put(propertyName, gcProperties.getProperty(propertyName));
+//		}
 		
 		attributesValues.put(ATTRIBUTE_ENTITY_AUDIT, getEntity().isAudited() ? "true" : "false");
 		attributesValues.put(ATTRIBUTE_ENTITY_NAME_UC, getEntity().getClassSimpleName());
@@ -148,7 +199,7 @@ public class CodeGenerator {
 		components = new ArrayList<Component>();
 
 		try {
-			attributesValues.put("entityIdClass",  entity.getAttributeId().getType().getSimpleName());			
+			entity.getAttributeId().getType().getSimpleName();			
 		}
 		catch (Exception e) {
 			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
@@ -165,6 +216,28 @@ public class CodeGenerator {
         catch (Exception e) {}
         
         initVelocityEngine();
+	}
+
+	protected String mergeTemplate(VelocityContext context, String templateString) {
+		
+		try {
+			StringWriter writer = new StringWriter();
+			
+			RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
+			StringReader reader = new StringReader(templateString);
+			SimpleNode node = runtimeServices.parse(reader, "template");
+			
+			Template template = new Template();
+			template.setRuntimeServices(runtimeServices);
+			template.setData(node);
+			template.initDocument();					
+			template.merge(context, writer);
+			
+			return writer.toString();
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Erro ao mesclar o template, mensagem interna: " + e.getMessage());
+		}
 	}
 	
 	private void initVelocityEngine() {
@@ -183,7 +256,7 @@ public class CodeGenerator {
 
 	private void loadIgnoredAttributes() {
 
-		String value = gcProperties.getProperty("ignoredAttributes");
+		String value = cgProperties.getProperty("ignoredAttributes");
 		
 		if (value != null && !value.isEmpty()) {
 
@@ -220,25 +293,25 @@ public class CodeGenerator {
 		return new File(dirResources, MESSAGES_PROPERTIES_FILENAME);
 	}
 	
-	private File getGcPropertiesFile() {
-		return new File(dirResources, GC_PROPERTIES_FILENAME);
+	private File getCgPropertiesFile() {
+		return new File(dirResources, CG_PROPERTIES_FILENAME);
 	}
 
-	private void loadGcProperties() throws Exception {
+	private void loadCgProperties() throws Exception {
 		
 		// Tenta recuperar o gc.properties pelo classPath
-		InputStream is = this.getClass().getResourceAsStream("/" + GC_PROPERTIES_FILENAME);
+		InputStream is = this.getClass().getResourceAsStream("/" + CG_PROPERTIES_FILENAME);
 		
 		if (is == null) {
-			throw new RuntimeException("O arquivo gc.properties não foi encontrado no classpath!");
+			throw new RuntimeException("O arquivo cg.properties não foi encontrado no classpath!");
 		}
 		
-		loadGcProperties(is);
+		loadCgProperties(is);
 	}
 	
-	private void loadGcProperties(InputStream is) throws Exception {
-		gcProperties = new LinkedProperties();
-		gcProperties.load(is);		
+	private void loadCgProperties(InputStream is) throws Exception {
+		cgProperties = new LinkedProperties();
+		cgProperties.load(is);
 	}
 
 	public void addComponent(Component newComponent) {
@@ -255,8 +328,10 @@ public class CodeGenerator {
 	}
 
 	public void makeDaoAndManager() throws Exception {
-		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACKAGE_DAO).replace(".", "/")), "DAO.java.tpl", false));
-		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACKAGE_MANAGER).replace(".", "/")), "Manager.java.tpl", false));
+		
+
+//		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACKAGE_DAO).replace(".", "/")), "DAO.java.tpl", false));
+//		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACKAGE_MANAGER).replace(".", "/")), "Manager.java.tpl", false));
 	}
 	
 	public void makeGrid() throws Exception {
@@ -304,6 +379,11 @@ public class CodeGenerator {
 		}
 	}
 		
+	private void makeTarget(Target target2) {
+
+		
+	}
+
 	public void makePageView() throws Exception {				
 		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
 		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "View.xhtml.tpl", true
@@ -336,144 +416,122 @@ public class CodeGenerator {
 		return target;
 	}
 	
-	protected void execute(NewTarget target) {
-		
+	private VelocityContext createContext() {
+
 		VelocityContext context = new VelocityContext();
-				
-		Template template = velocityEngine.getTemplate(target.getTemplate());
 		
+		context.put("util", new Util());
 		context.put("entity", entity);
-		
+		context.put("app", app);			
+		context.put("msgs", messagesProperties);
+				
 		for (String key : attributesValues.keySet()) {
 			context.put(key, attributesValues.get(key));
 		}
 
-		for (Component component : components) {
+		for (Component component : getComponents()) {
 			context.put(component.getComponentKey(), component);
 		}
-				
-		StringWriter writer = new StringWriter();
+		
+		return context;
+	}
+	
+	private List<Component> getComponents() {
 
-		// mistura o contexto com o template
-		template.merge(context, writer);
+		List<Component> components = new ArrayList<Component>();
 
-		System.out.println(writer.toString());		
+		for (Plugin plugin : getPlugins()) {
+			components.addAll(plugin.getComponents());
+		}
+
+		return components;
 	}
 
-	private void makeTarget(Target target) throws Exception {
-
-		this.target = target;
+	protected void execute(NewTarget target) {
+						
+		TargetContext targetContext = new TargetContext(target, entity, createContext());
 		
-		if (!getTarget().getDestinationDirectory().exists()) {
-			getTarget().getDestinationDirectory().mkdirs();
+		String filename = mergeTemplate(targetContext.getContext(), target.getFilenameTemplate());
+		
+		File file = new File(filename);
+		
+		targetContext.setFile(file);
+		
+		if (!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
 		}
-		
-		String fileName = getTarget().getFileName(getEntity());
-		
-		File file = new File(getTarget().getDestinationDirectory(), fileName);
-
+				
 		// Verifica se o arquivo existe
 		if (file.exists()) {
 
-			if (!getTarget().isAllowOverwrite()) {
-				System.out.println(" - " + file.getName() + " [IGNORADO]");				
+			if (!target.isAllowOverwrite()) {
+				log.warn(file.getName() + " [IGNORADO]");				
 				return;
 			}
 			else {
 				int result = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja substituir o arquivo: " + file.getName(), "Substituir arquivo",JOptionPane.YES_NO_OPTION);
 			
 				if (JOptionPane.YES_OPTION != result) {
-					System.out.println(" - " + file.getName() + " [IGNORADO]");					
+					log.warn(file.getName() + " [IGNORADO]");					
 					return;
 				}			
 			}
 		}
 		
-		if (getTarget().isShowWinFrmEntity()) {
-
-            WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
-            winFrm.start(getEntity(), getTarget());
-            
-            if (!winFrm.isStatusOK()) {
-            	return;
-            }
-            else {
-            	store(getEntity());
-            }
-
-            attributesValues.put("Gender", getEntity().getGender().getArticle().toUpperCase());
-            attributesValues.put("gender", getEntity().getGender().getArticle());
-            attributesValues.put("entityLabel", getEntity().getLabel());
-            attributesValues.put("EntityLabel", StringUtils.firstToUpperCase(getEntity().getLabel()));
-                             
-            if (getTarget().isShowWinFrmAttributeOneToMany()) { 
-	            
-            	for (AttributeOneToMany attribute : getEntity().getAttributesOneToMany()) {
-	
-	            	attribute.initializeAssociationEntity();
-	            	
-	            	WinFrmAttributeOneToMany winFrmAttributeOneToMany = new WinFrmAttributeOneToMany(null, true);                                        
-	            	winFrmAttributeOneToMany.start(attribute, getTarget());
-	
-	                if (!winFrmAttributeOneToMany.isStatusOK()) {
-	                	return;
-	                }
-	                else {
-	                	store(attribute.getAssociationEntity());
-	                }
-	            }
-            }
+		executeTasks(targetContext, target.getTasksToExecuteBefore());
+				
+		PrintWriter writer;
+		
+		try {
+			writer = new PrintWriter(file);
 		}
-						
-		System.out.println(" - " + file.getName() + " [GERADO]");
+		catch (Exception e) {
+			throw new RuntimeException("Não foi possível encontrar o arquivo, mensagem interna: " + e.getMessage());
+		}
+		
+		Template template = velocityEngine.getTemplate(target.getTemplate());
+		template.merge(this.currentTarget.getContext(), writer);
 
-		String path = "/templates/" + target.getTemplateFileName();
-			
-		BufferedReader in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)));
-
-        PrintWriter pw = new PrintWriter(file);
-        
-        String linha;
-
-        while ((linha = in.readLine()) != null) {        	        	
-        	
-        	Matcher matcher = pattern.matcher(linha);
-        	
-        	String restoLinha = linha;
-        	
-            while (matcher.find()) {
-            	
-            	String tplChave = matcher.group();
-            	String chave = matcher.group(1);
-            	
-            	String parteAtualizar = restoLinha.substring(0, restoLinha.indexOf(tplChave) + tplChave.length());
-            	restoLinha = restoLinha.substring(restoLinha.indexOf(tplChave) + tplChave.length());
-            	
-            	if (attributesValues.containsKey(chave)) {	            		
-            		pw.print(parteAtualizar.replace(tplChave, getAttributeValue(chave)));
-            	}
-            	else {
-            		
-            		Component componente = recuperarComponentePorChave(chave);
-            		
-            		if (componente != null) {
-            			componente.render(pw);
-            		}
-            		else {
-            			pw.print(parteAtualizar);
-            		}
-            	}
-            }
-            
-           	pw.println(restoLinha);	           
-        }
-        
-        in.close();
-        
-        pw.close();
+		writer.close();
+		
+		executeTasks(targetContext, target.getTasksToExecuteAfter());
+		
+        log.info(file.getName() + " [GERADO]");
 	}
 
-	private void store(Entity entity) {
+	private void executeTasks(TargetContext targetContext, List<TargetTask> targetTasks) {
+
+		for (TargetTask targetTask : targetTasks) {
+			
+			Task task = createTaskInstance(targetContext, targetTask);
+			
+			if (task != null) {
+				
+				TaskResult result = task.execute();
+				
+				if (TaskResult.CONTINUE != result) {
+					return;
+				}
+			}
+		}
+	}
+
+	private Task createTaskInstance(TargetContext targetContext, TargetTask targetTask) {
+		
+		try {
+			Class<?> taskClass = Class.forName(targetTask.getTask());	
+			Task task = (Task) taskClass.newInstance();
+			task.init(this, targetContext, targetTask);
+			return task;
+		}
+		catch (Exception e) {
+			log.error("Não foi possível instanciar task!");
+		}
+		
+		return null;
+	}
+
+	public void store(Entity entity) {
 			
 		try {
 			String doc = "## Gerado por " + System.getProperty("user.name") + " em: " + DataUtils.getDataHorario(new Date());
@@ -486,14 +544,14 @@ public class CodeGenerator {
 						
 			entity.store();			
 
-			getGcProperties().store(new FileOutputStream(getGcPropertiesFile()), null);
+			getGcProperties().store(new FileOutputStream(getCgPropertiesFile()), null);
 			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile()), null);
 			
-			loadGcProperties(new FileInputStream(getGcPropertiesFile()));
+			loadCgProperties(new FileInputStream(getCgPropertiesFile()));
 			loadMessagesProperties();
 		}
 		catch (Exception e) {
-			throw new RuntimeException("Erro ao gravar os arquivos gc.properties e messages.properties, msg interna: " + e.getMessage());
+			throw new RuntimeException("Erro ao gravar os arquivos cg.properties e messages.properties, msg interna: " + e.getMessage());
 		}
 	}
 
@@ -696,7 +754,7 @@ public class CodeGenerator {
 	}
 
 	public LinkedProperties getGcProperties() {
-		return gcProperties;
+		return cgProperties;
 	}
 
 	public LinkedProperties getMessagesProperties() {
@@ -710,5 +768,17 @@ public class CodeGenerator {
 			}
 		}
 		return false;
+	}
+	
+	public List<Plugin> getPlugins() {
+		return plugins;
+	}
+
+	public void setPlugins(List<Plugin> plugins) {
+		this.plugins = plugins;
+	}
+
+	protected void addPlugin(Plugin plugin) {
+		getPlugins().add(plugin);
 	}
 }

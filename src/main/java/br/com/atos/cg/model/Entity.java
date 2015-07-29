@@ -162,6 +162,10 @@ public class Entity {
 		return null;
 	}
 	
+	public String getAttributeIdClass() {
+		return getAttributeId().getType().getSimpleName();
+	}
+	
 	public boolean isAudited() {
 		return getClazz().isAnnotationPresent(Audited.class);
 	}

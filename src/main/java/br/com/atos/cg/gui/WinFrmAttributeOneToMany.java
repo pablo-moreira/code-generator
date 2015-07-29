@@ -7,9 +7,11 @@ package br.com.atos.cg.gui;
 import javax.swing.JOptionPane;
 
 import br.com.atos.cg.model.AttributeOneToMany;
-import br.com.atos.cg.model.Target;
-import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.utils.swing.JFrameUtils;
+
+import com.github.cg.model.NewTarget;
+import com.github.cg.model.TargetContext;
+import com.github.cg.model.TargetTask;
 
 /**
  *
@@ -19,6 +21,13 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String CONFIG_RENDER_COLUMN = "renderColumn";
+	public static final String CONFIG_RENDER_FORM = "renderForm";
+	public static final String CONFIG_RENDER_FILTER = "renderFilter";
+	public static final String CONFIG_SHOW_ATTRIBUTES_ONE_TO_MANY = "showAttributesOneToMany";
+	public static final String CONFIG_RENDER_FORM_TYPE = "renderFormType";
+	public static final String CONFIG_RENDER_ATTRIBUTE_DESCRIPTION = "renderAttributeDescription";
+	
 	private int status;
 	private AttributeOneToMany attributeOneToMany;
 
@@ -167,7 +176,7 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 						System.exit(0);
 					}
 				});
-				dialog.start(null, null);
+				dialog.start(null, null, null);
 			}
 		});
 	}
@@ -176,8 +185,11 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 		return attributeOneToMany;
 	}
 
-	public void start(AttributeOneToMany attributeOneToMany, Target target) {
-        
+	
+	public void start(AttributeOneToMany attributeOneToMany, TargetContext targetContext, TargetTask targetTask) {
+
+		NewTarget target = targetContext.getTarget();
+		
 		txtTarget.setText(target.getDescription());
 		
 		setTitle("Formulário - " + attributeOneToMany.getEntity().getClassSimpleName() + "." + attributeOneToMany.getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
@@ -185,23 +197,21 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 		this.attributeOneToMany = attributeOneToMany;
 
         getFrmAttributes().initialize(attributeOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany());
-
-		TargetConfig colRender = target.getWinFrmAttributeOneToMany();
 		
-		if (colRender != null) {			
-			if (!colRender.isRenderRenderColumn()) {
+		if (targetTask != null) {			
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_COLUMN)) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderColumn();
 			}
-			if (!colRender.isRenderRenderFilter()) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FILTER)) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderFilter();
 			}
-			if (!colRender.isRenderRenderForm()) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM)) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderForm();
 			}			
-			if (!colRender.isRenderAttributeDescription()) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTE_DESCRIPTION)) {
 				getFrmAttributes().getTmAttributes().hideColumnAttributeDescription();
 			}
-			if (!colRender.isRenderFormType()) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM_TYPE)) {
 				getFrmAttributes().getTmAttributes().hideColumnFormType();
 			}
 		}

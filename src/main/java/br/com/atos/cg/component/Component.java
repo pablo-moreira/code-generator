@@ -1,6 +1,5 @@
 package br.com.atos.cg.component;
 
-import java.io.PrintWriter;
 import java.text.MessageFormat;
 
 import br.com.atos.cg.CodeGenerator;
@@ -21,18 +20,18 @@ abstract public class Component {
 	
 	abstract public String getComponentKey();
 	
-	abstract public void render(PrintWriter pw);
+	abstract public String render();
 	
-	protected void print(PrintWriter pw, String string) {
-		pw.print(string);
+	protected void print(StringBuilder sb, String string) {
+		sb.append(string);
 	}
 	
-	protected void println(PrintWriter pw, String string) {
-		pw.println(string);
+	protected void println(StringBuilder sb, String string) {
+		sb.append(string).append("\n");
 	}
 	
-	protected void println(PrintWriter pw, String string, Object ... attr) {
-		pw.println(MessageFormat.format(string, attr));
+	protected void println(StringBuilder sb, String string, Object ... attr) {
+		sb.append(MessageFormat.format(string, attr)).append("\n");
 	}
 	
 	public Class<?> getType(Attribute attribute) {

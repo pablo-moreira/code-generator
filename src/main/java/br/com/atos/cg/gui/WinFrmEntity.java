@@ -16,20 +16,28 @@ import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.model.Entity;
 import br.com.atos.cg.model.Gender;
-import br.com.atos.cg.model.Target;
-import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.EntityComboBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
+
+import com.github.cg.model.TargetContext;
+import com.github.cg.model.TargetTask;
 
 /**
  * 
  * @author 205327
  */
 public class WinFrmEntity extends javax.swing.JDialog {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
+	public static final String CONFIG_RENDER_COLUMN = "renderColumn";
+	public static final String CONFIG_RENDER_FORM = "renderForm";
+	public static final String CONFIG_RENDER_FILTER = "renderFilter";
+	public static final String CONFIG_SHOW_ATTRIBUTES_ONE_TO_MANY = "showAttributesOneToMany";
+	public static final String CONFIG_RENDER_FORM_TYPE = "renderFormType";
+	public static final String CONFIG_RENDER_ATTRIBUTE_DESCRIPTION = "renderAttributeDescription";
+	
 	private EntityComboBoxModel<Gender> cmGender;
 	private Entity entity;
 	private int status;
@@ -337,13 +345,11 @@ public class WinFrmEntity extends javax.swing.JDialog {
 		return entity;
 	}
 
-	public void start(Entity entity, Target target) {
+	public void start(TargetContext targetContext, TargetTask targetTask) {
 
-		txtTarget.setText(target.getDescription());
-
-		TargetConfig colRender = target.getWinFrmEntity();
-
-		this.entity = entity;
+		this.entity = targetContext.getEntity();
+		
+		txtTarget.setText(targetContext.getTarget().getDescription());
 
 		if (entity != null) {
 
@@ -363,7 +369,7 @@ public class WinFrmEntity extends javax.swing.JDialog {
 				} else if (attribute instanceof AttributeManyToOne) {
 					add = true;
 				} else if (attribute instanceof AttributeOneToMany) {
-					if (colRender.isShowAttributesOneToMany()) {
+					if (targetTask.getConfigValueAsBoolean(CONFIG_SHOW_ATTRIBUTES_ONE_TO_MANY)) {
 						add = true;
 					}
 				} else {
@@ -382,21 +388,20 @@ public class WinFrmEntity extends javax.swing.JDialog {
 			getFrmAttributes().initialize(null);
 		}
 
-		if (colRender != null) {
-			if (!colRender.isRenderRenderColumn()) {
+		if (targetTask != null) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_COLUMN)) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderColumn();
 			}
-			if (!colRender.isRenderRenderFilter()) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FILTER)) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderFilter();
 			}
-			if (!colRender.isRenderRenderForm()) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM)) {
 				getFrmAttributes().getTmAttributes().hideColumnRenderForm();
 			}
-			if (!colRender.isRenderAttributeDescription()) {
-				getFrmAttributes().getTmAttributes()
-						.hideColumnAttributeDescription();
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTE_DESCRIPTION)) {
+				getFrmAttributes().getTmAttributes().hideColumnAttributeDescription();
 			}
-			if (!colRender.isRenderFormType()) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM_TYPE)) {
 				getFrmAttributes().getTmAttributes().hideColumnFormType();
 			}
 		}

@@ -1,0 +1,45 @@
+package com.github.cg.model;
+
+import java.io.File;
+
+import org.apache.velocity.VelocityContext;
+
+import br.com.atos.cg.model.Entity;
+
+public class TargetContext {
+
+	private NewTarget target;
+	private Entity entity;
+	private VelocityContext context;
+	private File file;
+
+	public TargetContext(NewTarget target, Entity entity, VelocityContext context) {
+		this.target = target;
+		this.entity = entity;
+		this.context = context;
+	}
+
+	public NewTarget getTarget() {
+		return target;
+	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public VelocityContext getContext() {
+		return context;
+	}
+
+	public void setContext(VelocityContext context) {
+		this.context = context;
+	}
+
+	public void setFile(File file) {
+		this.file = file;		
+	}
+
+	public File getFile() {
+		return file;
+	}	
+}
