@@ -99,7 +99,6 @@ public class CodeGenerator {
 	private VelocityEngine velocityEngine;
 	private HashMap<String, Object> app;
 	private List<Plugin> plugins = new ArrayList<Plugin>();
-	private TargetContext currentTarget;
 	
 	public Entity getEntity() {
 		return entity;
@@ -379,10 +378,7 @@ public class CodeGenerator {
 		}
 	}
 		
-	private void makeTarget(Target target2) {
-
-		
-	}
+	private void makeTarget(Target target) {}
 
 	public void makePageView() throws Exception {				
 		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
@@ -441,7 +437,13 @@ public class CodeGenerator {
 		List<Component> components = new ArrayList<Component>();
 
 		for (Plugin plugin : getPlugins()) {
-			components.addAll(plugin.getComponents());
+			
+			List<Component> pluginsComponents = plugin.getComponents();
+
+			for (Component component : pluginsComponents) {
+				component.initialize(this);
+				components.add(component);
+			}
 		}
 
 		return components;
@@ -490,7 +492,12 @@ public class CodeGenerator {
 		}
 		
 		Template template = velocityEngine.getTemplate(target.getTemplate());
-		template.merge(this.currentTarget.getContext(), writer);
+		try {
+			template.merge(targetContext.getContext(), writer);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		writer.close();
 		
@@ -780,5 +787,9 @@ public class CodeGenerator {
 
 	protected void addPlugin(Plugin plugin) {
 		getPlugins().add(plugin);
+	}
+	
+	private void init() {
+		
 	}
 }
