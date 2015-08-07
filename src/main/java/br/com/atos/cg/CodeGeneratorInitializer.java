@@ -15,6 +15,7 @@ import com.github.cg.annotation.Plugin;
 import com.github.cg.annotation.Target;
 import com.github.cg.annotation.TargetGroup;
 import com.github.cg.annotation.TargetTask;
+import com.github.cg.annotation.TaskConfig;
 
 public class CodeGeneratorInitializer {
 
@@ -27,6 +28,9 @@ public class CodeGeneratorInitializer {
 		this.cg = cg;		
 	}
 	
+	/**
+	 * Inicializa o gerador de codigo
+	 */
 	public void init() {
 		
 		this.reflections = new Reflections();
@@ -105,17 +109,33 @@ public class CodeGeneratorInitializer {
 			);				
 			
 			for (TargetTask targetTaskAnnotation : targetAnnotation.tasksToExecuteBefore()) {
-				target.addTaskExecuteBefore(new com.github.cg.model.TargetTask(targetTaskAnnotation.task()));
+				target.addTaskExecuteBefore(initTargetTask(targetTaskAnnotation));
 			}
 			
 			for (TargetTask targetTaskAnnotation : targetAnnotation.tasksToExecuteAfter()) {
-				target.addTaskExecuteAfter(new com.github.cg.model.TargetTask(targetTaskAnnotation.task()));
+				target.addTaskExecuteAfter(initTargetTask(targetTaskAnnotation));
 			}
 			
 			plugin.addTarget(target);
 		}		
 	}
 	
+	/**
+	 * Instancia um objeto TargetTask do pacote model a partir de um objeto targetTask do pacote annotacao
+	 * @param targetTask do pacote annotation
+	 * @return targetTask do pacote model
+	 */
+	private com.github.cg.model.TargetTask initTargetTask(TargetTask targetTaskAnnotation) {
+
+		com.github.cg.model.TargetTask targetTask = new com.github.cg.model.TargetTask(targetTaskAnnotation.task());
+		
+		for (TaskConfig taskConfigAnnotation : targetTaskAnnotation.configs()) {
+			targetTask.getConfigs().put(taskConfigAnnotation.name(), taskConfigAnnotation.value());
+		}		
+		
+		return targetTask;
+	}
+
 	/**
 	 * Para cada target group annotation cria um target group do tipo model e
 	 * adiciona a uma lista de targets groups do plugin
