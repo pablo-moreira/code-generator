@@ -17,11 +17,7 @@ abstract public class Component {
 	public CodeGenerator getCg() {
 		return cg;
 	}
-	
-	abstract public String getComponentKey();
-	
-	abstract public String render();
-	
+		
 	protected void print(StringBuilder sb, String string) {
 		sb.append(string);
 	}
