@@ -3,7 +3,7 @@ package com.github.cg.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewTarget {
+public class Target {
 
 	/**
 	 * O nome do target
@@ -41,8 +41,8 @@ public class NewTarget {
 	 * Armazena as tarefas que serao executada apos a execucacao do target
 	 */
 	private List<TargetTask> tasksToExecuteAfter = new ArrayList<TargetTask>();
-	
-	public NewTarget(String name, String description, boolean allowOverwrite, String filenameTemplate, String template) {
+		
+	public Target(String name, String description, boolean allowOverwrite, String filenameTemplate, String template) {
 		this.name = name;
 		this.description = description;
 		this.allowOverwrite = allowOverwrite;
@@ -108,5 +108,9 @@ public class NewTarget {
 
 	public void addTaskExecuteBefore(TargetTask targetTask) {
 		getTasksToExecuteBefore().add(targetTask);		
+	}
+	
+	public void addTaskExecuteAfter(TargetTask targetTask) {
+		getTasksToExecuteAfter().add(targetTask);		
 	}
 }

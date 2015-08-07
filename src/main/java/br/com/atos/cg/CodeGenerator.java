@@ -41,7 +41,6 @@ import br.com.atos.cg.model.AttributeFormType;
 import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.model.Entity;
-import br.com.atos.cg.model.Target;
 import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.LinkedProperties;
 import br.com.atos.cg.util.Util;
@@ -51,9 +50,10 @@ import br.com.atos.core.util.JpaReflectionUtils;
 import br.com.atos.utils.DataUtils;
 import br.com.atos.utils.OsUtil;
 
-import com.github.cg.model.NewTarget;
 import com.github.cg.model.Plugin;
+import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
+import com.github.cg.model.TargetGroup;
 import com.github.cg.model.TargetTask;
 import com.github.cg.task.Task;
 import com.github.cg.task.TaskResult;
@@ -86,7 +86,7 @@ public class CodeGenerator {
 	private File dirSrc;	
 	private File dirWebContent;	
 	private HashMap<String,String> attributesValues = new HashMap<String,String>();
-	private List<Component> components;	
+	
 	private Entity entity;
 	private List<String> methodsCreatedsInAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
@@ -95,10 +95,13 @@ public class CodeGenerator {
 	private LinkedProperties messagesProperties;
 	private File dirBase;
 	private File dirResources;
-	private Target target;
+	private br.com.atos.cg.model.OldTarget target;
 	private VelocityEngine velocityEngine;
-	private HashMap<String, Object> app;
+	private HashMap<String, Object> app;	
+	private List<Class<?>> entitiesClass = new ArrayList<Class<?>>();
+	private HashMap<String,Component> components = new HashMap<String,Component>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
+	private List<TargetGroup> targetsGroup = new ArrayList<TargetGroup>();	
 	
 	public Entity getEntity() {
 		return entity;
@@ -139,7 +142,7 @@ public class CodeGenerator {
 	 *	gerador.gerarTudo();
 	 */
 	public CodeGenerator(Class<? extends IBaseEntity<?>> entidadeClass) throws Exception {
-	
+				
 		dirBase = new File(System.getProperty("user.dir"));
 		
 		app = new HashMap<String, Object>();
@@ -178,7 +181,10 @@ public class CodeGenerator {
 		loadMessagesProperties();
 		
 		loadIgnoredAttributes();
-		
+				
+		CodeGeneratorInitializer initializer = new CodeGeneratorInitializer(this);
+		initializer.init();
+
 		entity = new Entity(entidadeClass, this);
 			
 		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
@@ -195,8 +201,6 @@ public class CodeGenerator {
 		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClassSimpleName()));
 		attributesValues.put(PACKAGE_MODEL, entidadeClass.getPackage().getName());
 				
-		components = new ArrayList<Component>();
-
 		try {
 			entity.getAttributeId().getType().getSimpleName();			
 		}
@@ -216,6 +220,8 @@ public class CodeGenerator {
         
         initVelocityEngine();
 	}
+
+	
 
 	protected String mergeTemplate(VelocityContext context, String templateString) {
 		
@@ -313,19 +319,6 @@ public class CodeGenerator {
 		cgProperties.load(is);
 	}
 
-	public void addComponent(Component newComponent) {
-		
-		Component component = recuperarComponentePorChave(newComponent.getComponentKey());
-		
-		if (component != null) {
-			components.remove(component);
-		}
-		
-		newComponent.initialize(this);
-		
-		components.add(newComponent);
-	}
-
 	public void makeDaoAndManager() throws Exception {
 		
 
@@ -334,18 +327,18 @@ public class CodeGenerator {
 	}
 	
 	public void makeGrid() throws Exception {
-		makeTarget(new Target("Grid{0}.xhtml", new File(dirWebContent, "resources/components/app"), "Grid.xhtml.tpl", true
+		makeTarget(new br.com.atos.cg.model.OldTarget("Grid{0}.xhtml", new File(dirWebContent, "resources/components/app"), "Grid.xhtml.tpl", true
 				, new TargetConfig(true, true, false, true, false, false)
 				, null
 		));
 	}
 
 	public void makeWinFrm() throws Exception {
-		makeTarget(new Target("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/app"), "WinFrm.xhtml.tpl", true					 
+		makeTarget(new br.com.atos.cg.model.OldTarget("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/app"), "WinFrm.xhtml.tpl", true					 
 				, new TargetConfig(false, false, true, true, true, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));
-		makeTarget(new Target("WinFrm{0}.java", new File(dirSrc, getAttributeValue(PACKAGE_WINFRM).replace(".", "/")), "WinFrm.java.tpl", true));
+		makeTarget(new br.com.atos.cg.model.OldTarget("WinFrm{0}.java", new File(dirSrc, getAttributeValue(PACKAGE_WINFRM).replace(".", "/")), "WinFrm.java.tpl", true));
 
 		for (Attribute attribute : getEntity().getAttributes()) {				
 			
@@ -378,19 +371,19 @@ public class CodeGenerator {
 		}
 	}
 		
-	private void makeTarget(Target target) {}
+	private void makeTarget(br.com.atos.cg.model.OldTarget target) {}
 
 	public void makePageView() throws Exception {				
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "View.xhtml.tpl", true
+		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
+		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "View.xhtml.tpl", true
 				, new TargetConfig(false, false, false, true, false, true)
 				, new TargetConfig(true, false, false, true, false, false)
 		));		
 	}
 		
 	public void makePageManager() throws Exception {
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ManagerCtrl.java.tpl", false));
-		makeTarget(new Target("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "Manager.xhtml.tpl", true
+		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ManagerCtrl.java.tpl", false));
+		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "Manager.xhtml.tpl", true
 				, new TargetConfig(false, false, false, false, false, false)
 				, null
 		));
@@ -408,7 +401,7 @@ public class CodeGenerator {
 		return attributesValues.get(attributeName);
 	}
 	
-	public Target getTarget() {
+	public br.com.atos.cg.model.OldTarget getTarget() {
 		return target;
 	}
 	
@@ -425,31 +418,18 @@ public class CodeGenerator {
 			context.put(key, attributesValues.get(key));
 		}
 
-		for (Component component : getComponents()) {
-			context.put(component.getComponentKey(), component);
+		for (String componentName : getComponents().keySet()) {
+			context.put(componentName, getComponents().get(componentName));
 		}
 		
 		return context;
 	}
 	
-	private List<Component> getComponents() {
-
-		List<Component> components = new ArrayList<Component>();
-
-		for (Plugin plugin : getPlugins()) {
-			
-			List<Component> pluginsComponents = plugin.getComponents();
-
-			for (Component component : pluginsComponents) {
-				component.initialize(this);
-				components.add(component);
-			}
-		}
-
+	public HashMap<String,Component> getComponents() {
 		return components;
 	}
 
-	protected void execute(NewTarget target) {
+	protected void execute(Target target) {
 						
 		TargetContext targetContext = new TargetContext(target, entity, createContext());
 		
@@ -526,8 +506,7 @@ public class CodeGenerator {
 	private Task createTaskInstance(TargetContext targetContext, TargetTask targetTask) {
 		
 		try {
-			Class<?> taskClass = Class.forName(targetTask.getTask());	
-			Task task = (Task) taskClass.newInstance();
+			Task task = targetTask.getTask().newInstance();
 			task.init(this, targetContext, targetTask);
 			return task;
 		}
@@ -561,18 +540,6 @@ public class CodeGenerator {
 			throw new RuntimeException("Erro ao gravar os arquivos cg.properties e messages.properties, msg interna: " + e.getMessage());
 		}
 	}
-
-	private Component recuperarComponentePorChave(String chave) {
-		
-		for (Component componente : components) {
-			if (componente.getComponentKey().equals(chave)) {
-				return componente;
-			}
-		}
-		
-		return null;
-	}	
-	
 
 	private void addMethodGetEntityItemsOnClassSelectItemsIfNecessary(Attribute atributo) {
 		
@@ -776,20 +743,50 @@ public class CodeGenerator {
 		}
 		return false;
 	}
-	
+		
+	public List<Class<?>> getEntitiesClass() {
+		return entitiesClass;
+	}
+
 	public List<Plugin> getPlugins() {
 		return plugins;
 	}
-
-	public void setPlugins(List<Plugin> plugins) {
-		this.plugins = plugins;
+	
+	public List<Target> getTargets() {
+		
+		List<Target> targets = new ArrayList<Target>();
+		
+		for (Plugin plugin : getPlugins()) {
+			targets.addAll(plugin.getTargets());
+		}
+		
+		return targets;		
+	}
+	
+	public List<TargetGroup> getTargetsGroup() {
+		return targetsGroup;
 	}
 
+	protected void addEntityClass(Class<?> entityClass) {
+		getEntitiesClass().add(entityClass);		
+	}
+	
 	protected void addPlugin(Plugin plugin) {
 		getPlugins().add(plugin);
 	}
-	
-	private void init() {
+
+	public void addTargetGroup(TargetGroup targetGroup) {
+		getTargetsGroup().add(targetGroup);
+	}
+
+	public Target findTargetByName(String targetName) {
+
+		for (Target target : getTargets()) {
+			if (target.getName().equals(targetName)) {
+				return target;
+			}
+		}
 		
+		return null;
 	}
 }

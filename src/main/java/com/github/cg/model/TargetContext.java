@@ -8,18 +8,18 @@ import br.com.atos.cg.model.Entity;
 
 public class TargetContext {
 
-	private NewTarget target;
+	private Target target;
 	private Entity entity;
 	private VelocityContext context;
 	private File file;
 
-	public TargetContext(NewTarget target, Entity entity, VelocityContext context) {
+	public TargetContext(Target target, Entity entity, VelocityContext context) {
 		this.target = target;
 		this.entity = entity;
 		this.context = context;
 	}
 
-	public NewTarget getTarget() {
+	public Target getTarget() {
 		return target;
 	}
 

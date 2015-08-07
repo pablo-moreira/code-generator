@@ -2,22 +2,24 @@ package com.github.cg.model;
 
 import java.util.HashMap;
 
+import com.github.cg.task.Task;
+
 public class TargetTask {
 
-	private String task;
+	private Class<? extends Task> task;
 	private HashMap<String,String> configs = new HashMap<String,String>();
 	
 	public TargetTask() {}
 
-	public TargetTask(String task) {
+	public TargetTask(Class<? extends Task> task) {
 		this.task = task;
 	}
 
-	public String getTask() {
+	public Class<? extends Task> getTask() {
 		return task;
 	}
 
-	public void setTask(String task) {
+	public void setTask(Class<? extends Task> task) {
 		this.task = task;
 	}
 

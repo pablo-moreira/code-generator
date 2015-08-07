@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.atos.cg.component.Component;
-import br.com.atos.cg.model.Target;
 
 public class Plugin {
 	
@@ -42,5 +41,13 @@ public class Plugin {
 
 	public void addComponent(Component component) {
 		getComponents().add(component);		
+	}
+
+	public void addTarget(Target target) {
+		getTargets().add(target);		
+	}
+
+	public void addTargetGroup(TargetGroup targetGroup) {
+		getTargetsGroups().add(targetGroup);		
 	}
 }

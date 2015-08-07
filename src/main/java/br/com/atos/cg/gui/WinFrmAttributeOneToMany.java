@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.utils.swing.JFrameUtils;
 
-import com.github.cg.model.NewTarget;
+import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetTask;
 
@@ -188,7 +188,7 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 	
 	public void start(AttributeOneToMany attributeOneToMany, TargetContext targetContext, TargetTask targetTask) {
 
-		NewTarget target = targetContext.getTarget();
+		Target target = targetContext.getTarget();
 		
 		txtTarget.setText(target.getDescription());
 		
