@@ -21,7 +21,7 @@ import br.com.atos.utils.swing.JFrameUtils;
  *
  * @author 205327
  */
-public class FrmAttributes extends javax.swing.JPanel {
+public class PnAttributes extends javax.swing.JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -30,7 +30,7 @@ public class FrmAttributes extends javax.swing.JPanel {
     /**
      * Creates new form FrmAttributes
      */
-    public FrmAttributes() {
+    public PnAttributes() {
         
         initComponents();
         

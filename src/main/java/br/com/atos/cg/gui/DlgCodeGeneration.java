@@ -11,7 +11,7 @@ import br.com.atos.utils.swing.JFrameUtils;
  *
  * @author 205327
  */
-public class WinFrmCodeGeneration extends javax.swing.JDialog {
+public class DlgCodeGeneration extends javax.swing.JDialog {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -20,7 +20,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
     /**
      * Creates new form WinFrmCodeGeneration
      */
-    public WinFrmCodeGeneration(java.awt.Frame parent, boolean modal) {
+    public DlgCodeGeneration(java.awt.Frame parent, boolean modal) {
 	super(parent, modal);
 	initComponents();
     }
@@ -84,7 +84,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPageManage)
                     .addComponent(btnPageView))
-                .addGap(0, 21, Short.MAX_VALUE))
+                .addGap(0, 31, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Componentes"));
@@ -121,7 +121,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnGrid)
                     .addComponent(btnWinFrm))
-                .addGap(0, 16, Short.MAX_VALUE))
+                .addGap(0, 26, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Infraestrutura"));
@@ -158,7 +158,7 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDaoAndManager)
                     .addComponent(btnAll))
-                .addGap(0, 16, Short.MAX_VALUE))
+                .addGap(0, 26, Short.MAX_VALUE))
         );
 
         btnOK.setText("OK");
@@ -278,20 +278,21 @@ public class WinFrmCodeGeneration extends javax.swing.JDialog {
 		}
 	    }
 	} catch (ClassNotFoundException ex) {
-	    java.util.logging.Logger.getLogger(WinFrmCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(DlgCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (InstantiationException ex) {
-	    java.util.logging.Logger.getLogger(WinFrmCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(DlgCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (IllegalAccessException ex) {
-	    java.util.logging.Logger.getLogger(WinFrmCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(DlgCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-	    java.util.logging.Logger.getLogger(WinFrmCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	    java.util.logging.Logger.getLogger(DlgCodeGeneration.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 	}
+	//</editor-fold>
 	//</editor-fold>
 
 	/* Create and display the dialog */
 	java.awt.EventQueue.invokeLater(new Runnable() {
 	    public void run() {
-		WinFrmCodeGeneration dialog = new WinFrmCodeGeneration(new javax.swing.JFrame(), true);
+		DlgCodeGeneration dialog = new DlgCodeGeneration(new javax.swing.JFrame(), true);
 		dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent e) {

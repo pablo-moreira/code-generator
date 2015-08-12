@@ -35,7 +35,7 @@ import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 
 import br.com.atos.cg.component.Component;
-import br.com.atos.cg.gui.WinFrmCodeGeneration;
+import br.com.atos.cg.gui.DlgCodeGeneration;
 import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeFormType;
 import br.com.atos.cg.model.AttributeManyToOne;
@@ -718,7 +718,7 @@ public class CodeGenerator {
 	}
 	
 	public void make() throws Exception {
-		WinFrmCodeGeneration winFrm = new WinFrmCodeGeneration(null, true);
+		DlgCodeGeneration winFrm = new DlgCodeGeneration(null, true);
 		winFrm.start(this);
 		System.exit(0);
 	}

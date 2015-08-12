@@ -17,7 +17,7 @@ import com.github.cg.model.TargetTask;
  *
  * @author pablo-moreira
  */
-public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
+public class DlgAttributeOneToMany extends javax.swing.JDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 	/**
 	 * Creates new form WinFrmAttributeOneToMany
 	 */
-	public WinFrmAttributeOneToMany(java.awt.Frame parent, boolean modal) {
+	public DlgAttributeOneToMany(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
 		initComponents();
 	}
@@ -48,12 +48,12 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        frmAttributes = new br.com.atos.cg.gui.FrmAttributes();
         jSeparator1 = new javax.swing.JSeparator();
         btnOK = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         lblTarget = new javax.swing.JLabel();
         txtTarget = new javax.swing.JTextField();
+        pnAttributes = new br.com.atos.cg.gui.PnAttributes();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("\"Formulário - \"");
@@ -85,16 +85,18 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnOK))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblTarget)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(pnAttributes, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblTarget)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -105,8 +107,8 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblTarget))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(frmAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -130,7 +132,7 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 	
     private void save() {
         
-        if (!getFrmAttributes().validateAttributes()) {
+        if (!getPnAttributes().validateAttributes()) {
         	return;
         }
 		
@@ -156,20 +158,21 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 				}
 			}
 		} catch (ClassNotFoundException ex) {
-			java.util.logging.Logger.getLogger(WinFrmAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(DlgAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		} catch (InstantiationException ex) {
-			java.util.logging.Logger.getLogger(WinFrmAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(DlgAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		} catch (IllegalAccessException ex) {
-			java.util.logging.Logger.getLogger(WinFrmAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(DlgAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-			java.util.logging.Logger.getLogger(WinFrmAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+			java.util.logging.Logger.getLogger(DlgAttributeOneToMany.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
+		//</editor-fold>
 		//</editor-fold>
 
 		/* Create and display the dialog */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				WinFrmAttributeOneToMany dialog = new WinFrmAttributeOneToMany(new javax.swing.JFrame(), true);
+				DlgAttributeOneToMany dialog = new DlgAttributeOneToMany(new javax.swing.JFrame(), true);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
@@ -196,23 +199,23 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
 		
 		this.attributeOneToMany = attributeOneToMany;
 
-        getFrmAttributes().initialize(attributeOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany());
+        getPnAttributes().initialize(attributeOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany());
 		
 		if (targetTask != null) {			
 			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_COLUMN)) {
-				getFrmAttributes().getTmAttributes().hideColumnRenderColumn();
+				getPnAttributes().getTmAttributes().hideColumnRenderColumn();
 			}
 			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FILTER)) {
-				getFrmAttributes().getTmAttributes().hideColumnRenderFilter();
+				getPnAttributes().getTmAttributes().hideColumnRenderFilter();
 			}
 			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM)) {
-				getFrmAttributes().getTmAttributes().hideColumnRenderForm();
+				getPnAttributes().getTmAttributes().hideColumnRenderForm();
 			}			
 			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTE_DESCRIPTION)) {
-				getFrmAttributes().getTmAttributes().hideColumnAttributeDescription();
+				getPnAttributes().getTmAttributes().hideColumnAttributeDescription();
 			}
 			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM_TYPE)) {
-				getFrmAttributes().getTmAttributes().hideColumnFormType();
+				getPnAttributes().getTmAttributes().hideColumnFormType();
 			}
 		}
 		
@@ -221,8 +224,8 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
         setVisible(true);
     }
 	
-	public FrmAttributes getFrmAttributes() {
-        return (FrmAttributes) frmAttributes;
+	public PnAttributes getPnAttributes() {
+        return (PnAttributes) pnAttributes;
     }
     
     public boolean isStatusOK() {
@@ -232,9 +235,9 @@ public class WinFrmAttributeOneToMany extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOK;
-    private br.com.atos.cg.gui.FrmAttributes frmAttributes;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblTarget;
+    private br.com.atos.cg.gui.PnAttributes pnAttributes;
     private javax.swing.JTextField txtTarget;
     // End of variables declaration//GEN-END:variables
 }

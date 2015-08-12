@@ -18,7 +18,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import br.com.atos.cg.gui.WinFrmEntity;
+import br.com.atos.cg.gui.DlgFrmEntity;
 import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeFormType;
 import br.com.atos.cg.model.AttributeManyToOne;
@@ -245,7 +245,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 associationClass = attribute.getType();
             }
             else {
-            	associationClass = WinFrmEntity.class;
+            	associationClass = DlgFrmEntity.class;
             }
     		
             JComboBox cbbAttributeDescription = new JComboBox();

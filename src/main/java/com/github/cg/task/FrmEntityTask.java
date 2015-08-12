@@ -1,6 +1,6 @@
 package com.github.cg.task;
 
-import br.com.atos.cg.gui.WinFrmEntity;
+import br.com.atos.cg.gui.DlgFrmEntity;
 
 public class FrmEntityTask extends Task {
 	
@@ -8,7 +8,7 @@ public class FrmEntityTask extends Task {
 		
 		TaskResult taskResult;
 		
-		WinFrmEntity winFrm = new WinFrmEntity(null, true);                        
+		DlgFrmEntity winFrm = new DlgFrmEntity(null, true);                        
 		winFrm.start(getTargetContext(), getTargetTask());
             
 		if (!winFrm.isStatusOK()) {

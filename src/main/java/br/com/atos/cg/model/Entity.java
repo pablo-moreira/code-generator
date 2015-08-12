@@ -26,6 +26,7 @@ public class Entity {
 	private Class<? extends IBaseEntity<?>> clazz;
 	private Gender gender;
 	private String label;
+	private String plural;
 	private CodeGenerator gc;
 	private AccessType accessType;
 	private List<Attribute> attributes = new ArrayList<Attribute>();
@@ -236,5 +237,17 @@ public class Entity {
 
 	public AccessType getAccessType() {
 		return accessType;
+	}
+	
+	public String getPlural() {
+		return plural;
+	}
+
+	public void setPluralDefault() {
+		this.plural = getClassSimpleName() + "s";
+	}
+
+	public void setPlural(String plural) {
+		this.plural = plural;
 	}	
 }

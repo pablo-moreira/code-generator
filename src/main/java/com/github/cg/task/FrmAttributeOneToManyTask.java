@@ -2,7 +2,7 @@ package com.github.cg.task;
 
 import java.util.List;
 
-import br.com.atos.cg.gui.WinFrmAttributeOneToMany;
+import br.com.atos.cg.gui.DlgAttributeOneToMany;
 import br.com.atos.cg.model.AttributeOneToMany;
 
 public class FrmAttributeOneToManyTask extends Task {
@@ -17,7 +17,7 @@ public class FrmAttributeOneToManyTask extends Task {
 
         	attribute.initializeAssociationEntity();
         	
-        	WinFrmAttributeOneToMany winFrmAttributeOneToMany = new WinFrmAttributeOneToMany(null, true);                                        
+        	DlgAttributeOneToMany winFrmAttributeOneToMany = new DlgAttributeOneToMany(null, true);                                        
         	winFrmAttributeOneToMany.start(attribute, getTargetContext(), getTargetTask());
 
             if (!winFrmAttributeOneToMany.isStatusOK()) {

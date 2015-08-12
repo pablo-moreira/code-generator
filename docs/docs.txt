@@ -1,5 +1,11 @@
-
-
+Roadmap
+ - Adicionar o campo plural para o formulario da entidade - OK						
+ - Criar o formulario para escolher as entidades e os targets que serao executados
+ - Adicionar um combo para definir a mascara de um atributo String.
+ - Criar um mecanismo de customizar as opcoes desse combo
+ - Implementar i18n nos formularios 
+ - Implementar i18n nas mensagens de erros
+ 
 
 FluxoEvento
 	fluxoEvento.id					// AttributeId
