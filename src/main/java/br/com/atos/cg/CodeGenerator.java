@@ -35,7 +35,7 @@ import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 
 import br.com.atos.cg.component.Component;
-import br.com.atos.cg.gui.DlgCodeGeneration;
+import br.com.atos.cg.gui.FrmCodeGeneration;
 import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeFormType;
 import br.com.atos.cg.model.AttributeManyToOne;
@@ -57,6 +57,7 @@ import com.github.cg.model.TargetGroup;
 import com.github.cg.model.TargetTask;
 import com.github.cg.task.Task;
 import com.github.cg.task.TaskResult;
+import java.util.logging.Level;
 
 public class CodeGenerator {
 	
@@ -81,6 +82,10 @@ public class CodeGenerator {
 	
 	public static final String PAGE_VIEW_SUFFIX = "page.view.suffix";
 	public static final String PAGE_MANAGER_SUFFIX = "page.manager.suffix";
+
+	public static final String APP_NAME = "Code Generator";
+	public static final String APP_VERSION = "0.0.5";
+	public static final String APP_TITLE = APP_NAME + " - " + APP_VERSION;
 		
 	public Pattern pattern = Pattern.compile("\\$\\{([a-z\\.A-Z]*)\\}");	
 	private File dirSrc;	
@@ -141,7 +146,7 @@ public class CodeGenerator {
 	 *	GeradorCodigo gerador = new GeradorCodigo(Produto.class);
 	 *	gerador.gerarTudo();
 	 */
-	public CodeGenerator(Class<? extends IBaseEntity<?>> entidadeClass) throws Exception {
+	public CodeGenerator() throws Exception {
 				
 		dirBase = new File(System.getProperty("user.dir"));
 		
@@ -184,30 +189,7 @@ public class CodeGenerator {
 				
 		CodeGeneratorInitializer initializer = new CodeGeneratorInitializer(this);
 		initializer.init();
-
-		entity = new Entity(entidadeClass, this);
-			
-		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
-		attributesValues.put(PAGE_VIEW_SUFFIX, "View");		
 		
-//		// Copia do gcProperties
-//		Set<String> propertyNames = gcProperties.stringPropertyNames();
-//		for (String propertyName : propertyNames) {			
-//			attributesValues.put(propertyName, gcProperties.getProperty(propertyName));
-//		}
-		
-		attributesValues.put(ATTRIBUTE_ENTITY_AUDIT, getEntity().isAudited() ? "true" : "false");
-		attributesValues.put(ATTRIBUTE_ENTITY_NAME_UC, getEntity().getClassSimpleName());
-		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClassSimpleName()));
-		attributesValues.put(PACKAGE_MODEL, entidadeClass.getPackage().getName());
-				
-		try {
-			entity.getAttributeId().getType().getSimpleName();			
-		}
-		catch (Exception e) {
-			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
-		}
-
         try {
             if (OsUtil.isOsLinux()) {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -217,6 +199,27 @@ public class CodeGenerator {
             }  
         }
         catch (Exception e) {}
+		
+//		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
+//		attributesValues.put(PAGE_VIEW_SUFFIX, "View");		
+		
+//		// Copia do gcProperties
+//		Set<String> propertyNames = gcProperties.stringPropertyNames();
+//		for (String propertyName : propertyNames) {			
+//			attributesValues.put(propertyName, gcProperties.getProperty(propertyName));
+//		}
+		
+//		attributesValues.put(ATTRIBUTE_ENTITY_AUDIT, getEntity().isAudited() ? "true" : "false");
+//		attributesValues.put(ATTRIBUTE_ENTITY_NAME_UC, getEntity().getClassSimpleName());
+//		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClassSimpleName()));
+//		attributesValues.put(PACKAGE_MODEL, entidadeClass.getPackage().getName());
+				
+//		try {
+//			entity.getAttributeId().getType().getSimpleName();			
+//		}
+//		catch (Exception e) {
+//			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
+//		}
         
         initVelocityEngine();
 	}
@@ -320,8 +323,6 @@ public class CodeGenerator {
 	}
 
 	public void makeDaoAndManager() throws Exception {
-		
-
 //		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACKAGE_DAO).replace(".", "/")), "DAO.java.tpl", false));
 //		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACKAGE_MANAGER).replace(".", "/")), "Manager.java.tpl", false));
 	}
@@ -716,11 +717,10 @@ public class CodeGenerator {
 	protected void println(PrintWriter pw, String string, Object ... attr) {
 		pw.println(MessageFormat.format(string, attr));
 	}
-	
-	public void make() throws Exception {
-		DlgCodeGeneration winFrm = new DlgCodeGeneration(null, true);
-		winFrm.start(this);
-		System.exit(0);
+		
+	public void start() throws Exception {
+		FrmCodeGeneration winFrm = new FrmCodeGeneration(this);
+		winFrm.start();
 	}
 
 	public List<String> getIgnoredAttributes() {
@@ -760,10 +760,17 @@ public class CodeGenerator {
 			targets.addAll(plugin.getTargets());
 		}
 		
-		return targets;		
+		return targets;
 	}
 	
 	public List<TargetGroup> getTargetsGroup() {
+		
+		List<TargetGroup> targetsGroup = new ArrayList<TargetGroup>();
+		
+		for (Plugin plugin : getPlugins()) {
+			targetsGroup.addAll(plugin.getTargetsGroups());
+		}
+		
 		return targetsGroup;
 	}
 
@@ -788,5 +795,13 @@ public class CodeGenerator {
 		}
 		
 		return null;
+	}
+
+	public void execute(Class<?> entityClass, Target target) {
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ex) {
+			java.util.logging.Logger.getLogger(CodeGenerator.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 }

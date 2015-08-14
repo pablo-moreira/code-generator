@@ -13,9 +13,13 @@ public class TargetContext {
 	private VelocityContext context;
 	private File file;
 
-	public TargetContext(Target target, Entity entity, VelocityContext context) {
+	public TargetContext(Target target, Entity entity) {
 		this.target = target;
-		this.entity = entity;
+		this.entity = entity;		
+	}
+	
+	public TargetContext(Target target, Entity entity, VelocityContext context) {
+		this(target, entity);
 		this.context = context;
 	}
 

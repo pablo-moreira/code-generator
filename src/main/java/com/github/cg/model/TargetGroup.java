@@ -14,8 +14,18 @@ public class TargetGroup {
 	}
 	
 	public TargetGroup(String name, List<Target> targets) {
+		
 		this.name = name;
-		this.targets = targets;
+		this.targets = new ArrayList<Target>();
+		
+		for (Target target : targets) {
+			addTarget(target);
+		}
+	}
+
+	public void addTarget(Target target) {
+		getTargets().add(target);
+		target.addGroupMemberOf(this);
 	}
 
 	public String getName() {
@@ -32,5 +42,26 @@ public class TargetGroup {
 
 	public void setTargets(List<Target> targets) {
 		this.targets = targets;
+	}
+
+	public String getTargetsNames() {
+		
+		StringBuilder str = new StringBuilder();
+		
+		boolean first = true;
+		
+		for (Target target : getTargets()) {
+			
+			if (!first) {
+				str.append(", ");				
+			}
+			else {
+				first = false;
+			}
+			
+			str.append(target.getName());
+		}
+		
+		return str.toString();
 	}
 }

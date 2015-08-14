@@ -23,7 +23,7 @@ import br.com.atos.utils.StringUtils;
 
 public class Entity {
 
-	private Class<? extends IBaseEntity<?>> clazz;
+	private Class<?> entityClass;
 	private Gender gender;
 	private String label;
 	private String plural;
@@ -31,13 +31,13 @@ public class Entity {
 	private AccessType accessType;
 	private List<Attribute> attributes = new ArrayList<Attribute>();
 	
-	public Entity(Class<? extends IBaseEntity<?>> clazz, CodeGenerator gc) {
-		
-		this.clazz = clazz;
+	public Entity(Class<?> entityClass, CodeGenerator gc) {		
+		this.entityClass = entityClass;
 		this.gc = gc;
-		
+	}
+	
+	public void initialize() {
 		load();
-				
 		initializeAttributes();
 	}
 		
@@ -46,7 +46,7 @@ public class Entity {
 	}
 
 	public Class<?> getClazz() {
-		return clazz;
+		return entityClass;
 	}
 	
 	public Gender getGender() {

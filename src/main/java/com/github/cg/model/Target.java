@@ -41,6 +41,11 @@ public class Target {
 	 * Armazena as tarefas que serao executada apos a execucacao do target
 	 */
 	private List<TargetTask> tasksToExecuteAfter = new ArrayList<TargetTask>();
+	
+	/**
+	 * Armazena a lista de grupos que este target e membro
+	 */
+	private List<TargetGroup> groupsMemberOf = new ArrayList<TargetGroup>();
 		
 	public Target(String name, String description, boolean allowOverwrite, String filenameTemplate, String template) {
 		this.name = name;
@@ -112,5 +117,13 @@ public class Target {
 	
 	public void addTaskExecuteAfter(TargetTask targetTask) {
 		getTasksToExecuteAfter().add(targetTask);		
+	}
+	
+	public List<TargetGroup> getGroupsMemberOf() {
+		return groupsMemberOf;
+	}
+
+	public void addGroupMemberOf(TargetGroup targetGroup) {
+		getGroupsMemberOf().add(targetGroup);
 	}
 }

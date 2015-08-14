@@ -6,6 +6,7 @@ package br.com.atos.cg.gui;
 
 import br.com.atos.cg.CodeGenerator;
 import br.com.atos.utils.swing.JFrameUtils;
+import java.awt.Font;
 
 /**
  *
@@ -34,139 +35,118 @@ public class DlgCodeGeneration extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        btnPageManage = new javax.swing.JButton();
-        btnPageView = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        btnWinFrm = new javax.swing.JButton();
-        btnGrid = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        btnDaoAndManager = new javax.swing.JButton();
-        btnAll = new javax.swing.JButton();
-        btnOK = new javax.swing.JButton();
+        btnFinish = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
+        pnStageInfo = new javax.swing.JPanel();
+        lblStages = new javax.swing.JLabel();
+        lblStage1 = new javax.swing.JLabel();
+        lblStage2 = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        pnStage = new javax.swing.JPanel();
+        pnSelectEntity = new br.com.atos.cg.gui.PnSelectEntity();
+        pnSelectTarget = new br.com.atos.cg.gui.PnSelectTarget();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
-        setResizable(false);
+        setPreferredSize(new java.awt.Dimension(640, 400));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Telas"));
-        jPanel1.setPreferredSize(new java.awt.Dimension(380, 70));
-
-        btnPageManage.setText("Tela de Administração");
-        btnPageManage.addActionListener(new java.awt.event.ActionListener() {
+        btnFinish.setText("Finalizar");
+        btnFinish.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPageManageActionPerformed(evt);
+                btnFinishActionPerformed(evt);
             }
         });
 
-        btnPageView.setText("Tela de Visualização");
-        btnPageView.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPageViewActionPerformed(evt);
-            }
-        });
+        pnStageInfo.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        lblStages.setFont(new java.awt.Font("Liberation", 1, 11)); // NOI18N
+        lblStages.setText("Etapas");
+
+        lblStage1.setText("1. Selecione as Entidades");
+
+        lblStage2.setText("2. Selecione os Targets");
+
+        javax.swing.GroupLayout pnStageInfoLayout = new javax.swing.GroupLayout(pnStageInfo);
+        pnStageInfo.setLayout(pnStageInfoLayout);
+        pnStageInfoLayout.setHorizontalGroup(
+            pnStageInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnStageInfoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnPageView)
+                .addGroup(pnStageInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblStages)
+                    .addGroup(pnStageInfoLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(pnStageInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblStage2)
+                            .addComponent(lblStage1))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnStageInfoLayout.setVerticalGroup(
+            pnStageInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnStageInfoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblStages)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnPageManage)
-                .addContainerGap(59, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPageManage)
-                    .addComponent(btnPageView))
-                .addGap(0, 31, Short.MAX_VALUE))
+                .addComponent(lblStage1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblStage2)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Componentes"));
-        jPanel2.setPreferredSize(new java.awt.Dimension(138, 70));
+        btnBack.setText("< Retonar");
 
-        btnWinFrm.setText("WinFrm");
-        btnWinFrm.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWinFrmActionPerformed(evt);
-            }
-        });
+        btnNext.setText("Avançar >");
 
-        btnGrid.setText("Grid");
-        btnGrid.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGridActionPerformed(evt);
-            }
-        });
+        btnCancel.setText("Cancelar");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnWinFrm)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnGrid)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        pnSelectEntity.setEnabled(false);
+
+        javax.swing.GroupLayout pnSelectEntityLayout = new javax.swing.GroupLayout(pnSelectEntity);
+        pnSelectEntity.setLayout(pnSelectEntityLayout);
+        pnSelectEntityLayout.setHorizontalGroup(
+            pnSelectEntityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGrid)
-                    .addComponent(btnWinFrm))
-                .addGap(0, 26, Short.MAX_VALUE))
+        pnSelectEntityLayout.setVerticalGroup(
+            pnSelectEntityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 562, Short.MAX_VALUE)
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Infraestrutura"));
-        jPanel3.setPreferredSize(new java.awt.Dimension(171, 70));
+        pnSelectTarget.setEnabled(false);
 
-        btnDaoAndManager.setText("Gerar DAO e Manager");
-        btnDaoAndManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDaoAndManagerActionPerformed(evt);
-            }
-        });
-
-        btnAll.setText("Gerar Tudo");
-        btnAll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAllActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnDaoAndManager)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAll)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout pnSelectTargetLayout = new javax.swing.GroupLayout(pnSelectTarget);
+        pnSelectTarget.setLayout(pnSelectTargetLayout);
+        pnSelectTargetLayout.setHorizontalGroup(
+            pnSelectTargetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDaoAndManager)
-                    .addComponent(btnAll))
-                .addGap(0, 26, Short.MAX_VALUE))
+        pnSelectTargetLayout.setVerticalGroup(
+            pnSelectTargetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        btnOK.setText("OK");
-        btnOK.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOKActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout pnStageLayout = new javax.swing.GroupLayout(pnStage);
+        pnStage.setLayout(pnStageLayout);
+        pnStageLayout.setHorizontalGroup(
+            pnStageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnSelectEntity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnStageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnStageLayout.createSequentialGroup()
+                    .addGap(573, 573, 573)
+                    .addComponent(pnSelectTarget, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        pnStageLayout.setVerticalGroup(
+            pnStageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnSelectEntity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnStageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnStageLayout.createSequentialGroup()
+                    .addGap(95, 95, 95)
+                    .addComponent(pnSelectTarget, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(367, 367, 367)))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -174,92 +154,41 @@ public class DlgCodeGeneration extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnOK)))
+                .addContainerGap(412, Short.MAX_VALUE)
+                .addComponent(btnBack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnNext)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnFinish)
                 .addContainerGap())
+            .addComponent(pnStageInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnStage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, 75, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnStageInfo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnStage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnOK)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnFinish)
+                    .addComponent(btnBack)
+                    .addComponent(btnNext)
+                    .addComponent(btnCancel))
+                .addGap(16, 16, 16))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnPageViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPageViewActionPerformed
-		try {
-			getCg().makePageView();
-		}
-		catch (Exception e) {
-			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
-		}
-    }//GEN-LAST:event_btnPageViewActionPerformed
-
-    private void btnDaoAndManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDaoAndManagerActionPerformed
-        try {
-			getCg().makeDaoAndManager();
-		}
-		catch (Exception e) {
-			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
-		}
-    }//GEN-LAST:event_btnDaoAndManagerActionPerformed
-
-    private void btnPageManageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPageManageActionPerformed
-		try {
-			getCg().makePageManager();
-		}
-		catch (Exception e) {
-			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
-		}
-    }//GEN-LAST:event_btnPageManageActionPerformed
-
-    private void btnWinFrmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWinFrmActionPerformed
-		try {
-			getCg().makeWinFrm();
-		}
-		catch (Exception e) {
-			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
-		}
-    }//GEN-LAST:event_btnWinFrmActionPerformed
-
-    private void btnGridActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGridActionPerformed
-		try {
-			getCg().makeGrid();
-		}
-		catch (Exception e) {
-			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
-		}
-    }//GEN-LAST:event_btnGridActionPerformed
-
-    private void btnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAllActionPerformed
-		try {
-			getCg().makeAll();
-		}
-		catch (Exception e) {
-			JFrameUtils.showErro("Erro", "Erro ao executar a geração de código, mensagem interna: " + e.getMessage());
-		}
-    }//GEN-LAST:event_btnAllActionPerformed
-
-    private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
+    private void btnFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishActionPerformed
         setVisible(false);
-    }//GEN-LAST:event_btnOKActionPerformed
+    }//GEN-LAST:event_btnFinishActionPerformed
 
     /**
      * @param args the command line arguments
@@ -304,17 +233,18 @@ public class DlgCodeGeneration extends javax.swing.JDialog {
 	});
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAll;
-    private javax.swing.JButton btnDaoAndManager;
-    private javax.swing.JButton btnGrid;
-    private javax.swing.JButton btnOK;
-    private javax.swing.JButton btnPageManage;
-    private javax.swing.JButton btnPageView;
-    private javax.swing.JButton btnWinFrm;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnFinish;
+    private javax.swing.JButton btnNext;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblStage1;
+    private javax.swing.JLabel lblStage2;
+    private javax.swing.JLabel lblStages;
+    private br.com.atos.cg.gui.PnSelectEntity pnSelectEntity;
+    private br.com.atos.cg.gui.PnSelectTarget pnSelectTarget;
+    private javax.swing.JPanel pnStage;
+    private javax.swing.JPanel pnStageInfo;
     // End of variables declaration//GEN-END:variables
 	
     public void start(CodeGenerator cg) {		
@@ -326,4 +256,23 @@ public class DlgCodeGeneration extends javax.swing.JDialog {
 	public CodeGenerator getCg() {
 		return cg;
 	}	
+	
+	
+	public void goToStage(int stage) {
+		
+		this.lblStage1.setFont(new java.awt.Font("Liberation", Font.PLAIN, 11));
+		this.lblStage2.setFont(new java.awt.Font("Liberation", Font.PLAIN, 11));
+		
+		switch (stage) {
+			case 1 : 
+				this.setTitle(this.lblStage1.getText());
+				this.lblStage1.setFont(new java.awt.Font("Liberation", Font.BOLD, 11));
+				break;
+				
+			case 2 :
+				this.setTitle(lblStage2.getText());
+				this.lblStage2.setFont(new java.awt.Font("Liberation", Font.BOLD, 11));
+				break;
+		}
+	}
 }
