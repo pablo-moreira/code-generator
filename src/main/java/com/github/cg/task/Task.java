@@ -1,7 +1,6 @@
 package com.github.cg.task;
 
-import br.com.atos.cg.CodeGenerator;
-
+import com.github.cg.manager.ManagerRepository;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetTask;
 
@@ -9,16 +8,16 @@ public abstract class Task {
 
 	private TargetContext targetContext;
 	private TargetTask targetTask;
-	private CodeGenerator codeGenerator;
+	private ManagerRepository managerRepository;
 
-	public void init(CodeGenerator codeGenerator, TargetContext targetContext, TargetTask targetTask) {
-		this.codeGenerator = codeGenerator;
+	public void init(ManagerRepository repository, TargetContext targetContext, TargetTask targetTask) {
+		this.managerRepository = repository;
 		this.targetContext = targetContext;
-		this.targetTask = targetTask;		
+		this.targetTask = targetTask;
 	}
 	
-	public CodeGenerator getCodeGenerator() {
-		return codeGenerator;
+	public ManagerRepository getManagerRepository() {
+		return managerRepository;
 	}
 
 	public TargetContext getTargetContext() {

@@ -2,9 +2,10 @@ package br.com.atos.cg.component;
 
 import java.text.MessageFormat;
 
+import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeManyToOne;
+
 import br.com.atos.cg.CodeGenerator;
-import br.com.atos.cg.model.Attribute;
-import br.com.atos.cg.model.AttributeManyToOne;
 
 abstract public class Component {
 

@@ -4,8 +4,6 @@ import java.io.File;
 
 import org.apache.velocity.VelocityContext;
 
-import br.com.atos.cg.model.Entity;
-
 public class TargetContext {
 
 	private Target target;

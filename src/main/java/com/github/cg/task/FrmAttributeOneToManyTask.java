@@ -26,7 +26,7 @@ public class FrmAttributeOneToManyTask extends Task {
             }
             else {
             	taskResult = TaskResult.CONTINUE;
-            	getCodeGenerator().store(attribute.getAssociationEntity());
+            	getManagerRepository().getEntityManager().storeEntity(attribute.getAssociationEntity());
             }
         }
 		

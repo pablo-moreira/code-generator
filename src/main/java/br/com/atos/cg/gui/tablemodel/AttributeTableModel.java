@@ -18,10 +18,11 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
+import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeManyToOne;
+
 import br.com.atos.cg.gui.DlgFrmEntity;
-import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeFormType;
-import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.util.ColumnMetadata;
 import br.com.atos.cg.util.ComboBoxCellEditor;

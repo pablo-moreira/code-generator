@@ -10,7 +10,9 @@ import java.util.List;
 import javax.persistence.OneToMany;
 
 import br.com.atos.core.model.IBaseEntity;
-import br.com.atos.utils.StringUtils;
+
+import com.github.cg.model.Attribute;
+import com.github.cg.model.Entity;
 
 public class AttributeOneToMany extends Attribute {
 	
@@ -20,40 +22,21 @@ public class AttributeOneToMany extends Attribute {
 
 	public AttributeOneToMany() {}
         
-	public AttributeOneToMany(Field field, Entity entity) {
-		
+	public AttributeOneToMany(Field field, Entity entity) {		
 		super(field, entity);
-		
-		load();
-				
-		if (!IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
-			throw new RuntimeException("A classe da associação " + getName() + " não implementa a interface IBaseEntity!");
-		}
 	}	
 	
 	public AttributeOneToMany(Method method, Entity entity) {
-		
 		super(method, entity);
-		
-		load();
-
-		if (!IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
-			throw new RuntimeException("A classe da associação " + getName() + " não implementa a interface IBaseEntity!");
-		}
 	}
 
 	public void initializeAssociationEntity() {
-
-		if (IBaseEntity.class.isAssignableFrom(getAssociationClass())) {
 			
-			@SuppressWarnings("unchecked")
-			Class<? extends IBaseEntity<?>> clazz = (Class<? extends IBaseEntity<?>>) getAssociationClass();
-			
-			associationEntity = new Entity(clazz, getEntity().getGc());			
-		}
-		else {
-			throw new RuntimeException("A classe da associação " + getName() + " não implementa a interface IBaseEntity!");
-		}
+		@SuppressWarnings("unchecked")
+		Class<? extends IBaseEntity<?>> clazz = (Class<? extends IBaseEntity<?>>) getAssociationClass();
+		
+		/* TODO - Refatorar para o EntityManager Initialize association entity */
+//		associationEntity = new Entity(clazz, getEntity().getGc());
 	}
 		
 	public AttributeFormType getFormType() {
@@ -110,27 +93,6 @@ public class AttributeOneToMany extends Attribute {
 		}
 		
 		return mappedBy;
-	}
-
-	@Override
-	protected void load() {
-	
-		super.load();
-		
-		String formTypeValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".formType");
-		
-		if (!StringUtils.isNullOrEmpty(formTypeValue)) {
-			formType = AttributeFormType.valueOf(formTypeValue);
-		}
-	}
-	
-	public void store() {
-		
-		super.store();
-
-		if (getFormType() != null) {
-			getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".formType", getFormType().name());
-		}
 	}
 
 	public Entity getAssociationEntity() {

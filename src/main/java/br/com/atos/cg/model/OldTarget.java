@@ -3,6 +3,8 @@ package br.com.atos.cg.model;
 import java.io.File;
 import java.text.MessageFormat;
 
+import com.github.cg.model.Entity;
+
 import br.com.atos.utils.StringUtils;
 
 public class OldTarget {

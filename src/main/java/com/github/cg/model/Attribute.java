@@ -1,10 +1,9 @@
-package br.com.atos.cg.model;
+package com.github.cg.model;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import br.com.atos.cg.CodeGenerator;
 import br.com.atos.utils.StringUtils;
 
 public class Attribute {
@@ -26,14 +25,12 @@ public class Attribute {
 		this.propertyGetter = propertyGetter;
 		this.entity = entity;
 		init();
-		load();
 	}
 	
 	public Attribute(Field field, Entity entity) {
 		this.field = field;
 		this.entity = entity;
 		init();
-		load();
 	}
 	
 	public boolean isAccessTypeField() {
@@ -54,12 +51,8 @@ public class Attribute {
 		}
 	}
 	
-	protected CodeGenerator getGc() {
-		return getEntity().getGc();
-	}
-		
-	protected String getPropertiesKeyBase() {
-		return getEntity().getClazz().getName() + "." + getName();
+	public String getPropertiesKeyBase() {
+		return getEntity().getEntityClass().getName() + "." + getName();
 	}
 		
 	public Attribute(Field field, String label) {
@@ -106,50 +99,6 @@ public class Attribute {
 
 	public Entity getEntity() {
 		return entity;
-	}
-
-	protected void load() {
-		
-		if (getGc().isIgnoredAttribute(this)) {
-			renderColumn = false;
-			renderFilter = false;
-			renderForm = false;
-		}
-		
-		// gc.properties
-		String renderColumnValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderColumn");
-		String renderFilterValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderFilter");
-		String renderFormValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".renderForm");
-
-		// messages.properties
-		String labelValue = getGc().getMessagesProperties().getProperty(getPropertiesKeyBase());
-		
-		if (!StringUtils.isNullOrEmpty(renderColumnValue)) {
-			renderColumn = Boolean.valueOf(renderColumnValue);
-		}
-		
-		if (!StringUtils.isNullOrEmpty(renderFilterValue)) {
-			renderFilter = Boolean.valueOf(renderFilterValue);
-		}
-		
-		if (!StringUtils.isNullOrEmpty(renderFormValue)) {
-			renderForm = Boolean.valueOf(renderFormValue);
-		}
-				
-		if (!StringUtils.isNullOrEmpty(labelValue)) {
-			label = labelValue;
-		}
-	}
-	
-	public void store() {
-
-		getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".renderColumn", isRenderColumn().toString());
-		getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".renderFilter", isRenderFilter().toString());
-		getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".renderForm", isRenderForm().toString());
-		
-		if (getLabel() != null) {
-			getGc().getMessagesProperties().setProperty(getPropertiesKeyBase(), getLabel());	
-		}
 	}
 
 	public String getName() {

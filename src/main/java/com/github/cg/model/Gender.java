@@ -1,4 +1,4 @@
-package br.com.atos.cg.model;
+package com.github.cg.model;
 
 public enum Gender {
 	

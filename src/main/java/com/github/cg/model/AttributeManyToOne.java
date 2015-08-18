@@ -1,4 +1,4 @@
-package br.com.atos.cg.model;
+package com.github.cg.model;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -145,28 +145,6 @@ public class AttributeManyToOne extends Attribute {
 			}
 		}
     }
-    
-	@Override
-	protected void load() {
-	
-		super.load();
-		
-		String daaValue = getGc().getGcProperties().getProperty(getPropertiesKeyBase() + ".descriptionAttributeAssociation");
-		
-		if (!StringUtils.isNullOrEmpty(daaValue)) {
-			setDescriptionAttributeOfAssociation(daaValue);
-		}
-	}
-    
-	@Override
-	public void store() {
-		
-		super.store();
-
-		if (!StringUtils.isNullOrEmpty(getDescriptionAttributeOfAssociation())) {
-			getGc().getGcProperties().setProperty(getPropertiesKeyBase() + ".descriptionAttributeAssociation", getDescriptionAttributeOfAssociation());
-		}
-	}
 
 	public Class<?> getDescriptionAttributeOfAssociationType() {
 		return isDescriptionAttributeOfAssociationAccessTypeField() ? descriptionAttributeOfAssociationField.getType() : descriptionAttributeOfAssociationProperty.getReturnType();

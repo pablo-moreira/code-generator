@@ -10,8 +10,6 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 
-import br.com.atos.cg.model.Entity;
-
 public class CodeGeneratorTest {
 
 	public static void main(String args[]) throws Exception {

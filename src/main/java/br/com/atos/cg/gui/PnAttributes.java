@@ -10,9 +10,10 @@ import java.util.List;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
+import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeManyToOne;
+
 import br.com.atos.cg.gui.tablemodel.AttributeTableModel;
-import br.com.atos.cg.model.Attribute;
-import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;

@@ -36,28 +36,24 @@ import org.apache.velocity.runtime.parser.node.SimpleNode;
 
 import br.com.atos.cg.component.Component;
 import br.com.atos.cg.gui.FrmCodeGeneration;
-import br.com.atos.cg.model.Attribute;
 import br.com.atos.cg.model.AttributeFormType;
-import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
-import br.com.atos.cg.model.Entity;
 import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.LinkedProperties;
 import br.com.atos.cg.util.Util;
 import br.com.atos.core.model.BaseEnum;
-import br.com.atos.core.model.IBaseEntity;
 import br.com.atos.core.util.JpaReflectionUtils;
 import br.com.atos.utils.DataUtils;
 import br.com.atos.utils.OsUtil;
 
+import com.github.cg.manager.ManagerRepository;
+import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeManyToOne;
+import com.github.cg.model.Entity;
 import com.github.cg.model.Plugin;
 import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetGroup;
-import com.github.cg.model.TargetTask;
-import com.github.cg.task.Task;
-import com.github.cg.task.TaskResult;
-import java.util.logging.Level;
 
 public class CodeGenerator {
 	
@@ -106,7 +102,7 @@ public class CodeGenerator {
 	private List<Class<?>> entitiesClass = new ArrayList<Class<?>>();
 	private HashMap<String,Component> components = new HashMap<String,Component>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
-	private List<TargetGroup> targetsGroup = new ArrayList<TargetGroup>();	
+	private ManagerRepository managerRepository = new ManagerRepository();
 	
 	public Entity getEntity() {
 		return entity;
@@ -200,8 +196,8 @@ public class CodeGenerator {
         }
         catch (Exception e) {}
 		
-//		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
-//		attributesValues.put(PAGE_VIEW_SUFFIX, "View");		
+		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
+		attributesValues.put(PAGE_VIEW_SUFFIX, "View");
 		
 //		// Copia do gcProperties
 //		Set<String> propertyNames = gcProperties.stringPropertyNames();
@@ -430,94 +426,6 @@ public class CodeGenerator {
 		return components;
 	}
 
-	protected void execute(Target target) {
-						
-		TargetContext targetContext = new TargetContext(target, entity, createContext());
-		
-		String filename = mergeTemplate(targetContext.getContext(), target.getFilenameTemplate());
-		
-		File file = new File(filename);
-		
-		targetContext.setFile(file);
-		
-		if (!file.getParentFile().exists()) {
-			file.getParentFile().mkdirs();
-		}
-				
-		// Verifica se o arquivo existe
-		if (file.exists()) {
-
-			if (!target.isAllowOverwrite()) {
-				log.warn(file.getName() + " [IGNORADO]");				
-				return;
-			}
-			else {
-				int result = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja substituir o arquivo: " + file.getName(), "Substituir arquivo",JOptionPane.YES_NO_OPTION);
-			
-				if (JOptionPane.YES_OPTION != result) {
-					log.warn(file.getName() + " [IGNORADO]");					
-					return;
-				}			
-			}
-		}
-		
-		executeTasks(targetContext, target.getTasksToExecuteBefore());
-				
-		PrintWriter writer;
-		
-		try {
-			writer = new PrintWriter(file);
-		}
-		catch (Exception e) {
-			throw new RuntimeException("Não foi possível encontrar o arquivo, mensagem interna: " + e.getMessage());
-		}
-		
-		Template template = velocityEngine.getTemplate(target.getTemplate());
-		try {
-			template.merge(targetContext.getContext(), writer);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		writer.close();
-		
-		executeTasks(targetContext, target.getTasksToExecuteAfter());
-		
-        log.info(file.getName() + " [GERADO]");
-	}
-
-	private void executeTasks(TargetContext targetContext, List<TargetTask> targetTasks) {
-
-		for (TargetTask targetTask : targetTasks) {
-			
-			Task task = createTaskInstance(targetContext, targetTask);
-			
-			if (task != null) {
-				
-				TaskResult result = task.execute();
-				
-				if (TaskResult.CONTINUE != result) {
-					return;
-				}
-			}
-		}
-	}
-
-	private Task createTaskInstance(TargetContext targetContext, TargetTask targetTask) {
-		
-		try {
-			Task task = targetTask.getTask().newInstance();
-			task.init(this, targetContext, targetTask);
-			return task;
-		}
-		catch (Exception e) {
-			log.error("Não foi possível instanciar task!");
-		}
-		
-		return null;
-	}
-
 	public void store(Entity entity) {
 			
 		try {
@@ -528,8 +436,8 @@ public class CodeGenerator {
 			
 			getMessagesProperties().addComment("");
 			getMessagesProperties().addComment(doc);
-						
-			entity.store();			
+
+			getManagerRepository().getEntityManager().storeEntity(entity, getGcProperties(), getMessagesProperties());
 
 			getGcProperties().store(new FileOutputStream(getCgPropertiesFile()), null);
 			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile()), null);
@@ -797,11 +705,67 @@ public class CodeGenerator {
 		return null;
 	}
 
+	public ManagerRepository getManagerRepository() {
+		return managerRepository;
+	}
+
 	public void execute(Class<?> entityClass, Target target) {
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException ex) {
-			java.util.logging.Logger.getLogger(CodeGenerator.class.getName()).log(Level.SEVERE, null, ex);
+		
+		Entity entity = getManagerRepository().getEntityManager().loadEntity(entityClass, getGcProperties(), getMessagesProperties());
+		
+		TargetContext targetContext = new TargetContext(target, entity, createContext());
+		
+		String filename = mergeTemplate(targetContext.getContext(), target.getFilenameTemplate());
+		
+		File file = new File(filename);
+		
+		targetContext.setFile(file);
+		
+		if (!file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
 		}
+				
+		// Verifica se o arquivo existe
+		if (file.exists()) {
+
+			if (!target.isAllowOverwrite()) {
+				log.warn(file.getName() + " [IGNORADO]");				
+				return;
+			}
+			else {
+				int result = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja substituir o arquivo: " + file.getName(), "Substituir arquivo",JOptionPane.YES_NO_OPTION);
+			
+				if (JOptionPane.YES_OPTION != result) {
+					log.warn(file.getName() + " [IGNORADO]");					
+					return;
+				}			
+			}
+		}
+		
+		getManagerRepository().getTaskManager().executeTasks(targetContext, target.getTasksToExecuteBefore());
+						
+		PrintWriter writer;
+		
+		try {
+			writer = new PrintWriter(file);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Não foi possível encontrar o arquivo, mensagem interna: " + e.getMessage());
+		}
+		
+		Template template = velocityEngine.getTemplate(target.getTemplate());
+		
+		try {
+			template.merge(targetContext.getContext(), writer);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		writer.close();
+		
+		getManagerRepository().getTaskManager().executeTasks(targetContext, target.getTasksToExecuteAfter());
+
+        log.info(file.getName() + " [GERADO]");
 	}
 }

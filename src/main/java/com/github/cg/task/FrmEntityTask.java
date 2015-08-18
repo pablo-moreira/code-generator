@@ -15,7 +15,7 @@ public class FrmEntityTask extends Task {
 			taskResult = TaskResult.STOP;
 		}
         else {
-        	getCodeGenerator().store(getTargetContext().getEntity());
+        	getManagerRepository().getEntityManager().storeEntity(getTargetContext().getEntity());
         	
         	taskResult = TaskResult.CONTINUE;
         }

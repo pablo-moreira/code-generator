@@ -10,16 +10,16 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import br.com.atos.cg.model.Attribute;
-import br.com.atos.cg.model.AttributeId;
-import br.com.atos.cg.model.AttributeManyToOne;
 import br.com.atos.cg.model.AttributeOneToMany;
-import br.com.atos.cg.model.Entity;
-import br.com.atos.cg.model.Gender;
 import br.com.atos.cg.util.EntityComboBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
 
+import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeId;
+import com.github.cg.model.AttributeManyToOne;
+import com.github.cg.model.Entity;
+import com.github.cg.model.Gender;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetTask;
 
@@ -309,7 +309,7 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 
 		if (entity != null) {
 
-			setTitle(getTitle() + " - " + entity.getClazz().getName());
+			setTitle(getTitle() + " - " + entity.getEntityClass().getName());
 
 			txtLabel.setText(getEntity().getLabel());
 			cmGender.setSelectedEntity(getEntity().getGender());

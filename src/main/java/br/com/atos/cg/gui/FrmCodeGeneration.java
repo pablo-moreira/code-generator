@@ -22,6 +22,8 @@ import com.github.cg.model.TargetStatus;
  */
 public class FrmCodeGeneration extends javax.swing.JFrame {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private final CodeGenerator cg;
 	private int currentStage;
 	private List<Class<?>> entitiesClassSelecteds;
