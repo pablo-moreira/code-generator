@@ -12,16 +12,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import br.com.atos.cg.model.AttributeFormType;
-import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.util.LinkedProperties;
 import br.com.atos.core.util.JpaReflectionUtils;
 import br.com.atos.utils.ReflectionUtils;
 import br.com.atos.utils.StringUtils;
 
 import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeFormType;
 import com.github.cg.model.AttributeId;
 import com.github.cg.model.AttributeManyToOne;
+import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Gender;
 

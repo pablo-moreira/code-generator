@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.util.EntityComboBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
@@ -18,6 +17,7 @@ import br.com.atos.utils.swing.JFrameUtils;
 import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeId;
 import com.github.cg.model.AttributeManyToOne;
+import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Gender;
 import com.github.cg.model.TargetContext;

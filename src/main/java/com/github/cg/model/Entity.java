@@ -7,8 +7,6 @@ import javax.persistence.AccessType;
 
 import org.hibernate.envers.Audited;
 
-import br.com.atos.cg.model.AttributeOneToMany;
-
 public class Entity {
 
 	private Class<?> entityClass;
@@ -48,6 +46,10 @@ public class Entity {
 	
 	public String getName() {
 		return getEntityClass().getSimpleName();
+	}
+	
+	public String getPackage() {
+		return getEntityClass().getPackage().getName();
 	}
 	
 	public List<AttributeManyToOne> getAttributesManyToOne() {

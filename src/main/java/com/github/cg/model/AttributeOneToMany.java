@@ -1,4 +1,4 @@
-package br.com.atos.cg.model;
+package com.github.cg.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -10,9 +10,6 @@ import java.util.List;
 import javax.persistence.OneToMany;
 
 import br.com.atos.core.model.IBaseEntity;
-
-import com.github.cg.model.Attribute;
-import com.github.cg.model.Entity;
 
 public class AttributeOneToMany extends Attribute {
 	

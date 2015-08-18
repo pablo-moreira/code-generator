@@ -33,6 +33,13 @@ public class Attribute {
 		init();
 	}
 	
+	public Attribute(Field field, String label) {
+		super();
+		this.field = field;
+		this.label = label;
+		init();
+	}
+	
 	public boolean isAccessTypeField() {
 		return field != null;
 	}
@@ -53,13 +60,7 @@ public class Attribute {
 	
 	public String getPropertiesKeyBase() {
 		return getEntity().getEntityClass().getName() + "." + getName();
-	}
-		
-	public Attribute(Field field, String label) {
-		super();
-		this.field = field;
-		this.label = label;
-	}
+	}	
 	
 	public String getLabel() {
 		return label;

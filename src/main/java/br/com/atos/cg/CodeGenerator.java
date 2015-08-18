@@ -9,9 +9,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,28 +16,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.RuntimeServices;
-import org.apache.velocity.runtime.RuntimeSingleton;
-import org.apache.velocity.runtime.parser.node.SimpleNode;
 
 import br.com.atos.cg.component.Component;
 import br.com.atos.cg.gui.FrmCodeGeneration;
-import br.com.atos.cg.model.AttributeFormType;
-import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.LinkedProperties;
-import br.com.atos.cg.util.Util;
 import br.com.atos.core.model.BaseEnum;
 import br.com.atos.core.util.JpaReflectionUtils;
 import br.com.atos.utils.DataUtils;
@@ -48,7 +34,9 @@ import br.com.atos.utils.OsUtil;
 
 import com.github.cg.manager.ManagerRepository;
 import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeFormType;
 import com.github.cg.model.AttributeManyToOne;
+import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Plugin;
 import com.github.cg.model.Target;
@@ -69,10 +57,7 @@ public class CodeGenerator {
 	public static final String DIRS_RESOURCES = "dirs.resources";
 	public static final String DIRS_WEBCONTENT = "dirs.web";	
 	public static final String JAVA = "java";
-	public static final String XHTML = "xhtml";
-	public static final String ATTRIBUTE_ENTITY_NAME_UC = "EntityName";
-	public static final String ATTRIBUTE_ENTITY_NAME = "entityName";
-	public static final String ATTRIBUTE_ENTITY_AUDIT = "entityAudit";	
+	public static final String XHTML = "xhtml";	
 	public static final String CG_PROPERTIES_FILENAME = "cg.properties";
 	public static final String MESSAGES_PROPERTIES_FILENAME = "messages.properties";
 	
@@ -80,7 +65,7 @@ public class CodeGenerator {
 	public static final String PAGE_MANAGER_SUFFIX = "page.manager.suffix";
 
 	public static final String APP_NAME = "Code Generator";
-	public static final String APP_VERSION = "0.0.5";
+	public static final String APP_VERSION = "0.9.0";
 	public static final String APP_TITLE = APP_NAME + " - " + APP_VERSION;
 		
 	public Pattern pattern = Pattern.compile("\\$\\{([a-z\\.A-Z]*)\\}");	
@@ -91,18 +76,16 @@ public class CodeGenerator {
 	private Entity entity;
 	private List<String> methodsCreatedsInAutoCompleteCtrl = new ArrayList<String>();
 	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
-	private List<String> ignoredAttributes = new ArrayList<String>();
 	private LinkedProperties cgProperties;
 	private LinkedProperties messagesProperties;
 	private File dirBase;
 	private File dirResources;
 	private br.com.atos.cg.model.OldTarget target;
-	private VelocityEngine velocityEngine;
 	private HashMap<String, Object> app;	
 	private List<Class<?>> entitiesClass = new ArrayList<Class<?>>();
 	private HashMap<String,Component> components = new HashMap<String,Component>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
-	private ManagerRepository managerRepository = new ManagerRepository();
+	private ManagerRepository managerRepository = new ManagerRepository(this);
 	
 	public Entity getEntity() {
 		return entity;
@@ -180,8 +163,6 @@ public class CodeGenerator {
 		}
 		
 		loadMessagesProperties();
-		
-		loadIgnoredAttributes();
 				
 		CodeGeneratorInitializer initializer = new CodeGeneratorInitializer(this);
 		initializer.init();
@@ -196,20 +177,11 @@ public class CodeGenerator {
         }
         catch (Exception e) {}
 		
+        /* TODO - Refatorar adicionar estas informacoes no app */
 		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
 		attributesValues.put(PAGE_VIEW_SUFFIX, "View");
 		
-//		// Copia do gcProperties
-//		Set<String> propertyNames = gcProperties.stringPropertyNames();
-//		for (String propertyName : propertyNames) {			
-//			attributesValues.put(propertyName, gcProperties.getProperty(propertyName));
-//		}
-		
-//		attributesValues.put(ATTRIBUTE_ENTITY_AUDIT, getEntity().isAudited() ? "true" : "false");
-//		attributesValues.put(ATTRIBUTE_ENTITY_NAME_UC, getEntity().getClassSimpleName());
-//		attributesValues.put(ATTRIBUTE_ENTITY_NAME, firstToLowerCase(getEntity().getClassSimpleName()));
-//		attributesValues.put(PACKAGE_MODEL, entidadeClass.getPackage().getName());
-				
+		/* TODO - Refatorar colocar esta validacao no momento que o usuario selecionar esta entidade para gerar o codigo */ 
 //		try {
 //			entity.getAttributeId().getType().getSimpleName();			
 //		}
@@ -217,67 +189,7 @@ public class CodeGenerator {
 //			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
 //		}
         
-        initVelocityEngine();
-	}
-
-	
-
-	protected String mergeTemplate(VelocityContext context, String templateString) {
-		
-		try {
-			StringWriter writer = new StringWriter();
-			
-			RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
-			StringReader reader = new StringReader(templateString);
-			SimpleNode node = runtimeServices.parse(reader, "template");
-			
-			Template template = new Template();
-			template.setRuntimeServices(runtimeServices);
-			template.setData(node);
-			template.initDocument();					
-			template.merge(context, writer);
-			
-			return writer.toString();
-		}
-		catch (Exception e) {
-			throw new RuntimeException("Erro ao mesclar o template, mensagem interna: " + e.getMessage());
-		}
-	}
-	
-	private void initVelocityEngine() {
-
-		velocityEngine = new VelocityEngine();
-		
-		URL url = CodeGenerator.class.getResource("/com.github.cg.templates");
-
-		File file = new File(url.getFile());
-
-		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file");
-		velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, file.getAbsolutePath());
-		velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true");						
-		velocityEngine.init();
-	}
-
-	private void loadIgnoredAttributes() {
-
-		String value = cgProperties.getProperty("ignoredAttributes");
-		
-		if (value != null && !value.isEmpty()) {
-
-			StringTokenizer st = new StringTokenizer(value, ",");
-
-			int tokens = st.countTokens();  
-			
-			ignoredAttributes = new ArrayList<String>();  
-	  
-	        for (int i = 0; i < tokens; i++) {
-	        	ignoredAttributes.add(st.nextToken());
-	        }
-
-		}
-		else {
-			ignoredAttributes = new ArrayList<String>();
-		}		
+        getManagerRepository().getTemplateManager().initVelocityEngine();
 	}
 
 	private void loadMessagesProperties() throws Exception {
@@ -402,26 +314,6 @@ public class CodeGenerator {
 		return target;
 	}
 	
-	private VelocityContext createContext() {
-
-		VelocityContext context = new VelocityContext();
-		
-		context.put("util", new Util());
-		context.put("entity", entity);
-		context.put("app", app);			
-		context.put("msgs", messagesProperties);
-				
-		for (String key : attributesValues.keySet()) {
-			context.put(key, attributesValues.get(key));
-		}
-
-		for (String componentName : getComponents().keySet()) {
-			context.put(componentName, getComponents().get(componentName));
-		}
-		
-		return context;
-	}
-	
 	public HashMap<String,Component> getComponents() {
 		return components;
 	}
@@ -431,15 +323,15 @@ public class CodeGenerator {
 		try {
 			String doc = "## Gerado por " + System.getProperty("user.name") + " em: " + DataUtils.getDataHorario(new Date());
 			
-			getGcProperties().addComment("");
-			getGcProperties().addComment(doc);
+			getCgProperties().addComment("");
+			getCgProperties().addComment(doc);
 			
 			getMessagesProperties().addComment("");
 			getMessagesProperties().addComment(doc);
 
-			getManagerRepository().getEntityManager().storeEntity(entity, getGcProperties(), getMessagesProperties());
+			getManagerRepository().getEntityManager().storeEntity(entity, getCgProperties(), getMessagesProperties());
 
-			getGcProperties().store(new FileOutputStream(getCgPropertiesFile()), null);
+			getCgProperties().store(new FileOutputStream(getCgPropertiesFile()), null);
 			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile()), null);
 			
 			loadCgProperties(new FileInputStream(getCgPropertiesFile()));
@@ -630,28 +522,15 @@ public class CodeGenerator {
 		FrmCodeGeneration winFrm = new FrmCodeGeneration(this);
 		winFrm.start();
 	}
-
-	public List<String> getIgnoredAttributes() {
-		return ignoredAttributes;
-	}
-
-	public LinkedProperties getGcProperties() {
+	
+	public LinkedProperties getCgProperties() {
 		return cgProperties;
 	}
 
 	public LinkedProperties getMessagesProperties() {
 		return messagesProperties;
 	}
-	
-	public boolean isIgnoredAttribute(Attribute attribute) {
-		for (String attributeIgnored : getIgnoredAttributes()) {
-			if (attribute.getName().equals(attributeIgnored)) {
-				return true;
-			}
-		}
-		return false;
-	}
-		
+			
 	public List<Class<?>> getEntitiesClass() {
 		return entitiesClass;
 	}
@@ -690,10 +569,6 @@ public class CodeGenerator {
 		getPlugins().add(plugin);
 	}
 
-	public void addTargetGroup(TargetGroup targetGroup) {
-		getTargetsGroup().add(targetGroup);
-	}
-
 	public Target findTargetByName(String targetName) {
 
 		for (Target target : getTargets()) {
@@ -711,11 +586,11 @@ public class CodeGenerator {
 
 	public void execute(Class<?> entityClass, Target target) {
 		
-		Entity entity = getManagerRepository().getEntityManager().loadEntity(entityClass, getGcProperties(), getMessagesProperties());
+		Entity entity = getManagerRepository().getEntityManager().loadEntity(entityClass, getCgProperties(), getMessagesProperties());
 		
-		TargetContext targetContext = new TargetContext(target, entity, createContext());
+		TargetContext targetContext = getManagerRepository().getTargetManager().createTargetContext(target, entity);
 		
-		String filename = mergeTemplate(targetContext.getContext(), target.getFilenameTemplate());
+		String filename = getManagerRepository().getTemplateManager().mergeStringTemplate(targetContext.getContext(), target.getFilenameTemplate());
 		
 		File file = new File(filename);
 		
@@ -743,29 +618,19 @@ public class CodeGenerator {
 		}
 		
 		getManagerRepository().getTaskManager().executeTasks(targetContext, target.getTasksToExecuteBefore());
-						
-		PrintWriter writer;
-		
-		try {
-			writer = new PrintWriter(file);
-		}
-		catch (Exception e) {
-			throw new RuntimeException("Não foi possível encontrar o arquivo, mensagem interna: " + e.getMessage());
-		}
-		
-		Template template = velocityEngine.getTemplate(target.getTemplate());
-		
-		try {
-			template.merge(targetContext.getContext(), writer);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		writer.close();
+				
+		getManagerRepository().getTemplateManager().mergeFileTemplate(targetContext.getContext(), target.getTemplate(), file);
 		
 		getManagerRepository().getTaskManager().executeTasks(targetContext, target.getTasksToExecuteAfter());
 
         log.info(file.getName() + " [GERADO]");
+	}
+
+	public HashMap<String, String> getAttributesValues() {
+		return attributesValues;
+	}
+
+	public HashMap<String, Object> getApp() {
+		return app;
 	}
 }

@@ -6,9 +6,9 @@ package br.com.atos.cg.gui;
 
 import javax.swing.JOptionPane;
 
-import br.com.atos.cg.model.AttributeOneToMany;
 import br.com.atos.utils.swing.JFrameUtils;
 
+import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetTask;

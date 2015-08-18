@@ -2,8 +2,9 @@ package com.github.cg.task;
 
 import java.util.List;
 
+import com.github.cg.model.AttributeOneToMany;
+
 import br.com.atos.cg.gui.DlgAttributeOneToMany;
-import br.com.atos.cg.model.AttributeOneToMany;
 
 public class FrmAttributeOneToManyTask extends Task {
 	
