@@ -178,34 +178,45 @@ public class CodeGeneratorInitializer {
 		
 		for (Class<?> clazz : typesAnnotatedWith) {
 		
-			if (!Component.class.isAssignableFrom(clazz)) {
-				log.error("A clazz " + clazz.getName() + " deve extender a classe Component!");
-			}
-			else {
+			Object instance = null;
+			
+			if (Component.class.isAssignableFrom(clazz)) {
+
 				Class<? extends Component> compClass = (Class<? extends Component>) clazz;
 				
-				Component instance = null;
+				Component component = null;
 				
 				try { 
-					instance = compClass.newInstance();
-					instance.initialize(getCg());
+					component = compClass.newInstance();
+					component.initialize(getCg());
 				}
 				catch (Exception e) {
 					log.error("Não foi possível instanciar o component " + compClass.getName() + "!");
 				}
 				
-				if (instance != null) {
-					com.github.cg.annotation.Component compAnnotation = instance.getClass().getAnnotation(com.github.cg.annotation.Component.class);				
-					
-					String name = compAnnotation.name();
-					
-					if (StringUtils.isNullOrEmpty(name)) {			
-						name = StringUtils.firstToLowerCase(instance.getClass().getSimpleName());
-					}
-					
-					getCg().getComponents().put(name, instance);
+				instance = component;
+			}
+			else {
+				try {
+					instance = clazz.newInstance();
+				}
+				catch (Exception e) {
+					log.error("Não foi possível instanciar o component " + clazz.getName() + "!");
 				}
 			}
+
+			if (instance != null) {
+
+				com.github.cg.annotation.Component compAnnotation = instance.getClass().getAnnotation(com.github.cg.annotation.Component.class);
+					
+				String name = compAnnotation.name();
+					
+				if (StringUtils.isNullOrEmpty(name)) {			
+					name = StringUtils.firstToLowerCase(instance.getClass().getSimpleName());
+				}
+				
+				getCg().getComponents().put(name, instance);
+			}			
 		}
 	}
 }

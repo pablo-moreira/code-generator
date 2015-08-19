@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class FileUtil {
+public class FileUtils {
 
 	public static String getStringFromInputStream(InputStream is) {
 
@@ -18,8 +18,16 @@ public class FileUtil {
 
 			br = new BufferedReader(new InputStreamReader(is));
 			
+			boolean first = true;
+			
 			while ((line = br.readLine()) != null) {
-				sb.append(line);
+				if (first) {
+					first = false;
+					sb.append(line);	
+				}
+				else {
+					sb.append(line).append("\n");
+				}				
 			}
 		} 
 		catch (IOException e) {

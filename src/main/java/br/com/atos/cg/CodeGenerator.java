@@ -23,7 +23,6 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
-import br.com.atos.cg.component.Component;
 import br.com.atos.cg.gui.FrmCodeGeneration;
 import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.LinkedProperties;
@@ -83,7 +82,7 @@ public class CodeGenerator {
 	private br.com.atos.cg.model.OldTarget target;
 	private HashMap<String, Object> app;	
 	private List<Class<?>> entitiesClass = new ArrayList<Class<?>>();
-	private HashMap<String,Component> components = new HashMap<String,Component>();	
+	private HashMap<String,Object> components = new HashMap<String,Object>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 	private ManagerRepository managerRepository = new ManagerRepository(this);
 	
@@ -313,7 +312,7 @@ public class CodeGenerator {
 		return target;
 	}
 	
-	public HashMap<String,Component> getComponents() {
+	public HashMap<String,Object> getComponents() {
 		return components;
 	}
 

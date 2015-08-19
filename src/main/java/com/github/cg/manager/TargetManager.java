@@ -5,13 +5,11 @@ import java.util.HashMap;
 import org.apache.velocity.VelocityContext;
 
 import br.com.atos.cg.CodeGenerator;
-import br.com.atos.cg.component.Component;
 import br.com.atos.cg.util.LinkedProperties;
 
 import com.github.cg.model.Entity;
 import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
-import com.github.cg.util.StringUtil;
 
 public class TargetManager extends BaseManager {
 
@@ -30,11 +28,10 @@ public class TargetManager extends BaseManager {
 		return targetContext;
 	}
 	
-	private VelocityContext createContext(Target target, Entity entity, HashMap<String,Component> components, HashMap<String, Object> app, LinkedProperties messagesProperties, HashMap<String,String> attributesValues) {
+	private VelocityContext createContext(Target target, Entity entity, HashMap<String,Object> components, HashMap<String, Object> app, LinkedProperties messagesProperties, HashMap<String,String> attributesValues) {
 
 		VelocityContext context = new VelocityContext();
 		
-		context.put("util", new StringUtil());
 		context.put("entity", entity);
 		context.put("target", target);
 

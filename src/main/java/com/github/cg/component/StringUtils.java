@@ -1,11 +1,13 @@
-package com.github.cg.util;
+package com.github.cg.component;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.github.cg.annotation.Component;
 
-public class StringUtil {
+@Component
+public class StringUtils {
 
 	public String pkgToDir(String pkg) {
 		return pkg.replace(".", "/");

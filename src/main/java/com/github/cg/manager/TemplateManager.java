@@ -13,7 +13,7 @@ import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 
-import com.github.cg.util.FileUtil;
+import com.github.cg.util.FileUtils;
 
 public class TemplateManager extends BaseManager {
 
@@ -52,7 +52,7 @@ public class TemplateManager extends BaseManager {
 		
 		InputStream is = TemplateManager.class.getResourceAsStream(templateFilename);
 
-		String templateString = FileUtil.getStringFromInputStream(is);
+		String templateString = FileUtils.getStringFromInputStream(is);
 		
 		PrintWriter writer;
 		
