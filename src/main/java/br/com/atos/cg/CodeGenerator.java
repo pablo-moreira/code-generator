@@ -122,8 +122,9 @@ public class CodeGenerator {
 	
 	/**
 	 * Exemplo de utilizacao do gerador:
-	 *	GeradorCodigo gerador = new GeradorCodigo(Produto.class);
-	 *	gerador.gerarTudo();
+	 *	CodeGenerator cg = new CodeGenerator();
+	 *	cg.start();
+	 * @throws Exception 
 	 */
 	public CodeGenerator() throws Exception {
 				
@@ -188,8 +189,6 @@ public class CodeGenerator {
 //		catch (Exception e) {
 //			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
 //		}
-        
-        getManagerRepository().getTemplateManager().initVelocityEngine();
 	}
 
 	private void loadMessagesProperties() throws Exception {
@@ -590,7 +589,7 @@ public class CodeGenerator {
 		
 		TargetContext targetContext = getManagerRepository().getTargetManager().createTargetContext(target, entity);
 		
-		String filename = getManagerRepository().getTemplateManager().mergeStringTemplate(targetContext.getContext(), target.getFilenameTemplate());
+		String filename = getManagerRepository().getTemplateManager().mergeTemplateString(targetContext.getContext(), target.getFilenameTemplate());
 		
 		File file = new File(filename);
 		
@@ -619,7 +618,7 @@ public class CodeGenerator {
 		
 		getManagerRepository().getTaskManager().executeTasks(targetContext, target.getTasksToExecuteBefore());
 				
-		getManagerRepository().getTemplateManager().mergeFileTemplate(targetContext.getContext(), target.getTemplate(), file);
+		getManagerRepository().getTemplateManager().mergeTemplateFile(targetContext.getContext(), target.getTemplate(), file);
 		
 		getManagerRepository().getTaskManager().executeTasks(targetContext, target.getTasksToExecuteAfter());
 

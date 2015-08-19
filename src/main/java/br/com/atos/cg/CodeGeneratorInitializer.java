@@ -104,7 +104,7 @@ public class CodeGeneratorInitializer {
 					targetAnnotation.name(),
 					targetAnnotation.description(),
 					targetAnnotation.allowOverwrite(),
-					targetAnnotation.filenameTemplate(),
+					targetAnnotation.filename(),
 					targetAnnotation.template()
 			);				
 			

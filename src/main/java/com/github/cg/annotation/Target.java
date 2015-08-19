@@ -22,10 +22,10 @@ public @interface Target {
 	/**
 	 * O nome do diretorio e do arquivo que sera criado. Aceita el 
 	 */
-	public abstract String filenameTemplate();
+	public abstract String filename();
 	
 	/** 
-	 * O nome do arquivo template que sera utilizado na execucao do target
+	 * O nome do diretorio e do arquivo template que sera utilizado na execucao do target
 	 */
 	public abstract String template();
 	

@@ -1,34 +1,38 @@
 package com.github.cg.manager;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URL;
+import java.io.Writer;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 
-import br.com.atos.cg.CodeGenerator;
+import com.github.cg.util.FileUtil;
 
 public class TemplateManager extends BaseManager {
-
-	private VelocityEngine velocityEngine;
 
 	public TemplateManager(ManagerRepository repository) {
 		super(repository);
 	}
 
-	public String mergeStringTemplate(VelocityContext context, String templateString) {
+	public String mergeTemplateString(VelocityContext context, String templateString) {
 		
-		try {
-			StringWriter writer = new StringWriter();
-			
+		StringWriter writer = new StringWriter();
+		
+		mergeTemplateString(context, templateString, writer);
+
+		return writer.toString();
+	}
+	
+	private void mergeTemplateString(VelocityContext context, String templateString, Writer writer) {
+		
+		try {			
 			RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
 			StringReader reader = new StringReader(templateString);
 			SimpleNode node = runtimeServices.parse(reader, "template");
@@ -38,17 +42,17 @@ public class TemplateManager extends BaseManager {
 			template.setData(node);
 			template.initDocument();
 			template.merge(context, writer);
-			
-			return writer.toString();
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Erro ao mesclar o template, mensagem interna: " + e.getMessage());
-		}
+		}		
 	}
 
-	public void mergeFileTemplate(VelocityContext context, String templateName, File file) {
+	public void mergeTemplateFile(VelocityContext context, String templateFilename, File file) {
+		
+		InputStream is = TemplateManager.class.getResourceAsStream(templateFilename);
 
-		Template template = getVelocityEngine().getTemplate(templateName);
+		String templateString = FileUtil.getStringFromInputStream(is);
 		
 		PrintWriter writer;
 		
@@ -60,30 +64,12 @@ public class TemplateManager extends BaseManager {
 		}
 			
 		try {
-			template.merge(context, writer);
+			mergeTemplateString(context, templateString, writer);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Erro ao mesclar o template, mensagem interna: " + e.getMessage());
 		}
-				
-		writer.close();		
-	}
-	
-	private VelocityEngine getVelocityEngine() {
-		return velocityEngine;
-	}
-
-	public void initVelocityEngine() {
-
-		velocityEngine = new VelocityEngine();
-			
-		URL url = CodeGenerator.class.getResource("/com.github.cg.templates");
-
-		File file = new File(url.getFile());
-
-		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "file");
-		velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, file.getAbsolutePath());
-		velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true");						
-		velocityEngine.init();		
+		
+		writer.close();
 	}
 }
