@@ -366,7 +366,7 @@ public class CodeGenerator {
 		return app;
 	}
 
-	public void execute(String targetName, Class<?> entityClass) {				
+	public void executeTargetByName(String targetName, Class<?> entityClass) {				
 		execute(entityClass, findTargetByName(targetName));
 	}
 }

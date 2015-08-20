@@ -1,4 +1,4 @@
-package br.com.atos.cg.component;
+package com.github.cg.component;
 
 import java.text.MessageFormat;
 

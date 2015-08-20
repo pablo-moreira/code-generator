@@ -8,7 +8,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.reflections.Reflections;
 
-import br.com.atos.cg.component.Component;
 import br.com.atos.utils.StringUtils;
 
 import com.github.cg.annotation.Plugin;
@@ -16,6 +15,7 @@ import com.github.cg.annotation.Target;
 import com.github.cg.annotation.TargetGroup;
 import com.github.cg.annotation.TargetTask;
 import com.github.cg.annotation.TaskConfig;
+import com.github.cg.component.Component;
 
 public class CodeGeneratorInitializer {
 
