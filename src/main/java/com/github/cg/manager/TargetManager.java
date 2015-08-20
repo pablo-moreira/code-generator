@@ -21,7 +21,7 @@ public class TargetManager extends BaseManager {
 
 		CodeGenerator cg = getManagerRepository().getCodeGenerator();
 
-		TargetContext targetContext = new TargetContext(target, entity);
+		TargetContext targetContext = new TargetContext(cg, target, entity);
 		
 		HashMap<String,Object> components = getManagerRepository().getComponentManager().createComponents(cg.getComponentsClass(), targetContext);
 				
