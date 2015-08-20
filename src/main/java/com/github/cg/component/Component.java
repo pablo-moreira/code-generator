@@ -4,21 +4,20 @@ import java.text.MessageFormat;
 
 import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeManyToOne;
-
-import br.com.atos.cg.CodeGenerator;
+import com.github.cg.model.TargetContext;
 
 abstract public class Component {
 
-	private CodeGenerator cg;
+	private TargetContext targetContext;
 
-	public void initialize(CodeGenerator cg) {
-		this.cg = cg;
+	public void initialize(TargetContext targetContext) {
+		this.targetContext = targetContext;
+	}
+			
+	public TargetContext getTargetContext() {
+		return targetContext;
 	}
 
-	public CodeGenerator getCg() {
-		return cg;
-	}
-		
 	protected void print(StringBuilder sb, String string) {
 		sb.append(string);
 	}
@@ -41,6 +40,7 @@ abstract public class Component {
 		}
 	}
 	
+	/* TODO - Talvez retirar este metodo daqui! */
 	public String getValue(Attribute attribute) {		
 		if (AttributeManyToOne.class.isInstance(attribute)) {
 			return attribute.getName() + "." + ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();

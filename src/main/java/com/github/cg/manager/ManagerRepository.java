@@ -8,7 +8,8 @@ public class ManagerRepository {
 	private EntityManager entityManager;
 	private TargetManager targetManager;
 	private TaskManager taskManager;
-	private TemplateManager templateManager;	
+	private TemplateManager templateManager;
+	private ComponentManager componentManager;	
 
 	public ManagerRepository(CodeGenerator codeGenerator) {		
 		this.codeGenerator = codeGenerator;
@@ -16,6 +17,11 @@ public class ManagerRepository {
 		this.targetManager = new TargetManager(this);
 		this.taskManager = new TaskManager(this);
 		this.templateManager = new TemplateManager(this);
+		this.componentManager = new ComponentManager(this);
+	}
+	
+	public ComponentManager getComponentManager() {
+		return componentManager;
 	}
 
 	public EntityManager getEntityManager() {

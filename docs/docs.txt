@@ -1,10 +1,25 @@
 Roadmap
- - Adicionar o campo plural para o formulario da entidade - OK						
- - Criar o formulario para escolher as entidades e os targets que serao executados
- - Adicionar um combo para definir a mascara de um atributo String.
- - Criar um mecanismo de customizar as opcoes desse combo
- - Implementar i18n nos formularios 
- - Implementar i18n nas mensagens de erros
+ - [x] Adicionar o campo plural para o formulario da entidade
+ - [x] Criar o formulario para escolher as entidades e os targets que serao executados
+ - [ ]
+ - [ ] Adicionar um combo para definir a mascara de um atributo String.
+ - [ ] Criar um mecanismo de customizar as opcoes desse combo
+ - [ ] Implementar i18n nos formularios 
+ - [ ] Implementar i18n nas mensagens de erros
+
+Extraido do CodeGenerator.constructor()
+
+        /* TODO - Refatorar adicionar estas informacoes no app */
+//		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
+//		attributesValues.put(PAGE_VIEW_SUFFIX, "View");
+		
+		/* TODO - Refatorar colocar esta validacao no momento que o usuario selecionar esta entidade para gerar o codigo */ 
+//		try {
+//			entity.getAttributeId().getType().getSimpleName();			
+//		}
+//		catch (Exception e) {
+//			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
+//		}
  
 
 FluxoEvento

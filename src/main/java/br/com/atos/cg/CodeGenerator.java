@@ -34,37 +34,28 @@ public class CodeGenerator {
 	
 	private static final Logger log = Logger.getLogger(CodeGenerator.class);
 
-	public static final String PACKAGE_BASE = "packageBase";
-	public static final String PACKAGE_MODEL = "packageModel";
-	public static final String PACKAGE_DAO = "packageDAO";
-	public static final String PACKAGE_MANAGER = "packageManager";	
-	public static final String PACKAGE_WINFRM = "packageWinFrm";
-	public static final String PACKAGE_CONTROLLER = "packageController";	
+	public static final String APP_NAME = "Code Generator";
+	public static final String APP_VERSION = "1.0.0-SNAPSHOT";
+	public static final String APP_TITLE = APP_NAME + " - " + APP_VERSION;
+	
 	public static final String DIRS_SRC = "dirs.src";
 	public static final String DIRS_RESOURCES = "dirs.resources";
-	public static final String DIRS_WEBCONTENT = "dirs.web";	
-	public static final String JAVA = "java";
-	public static final String XHTML = "xhtml";	
+	public static final String DIRS_WEBCONTENT = "dirs.web";
+		
 	public static final String CG_PROPERTIES_FILENAME = "cg.properties";
 	public static final String MESSAGES_PROPERTIES_FILENAME = "messages.properties";
-	
-	public static final String PAGE_VIEW_SUFFIX = "page.view.suffix";
-	public static final String PAGE_MANAGER_SUFFIX = "page.manager.suffix";
-
-	public static final String APP_NAME = "Code Generator";
-	public static final String APP_VERSION = "0.9.0";
-	public static final String APP_TITLE = APP_NAME + " - " + APP_VERSION;
 
 	private File dirSrc;	
-	private File dirWebContent;	
-	private HashMap<String,String> attributesValues = new HashMap<String,String>();
-	private LinkedProperties cgProperties;
-	private LinkedProperties messagesProperties;
 	private File dirBase;
 	private File dirResources;
-	private HashMap<String, Object> app;	
+	private File dirWebContent;
+	
+	private LinkedProperties cgProperties;
+	private LinkedProperties messagesProperties;	
+	private HashMap<String, Object> app;
+	
 	private List<Class<?>> entitiesClass = new ArrayList<Class<?>>();
-	private HashMap<String,Object> components = new HashMap<String,Object>();	
+	private HashMap<String,Class<?>> componentsClass = new HashMap<String,Class<?>>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 	private ManagerRepository managerRepository = new ManagerRepository(this);
 		
@@ -154,18 +145,6 @@ public class CodeGenerator {
             }  
         }
         catch (Exception e) {}
-		
-        /* TODO - Refatorar adicionar estas informacoes no app */
-		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
-		attributesValues.put(PAGE_VIEW_SUFFIX, "View");
-		
-		/* TODO - Refatorar colocar esta validacao no momento que o usuario selecionar esta entidade para gerar o codigo */ 
-//		try {
-//			entity.getAttributeId().getType().getSimpleName();			
-//		}
-//		catch (Exception e) {
-//			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
-//		}
 	}
 
 	private void loadMessagesProperties() throws Exception {
@@ -204,14 +183,6 @@ public class CodeGenerator {
 	private void loadCgProperties(InputStream is) throws Exception {
 		cgProperties = new LinkedProperties();
 		cgProperties.load(is);
-	}
-
-	public String getAttributeValue(String attributeName) {
-		return attributesValues.get(attributeName);
-	}
-		
-	public HashMap<String,Object> getComponents() {
-		return components;
 	}
 
 	public void store(Entity entity) {
@@ -358,15 +329,15 @@ public class CodeGenerator {
         log.info(file.getName() + " [GERADO]");
 	}
 
-	public HashMap<String, String> getAttributesValues() {
-		return attributesValues;
-	}
-
 	public HashMap<String, Object> getApp() {
 		return app;
 	}
 
 	public void executeTargetByName(String targetName, Class<?> entityClass) {				
 		execute(entityClass, findTargetByName(targetName));
+	}
+
+	public HashMap<String, Class<?>> getComponentsClass() {
+		return componentsClass;
 	}
 }

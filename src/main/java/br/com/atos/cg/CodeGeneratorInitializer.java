@@ -15,7 +15,6 @@ import com.github.cg.annotation.Target;
 import com.github.cg.annotation.TargetGroup;
 import com.github.cg.annotation.TargetTask;
 import com.github.cg.annotation.TaskConfig;
-import com.github.cg.component.Component;
 
 public class CodeGeneratorInitializer {
 
@@ -169,54 +168,23 @@ public class CodeGeneratorInitializer {
 	}
 	
 	/**
-	 * Recupera todas as classes anotadas com anotacao @Component instancia objetos destas classes e adiciona a um mapa componentes do gerador de codigo 
+	 * Recupera todas as classes anotadas com anotacao @Component e adiciona a um mapa de componentes classes do gerador de codigo 
 	 */
-	@SuppressWarnings("unchecked")
 	private void initComponents() {
 		
 		Set<Class<?>> typesAnnotatedWith = getReflections().getTypesAnnotatedWith(com.github.cg.annotation.Component.class);
 		
 		for (Class<?> clazz : typesAnnotatedWith) {
 		
-			Object instance = null;
+			com.github.cg.annotation.Component compAnnotation = clazz.getAnnotation(com.github.cg.annotation.Component.class);
 			
-			if (Component.class.isAssignableFrom(clazz)) {
-
-				Class<? extends Component> compClass = (Class<? extends Component>) clazz;
+			String name = compAnnotation.name();
 				
-				Component component = null;
-				
-				try { 
-					component = compClass.newInstance();
-					component.initialize(getCg());
-				}
-				catch (Exception e) {
-					log.error("Não foi possível instanciar o component " + compClass.getName() + "!");
-				}
-				
-				instance = component;
+			if (StringUtils.isNullOrEmpty(name)) {			
+				name = StringUtils.firstToLowerCase(clazz.getSimpleName());
 			}
-			else {
-				try {
-					instance = clazz.newInstance();
-				}
-				catch (Exception e) {
-					log.error("Não foi possível instanciar o component " + clazz.getName() + "!");
-				}
-			}
-
-			if (instance != null) {
-
-				com.github.cg.annotation.Component compAnnotation = instance.getClass().getAnnotation(com.github.cg.annotation.Component.class);
-					
-				String name = compAnnotation.name();
-					
-				if (StringUtils.isNullOrEmpty(name)) {			
-					name = StringUtils.firstToLowerCase(instance.getClass().getSimpleName());
-				}
-				
-				getCg().getComponents().put(name, instance);
-			}			
+			
+			getCg().getComponentsClass().put(name, clazz);
 		}
 	}
 }

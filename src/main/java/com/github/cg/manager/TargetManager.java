@@ -20,15 +20,17 @@ public class TargetManager extends BaseManager {
 	public TargetContext createTargetContext(Target target, Entity entity) {
 
 		CodeGenerator cg = getManagerRepository().getCodeGenerator();
+
+		TargetContext targetContext = new TargetContext(target, entity);
 		
-		VelocityContext context = createContext(target, entity, cg.getComponents(), cg.getApp(), cg.getMessagesProperties(), cg.getAttributesValues());
-		
-		TargetContext targetContext = new TargetContext(target, entity, context);
+		HashMap<String,Object> components = getManagerRepository().getComponentManager().createComponents(cg.getComponentsClass(), targetContext);
+				
+		targetContext.setContext(createContext(target, entity, components, cg.getApp(), cg.getMessagesProperties()));
 				
 		return targetContext;
 	}
 	
-	private VelocityContext createContext(Target target, Entity entity, HashMap<String,Object> components, HashMap<String, Object> app, LinkedProperties messagesProperties, HashMap<String,String> attributesValues) {
+	private VelocityContext createContext(Target target, Entity entity, HashMap<String,Object> components, HashMap<String, Object> app, LinkedProperties messagesProperties) {
 
 		VelocityContext context = new VelocityContext();
 		
@@ -39,15 +41,10 @@ public class TargetManager extends BaseManager {
 		for (String componentName : components.keySet()) {
 			context.put(componentName, components.get(componentName));
 		}
-				
+
 		context.put("app", app);
 		context.put("msgs", messagesProperties);
 
-		// Atributes Values
-		for (String key : attributesValues.keySet()) {
-			context.put(key, attributesValues.get(key));
-		}
-		
 		return context;
 	}
 }
