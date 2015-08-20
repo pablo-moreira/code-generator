@@ -195,7 +195,7 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
 		
 		txtTarget.setText(target.getDescription());
 		
-		setTitle("Formulário - " + attributeOneToMany.getEntity().getClassSimpleName() + "." + attributeOneToMany.getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
+		setTitle("Formulário - " + attributeOneToMany.getEntity().getName() + "." + attributeOneToMany.getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
 		
 		this.attributeOneToMany = attributeOneToMany;
 
