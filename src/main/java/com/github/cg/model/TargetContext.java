@@ -4,21 +4,20 @@ import java.io.File;
 
 import org.apache.velocity.VelocityContext;
 
+import br.com.atos.cg.CodeGenerator;
+
 public class TargetContext {
 
 	private Target target;
 	private Entity entity;
 	private VelocityContext context;
 	private File file;
+	private CodeGenerator cg;
 
-	public TargetContext(Target target, Entity entity) {
+	public TargetContext(CodeGenerator cg, Target target, Entity entity) {
+		this.cg = cg;
 		this.target = target;
 		this.entity = entity;		
-	}
-	
-	public TargetContext(Target target, Entity entity, VelocityContext context) {
-		this(target, entity);
-		this.context = context;
 	}
 
 	public Target getTarget() {
@@ -43,5 +42,9 @@ public class TargetContext {
 
 	public File getFile() {
 		return file;
-	}	
+	}
+
+	public CodeGenerator getCg() {
+		return cg;
+	}
 }
