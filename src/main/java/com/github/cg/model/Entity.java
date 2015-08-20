@@ -7,6 +7,8 @@ import javax.persistence.AccessType;
 
 import org.hibernate.envers.Audited;
 
+import com.github.cg.component.StringUtils;
+
 public class Entity {
 
 	private Class<?> entityClass;
@@ -39,13 +41,19 @@ public class Entity {
 	public String getLabel() {
 		return label;
 	}
-		
-	public String getClassSimpleName() {
+	
+	/**
+	 * @return O nome da classe da entidade 
+	 */
+	public String getName() {
 		return getEntityClass().getSimpleName();
 	}
 	
-	public String getName() {
-		return getEntityClass().getSimpleName();
+	/**
+	 * @return O nome da classe da entidade com a primeira letra minuscula
+	 */
+	public String getNameFlc() {
+		return StringUtils.getInstance().firstToLowerCase(getName());
 	}
 	
 	public String getPackage() {
@@ -106,7 +114,7 @@ public class Entity {
 	}
 
 	public void setLabelDefault() {
-		this.label = getClassSimpleName();
+		this.label = getName();
 	}
 	
 	public boolean isHaveAttributeOneToMany() {
@@ -136,7 +144,7 @@ public class Entity {
 	}
 
 	public void setPluralDefault() {
-		this.plural = getClassSimpleName() + "s";
+		this.plural = getName() + "s";
 	}
 
 	public void setPlural(String plural) {

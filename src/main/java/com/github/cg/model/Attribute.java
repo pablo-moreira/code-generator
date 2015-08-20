@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import br.com.atos.utils.StringUtils;
+import com.github.cg.component.StringUtils;
 
 public class Attribute {
 
@@ -52,7 +52,7 @@ public class Attribute {
 			String aux = propertyGetter.getName();
 			
 			aux = aux.replace("is", "").replace("get", "");
-			aux = StringUtils.firstToLowerCase(aux);
+			aux = StringUtils.getInstance().firstToLowerCase(aux);
 			
 			name = aux;
 		}
@@ -104,6 +104,10 @@ public class Attribute {
 
 	public String getName() {
 		return name; 
+	}
+	
+	public String getNameFuc() {
+		return StringUtils.getInstance().firstToUpperCase(getName());
 	}
 
 	public Class<?> getType() {
