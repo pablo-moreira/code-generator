@@ -1,12 +1,8 @@
 package br.com.atos.cg;
 
-import static br.com.atos.utils.StringUtils.firstToLowerCase;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
@@ -16,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -24,18 +19,11 @@ import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 
 import br.com.atos.cg.gui.FrmCodeGeneration;
-import br.com.atos.cg.model.TargetConfig;
 import br.com.atos.cg.util.LinkedProperties;
-import br.com.atos.core.model.BaseEnum;
-import br.com.atos.core.util.JpaReflectionUtils;
 import br.com.atos.utils.DataUtils;
 import br.com.atos.utils.OsUtil;
 
 import com.github.cg.manager.ManagerRepository;
-import com.github.cg.model.Attribute;
-import com.github.cg.model.AttributeFormType;
-import com.github.cg.model.AttributeManyToOne;
-import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Plugin;
 import com.github.cg.model.Target;
@@ -66,30 +54,20 @@ public class CodeGenerator {
 	public static final String APP_NAME = "Code Generator";
 	public static final String APP_VERSION = "0.9.0";
 	public static final String APP_TITLE = APP_NAME + " - " + APP_VERSION;
-		
-	public Pattern pattern = Pattern.compile("\\$\\{([a-z\\.A-Z]*)\\}");	
+
 	private File dirSrc;	
 	private File dirWebContent;	
 	private HashMap<String,String> attributesValues = new HashMap<String,String>();
-	
-	private Entity entity;
-	private List<String> methodsCreatedsInAutoCompleteCtrl = new ArrayList<String>();
-	private List<String> metodoCriadosEmSelectItemsCtrl = new ArrayList<String>();
 	private LinkedProperties cgProperties;
 	private LinkedProperties messagesProperties;
 	private File dirBase;
 	private File dirResources;
-	private br.com.atos.cg.model.OldTarget target;
 	private HashMap<String, Object> app;	
 	private List<Class<?>> entitiesClass = new ArrayList<Class<?>>();
 	private HashMap<String,Object> components = new HashMap<String,Object>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 	private ManagerRepository managerRepository = new ManagerRepository(this);
-	
-	public Entity getEntity() {
-		return entity;
-	}
-	
+		
 	@SuppressWarnings("unchecked")
 	private void createAppItem(String key, String value) {
 		
@@ -228,90 +206,10 @@ public class CodeGenerator {
 		cgProperties.load(is);
 	}
 
-	public void makeDaoAndManager() throws Exception {
-//		makeTarget(new Target("{0}DAO.java", new File(dirSrc, getAttributeValue(PACKAGE_DAO).replace(".", "/")), "DAO.java.tpl", false));
-//		makeTarget(new Target("{0}Manager.java", new File(dirSrc, getAttributeValue(PACKAGE_MANAGER).replace(".", "/")), "Manager.java.tpl", false));
-	}
-	
-	public void makeGrid() throws Exception {
-		makeTarget(new br.com.atos.cg.model.OldTarget("Grid{0}.xhtml", new File(dirWebContent, "resources/components/app"), "Grid.xhtml.tpl", true
-				, new TargetConfig(true, true, false, true, false, false)
-				, null
-		));
-	}
-
-	public void makeWinFrm() throws Exception {
-		makeTarget(new br.com.atos.cg.model.OldTarget("WinFrm{0}.xhtml", new File(dirWebContent, "resources/components/app"), "WinFrm.xhtml.tpl", true					 
-				, new TargetConfig(false, false, true, true, true, true)
-				, new TargetConfig(true, false, false, true, false, false)
-		));
-		makeTarget(new br.com.atos.cg.model.OldTarget("WinFrm{0}.java", new File(dirSrc, getAttributeValue(PACKAGE_WINFRM).replace(".", "/")), "WinFrm.java.tpl", true));
-
-		for (Attribute attribute : getEntity().getAttributes()) {				
-			
-			if (attribute.isRenderForm()) {
-			
-				if (attribute instanceof AttributeManyToOne) {
-					addMethodOnCompleteAttributeManytoOneOnClassAutoCompleteCtrlIfNecessary((AttributeManyToOne) attribute);
-				}
-				else if (attribute instanceof AttributeOneToMany) {
-					
-					AttributeOneToMany attrOneToMany = (AttributeOneToMany) attribute;
-					
-					if (AttributeFormType.INTERNAL.equals(attrOneToMany.getFormType())) {
-						for (Attribute assocAttribute : attrOneToMany.getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToMany()) {
-							if (assocAttribute.isRenderColumn()) {
-								if (assocAttribute instanceof AttributeManyToOne) {
-									addMethodOnCompleteAttributeManytoOneOnClassAutoCompleteCtrlIfNecessary((AttributeManyToOne) assocAttribute);
-								}
-								else if (BaseEnum.class.isAssignableFrom(assocAttribute.getType())) {
-									addMethodGetEntityItemsOnClassSelectItemsIfNecessary(assocAttribute);
-								}
-							}
-						}
-					}
-				}
-				else if (BaseEnum.class.isAssignableFrom(attribute.getType())) {
-					addMethodGetEntityItemsOnClassSelectItemsIfNecessary(attribute);
-				}
-			}
-		}
-	}
-		
-	private void makeTarget(br.com.atos.cg.model.OldTarget target) {}
-
-	public void makePageView() throws Exception {				
-		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ViewCtrl.java.tpl", true));
-		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_VIEW_SUFFIX) + ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "View.xhtml.tpl", true
-				, new TargetConfig(false, false, false, true, false, true)
-				, new TargetConfig(true, false, false, true, false, false)
-		));		
-	}
-		
-	public void makePageManager() throws Exception {
-		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  "Ctrl.java", new File(dirSrc, getAttributeValue(PACKAGE_CONTROLLER).replace(".", "/")), "ManagerCtrl.java.tpl", false));
-		makeTarget(new br.com.atos.cg.model.OldTarget("{0}" + getAttributeValue(PAGE_MANAGER_SUFFIX) +  ".xhtml", new File(dirWebContent, "pages/" + firstToLowerCase(getEntity().getClassSimpleName())), "Manager.xhtml.tpl", true
-				, new TargetConfig(false, false, false, false, false, false)
-				, null
-		));
-	}
-	
-	public void makeAll() throws Exception {
-		makeDaoAndManager();
-		makeWinFrm();
-		makeGrid();
-		makePageView();
-		makePageManager();
-	}
-
 	public String getAttributeValue(String attributeName) {
 		return attributesValues.get(attributeName);
 	}
-	
-	public br.com.atos.cg.model.OldTarget getTarget() {
-		return target;
-	}
-	
+		
 	public HashMap<String,Object> getComponents() {
 		return components;
 	}
@@ -337,170 +235,6 @@ public class CodeGenerator {
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Erro ao gravar os arquivos cg.properties e messages.properties, msg interna: " + e.getMessage());
-		}
-	}
-
-	private void addMethodGetEntityItemsOnClassSelectItemsIfNecessary(Attribute atributo) {
-		
-		try {
-			String metodoNome = "get" + atributo.getType().getSimpleName() + "Itens";
-		
-			// Verifica se o metodo foi criado nesta nessao
-			if (metodoCriadosEmSelectItemsCtrl.contains(metodoNome)) {
-				return;
-			}
-			
-			Class<?> selectItemsClass = Class.forName(getAttributeValue(PACKAGE_CONTROLLER) + "." + "SelectItems");
-	
-			// Verifica se o autoCompleteCtrl possui um metodo public List<AssociacaoClasse> onCompleteAssociacaoClasse()
-			try {
-				// Se achar nao faz nada
-				selectItemsClass.getMethod(metodoNome);
-			}			
-			catch (Exception e) {
-				
-				// Se nao achar cria o metodo
-				try {
-					String selectItemsPath = dirSrc.getAbsolutePath() + "/" + selectItemsClass.getName().replace(".", "/") + ".java";
-					
-					BufferedReader in = new BufferedReader(new FileReader(selectItemsPath));
-					
-					List<String> arquivoLinhas = new ArrayList<String>();
-					
-			        String linha;
-
-			        while ((linha = in.readLine()) != null) {
-						arquivoLinhas.add(linha);
-					}
-			        
-					in.close();
-
-					// Remove a ultima chave												
-					for (int i = arquivoLinhas.size() -1; i >= 0; i--) {
-						linha = arquivoLinhas.get(i);
-						if (linha.lastIndexOf("}") != -1) {
-							linha = linha.substring(0, linha.lastIndexOf("}"));
-							arquivoLinhas.set(i, linha);
-							break;
-						}
-					}												
-					
-					// Procura o index da declaracao do package
-					for (int i = 0, t = arquivoLinhas.size(); i < t; i++) {
-						linha = arquivoLinhas.get(i);
-						if (linha.contains("package")) {
-							arquivoLinhas.add(i+1, "");
-							arquivoLinhas.add(i+1, MessageFormat.format("import {0};", atributo.getType().getName()));
-							break;
-						}
-					}
-					
-					arquivoLinhas.add("\t");
-					arquivoLinhas.add(MessageFormat.format("\tpublic List<SelectItem> get{0}Itens() '{'", atributo.getType().getSimpleName()));
-					arquivoLinhas.add(MessageFormat.format("\t\treturn getEnumSelectItens({0}.class);", atributo.getType().getSimpleName()));
-					arquivoLinhas.add("\t}");
-					arquivoLinhas.add("}");
-					
-					PrintWriter pw = new PrintWriter(new File(selectItemsPath));
-					
-					for (String arquivoLinha : arquivoLinhas) {
-						pw.println(arquivoLinha);
-					}
-					
-					pw.close();		
-					
-					metodoCriadosEmSelectItemsCtrl.add(metodoNome);
-				}
-				catch (Exception e2) {}	
-			}
-		}
-		catch (Exception e) {
-			
-		}		
-	}
-	
-	private void addMethodOnCompleteAttributeManytoOneOnClassAutoCompleteCtrlIfNecessary(AttributeManyToOne attribute) {
-				
-		try {
-			String methodName = "onComplete" + attribute.getType().getSimpleName();
-
-			// Verifica se o metodo foi criado nesta sessao
-			if (methodsCreatedsInAutoCompleteCtrl.contains(methodName)) {
-				return;
-			}
-			
-			Class<?> autoCompleteClass = Class.forName(getAttributeValue(PACKAGE_CONTROLLER) + "." + "AutoCompleteCtrl");
-
-			Class<?> attributeType = attribute.getType();
-						
-			// Verifica se o autoCompleteCtrl possui um metodo public List<AssociacaoClasse> onCompleteAssociacaoClasse()
-			try {
-				// Se achar nao faz nada
-				autoCompleteClass.getMethod(methodName, String.class);
-			}
-			catch (Exception e) {
-
-				// Se nao achar cria o metodo
-				try {
-					String autoCompletePath = dirSrc.getAbsolutePath() + "/" + autoCompleteClass.getName().replace(".", "/") + ".java";
-					
-					BufferedReader in = new BufferedReader(new FileReader(autoCompletePath));
-					
-					List<String> fileLines = new ArrayList<String>();
-					
-			        String line;
-
-			        while ((line = in.readLine()) != null) {
-						fileLines.add(line);
-					}
-			        
-					in.close();
-
-					// Remove a ultima chave												
-					for (int i = fileLines.size() -1; i >= 0; i--) {
-						line = fileLines.get(i);
-						if (line.lastIndexOf("}") != -1) {
-							line = line.substring(0, line.lastIndexOf("}"));
-							fileLines.set(i, line);
-							break;
-						}
-					}												
-					
-					// Procura o index da declaracao do package
-					for (int i = 0, t = fileLines.size(); i < t; i++) {
-						line = fileLines.get(i);
-						if (line.contains("package")) {
-							fileLines.add(i+1, "");
-							fileLines.add(i+1, MessageFormat.format("import {0}.{1};", getAttributeValue(PACKAGE_MODEL), attributeType.getSimpleName()));
-							fileLines.add(i+1, MessageFormat.format("import {0}.{1}DAO;", getAttributeValue(PACKAGE_DAO), attributeType.getSimpleName()));
-							break;
-						}
-					}
-					
-					String id = JpaReflectionUtils.getFieldOrPropertyIdName(attributeType);
-					String description = attribute.getDescriptionAttributeOfAssociation();					
-
-					fileLines.add("\t");
-					fileLines.add(MessageFormat.format("\tpublic List<{0}> onComplete{0}(String sugestao) '{'", attributeType.getSimpleName()));
-					fileLines.add(MessageFormat.format("\t\treturn getDAO({0}DAO.class).retrieveLightBySuggestionOrderByLabel(sugestao, \"{1}\", \"{2}\");", attributeType.getSimpleName(), id, description));
-					fileLines.add("\t}");
-					fileLines.add("}");
-					
-					PrintWriter pw = new PrintWriter(new File(autoCompletePath));
-					
-					for (String arquivoLinha : fileLines) {
-						pw.println(arquivoLinha);
-					}
-					
-					pw.close();		
-					
-					methodsCreatedsInAutoCompleteCtrl.add(methodName);
-				}
-				catch (Exception e2) {}											
-			}
-		} 
-		catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -630,5 +364,9 @@ public class CodeGenerator {
 
 	public HashMap<String, Object> getApp() {
 		return app;
+	}
+
+	public void execute(String targetName, Class<?> entityClass) {				
+		execute(entityClass, findTargetByName(targetName));
 	}
 }
