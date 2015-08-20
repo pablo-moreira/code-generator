@@ -9,6 +9,17 @@ import com.github.cg.annotation.Component;
 @Component
 public class StringUtils {
 
+	private static StringUtils instance;
+	
+	public static StringUtils getInstance() {
+	
+		if (instance == null) {
+			instance = new StringUtils();
+		}
+		
+		return instance;
+	}
+	
 	public String pkgToDir(String pkg) {
 		return pkg.replace(".", "/");
 	}
