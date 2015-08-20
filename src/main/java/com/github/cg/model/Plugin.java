@@ -3,7 +3,7 @@ package com.github.cg.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.atos.cg.component.Component;
+import com.github.cg.component.Component;
 
 public class Plugin {
 	
