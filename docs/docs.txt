@@ -1,11 +1,16 @@
 Roadmap
- - [x] Adicionar o campo plural para o formulario da entidade
- - [x] Criar o formulario para escolher as entidades e os targets que serao executados
- - [ ]
- - [ ] Adicionar um combo para definir a mascara de um atributo String.
- - [ ] Criar um mecanismo de customizar as opcoes desse combo
- - [ ] Implementar i18n nos formularios 
- - [ ] Implementar i18n nas mensagens de erros
+ [x] Adicionar o campo plural para o formulario da entidade
+ [x] Criar o formulario para escolher as entidades e os targets que serao executados
+ [ ] Refatorar o formulario DlgFrmEntity para definir o atributo descricao da entidade
+ [ ] Retirar qualquer dependencia do atos do projeto
+ [ ] Criar um parametro de configuracao no cg.properties para definir o caminho para o arquivo messages.properties
+ [ ] Refatoracao retirar a responsabilidade de gravrar os arquivos messages.properties e cg.properties do CodeGenerator e passar para um manager
+ [ ] Criar mecanismo de definir required configs no arquivo cg.properties, para o core e os plugins
+ [ ] Adicionar um combo para definir a mascara de um atributo String.
+ [ ] Criar um mecanismo de customizar as opcoes desse combo
+ [ ] Implementar i18n nos formularios 
+ [ ] Implementar i18n nas mensagens de erros
+ [ ] Apos a execucao da task FrmEntityTask nao esta sendo gravado os dados preenchidos
 
 Extraido do CodeGenerator.constructor()
 
@@ -99,3 +104,12 @@ FrmAttributeOneToMany
 
 
 
+Para o desenvolvimento de um novo plugin utilize: 
+
+		CodeGenerator codeGenerator = new CodeGenerator();
+		
+		codeGenerator.executeTargetByName("Manager.xhtml", Car.class);
+		
+Para não precisar escolher uma entidade e um target pela interface gráfica.		
+		
+ 

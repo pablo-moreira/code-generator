@@ -30,6 +30,17 @@ abstract public class Component {
 		sb.append(MessageFormat.format(string, attr)).append("\n");
 	}
 	
+	protected String tab(int numTabs) {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i=0; i<numTabs; i++) {
+			sb.append("\t");
+		}
+		
+		return sb.toString(); 
+	}
+	
 	public Class<?> getType(Attribute attribute) {
 		
 		if (AttributeManyToOne.class.isInstance(attribute)) {

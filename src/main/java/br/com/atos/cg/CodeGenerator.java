@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.apache.log4j.Logger;
 
 import br.com.atos.cg.gui.FrmCodeGeneration;
 import br.com.atos.cg.util.LinkedProperties;
-import br.com.atos.utils.DataUtils;
 import br.com.atos.utils.OsUtil;
 
 import com.github.cg.manager.ManagerRepository;
@@ -85,8 +83,6 @@ public class CodeGenerator {
 		
 		parent.put(split[last], value);
 	}
-	
-	
 	
 	/**
 	 * Exemplo de utilizacao do gerador:
@@ -185,18 +181,13 @@ public class CodeGenerator {
 		cgProperties.load(is);
 	}
 
+	/* TODO - Refatorar retirar essa responsabilidade do CodeGenerator e passar para um manager */
 	public void store(Entity entity) {
-			
 		try {
-			String doc = "## Gerado por " + System.getProperty("user.name") + " em: " + DataUtils.getDataHorario(new Date());
-			
-			getCgProperties().addComment("");
-			getCgProperties().addComment(doc);
-			
+			getCgProperties().addComment("");			
 			getMessagesProperties().addComment("");
-			getMessagesProperties().addComment(doc);
 
-			getManagerRepository().getEntityManager().storeEntity(entity, getCgProperties(), getMessagesProperties());
+			getManagerRepository().getEntityManager().writeEntity(entity, getCgProperties(), getMessagesProperties());
 
 			getCgProperties().store(new FileOutputStream(getCgPropertiesFile()), null);
 			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile()), null);
@@ -333,8 +324,19 @@ public class CodeGenerator {
 		return app;
 	}
 
-	public void executeTargetByName(String targetName, Class<?> entityClass) {				
-		execute(entityClass, findTargetByName(targetName));
+	public void executeTargetByName(String targetName, Class<?> entityClass) {
+		
+		if (!getEntitiesClass().contains(entityClass)) {
+			throw new RuntimeException(MessageFormat.format("A classe: {0} não é @Entity!", entityClass.getSimpleName()));
+		}
+		
+		Target target = findTargetByName(targetName);
+		
+		if (target == null) {
+			throw new RuntimeException(MessageFormat.format("O target: {0} não foi encontrado!", targetName));
+		}
+		
+		execute(entityClass, target);
 	}
 
 	public HashMap<String, Class<?>> getComponentsClass() {

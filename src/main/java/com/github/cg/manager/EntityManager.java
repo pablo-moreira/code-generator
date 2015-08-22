@@ -47,6 +47,12 @@ public class EntityManager extends BaseManager {
 		if (!StringUtils.isNullOrEmpty(labelValue)) {
 			entity.setLabel(labelValue);
 		}
+
+		String pluralValue = cgMessagesProperties.getProperty(entityClass.getName() + "-plural");
+		
+		if (!StringUtils.isNullOrEmpty(pluralValue)) {
+			entity.setPlural(pluralValue);
+		}
 		
 		loadAttributes(entity, entityClass, cgProperties, cgMessagesProperties);
 		
@@ -118,10 +124,10 @@ public class EntityManager extends BaseManager {
 		}	
 	}
 
-	public void storeEntity(Entity entity, LinkedProperties cgProperties, LinkedProperties messagesProperties) {
+	public void writeEntity(Entity entity, LinkedProperties cgProperties, LinkedProperties messagesProperties) {
 		
 		String keyBase = entity.getEntityClass().getName();
-				
+		
 		if (entity.getGender() != null) {
 			// Verifica se possui os dados no gc.properties
 			cgProperties.setProperty(keyBase + ".gender", entity.getGender().name());
@@ -130,13 +136,17 @@ public class EntityManager extends BaseManager {
 		if (entity.getLabel() != null) {
 			messagesProperties.setProperty(keyBase, entity.getLabel());
 		}
+		
+		if (entity.getPlural() != null) {
+			messagesProperties.setProperty(keyBase + "-plural", entity.getPlural());
+		}
 	
 		for (Attribute attribute : entity.getAttributes()) {
-			storeAttribute(attribute, cgProperties, messagesProperties);
+			writeAttribute(attribute, cgProperties, messagesProperties);
 		}
 	}
 	
-	public void storeAttribute(Attribute attribute, LinkedProperties cgProperties, LinkedProperties messagesProperties) {
+	public void writeAttribute(Attribute attribute, LinkedProperties cgProperties, LinkedProperties messagesProperties) {
 
 		cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".renderColumn", attribute.isRenderColumn().toString());
 		cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".renderFilter", attribute.isRenderFilter().toString());
@@ -222,6 +232,6 @@ public class EntityManager extends BaseManager {
 	}
 
 	public void storeEntity(Entity entity) {
-		/* TODO - Refatorar para o entity ter acesso aos cgProperties e messageProperties */		
+		getManagerRepository().getCodeGenerator().store(entity);		
 	}
 }

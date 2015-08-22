@@ -313,6 +313,7 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 
 			txtLabel.setText(getEntity().getLabel());
 			cmGender.setSelectedEntity(getEntity().getGender());
+			txtPlural.setText(getEntity().getPlural());
 
 			List<Attribute> attributes = new ArrayList<Attribute>();
 
