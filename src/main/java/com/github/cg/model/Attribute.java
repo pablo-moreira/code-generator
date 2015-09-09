@@ -4,6 +4,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Version;
+
 import com.github.cg.component.StringUtils;
 
 public class Attribute {
@@ -109,11 +115,19 @@ public class Attribute {
 	public String getNameFuc() {
 		return StringUtils.getInstance().firstToUpperCase(getName());
 	}
-
+		
 	public Class<?> getType() {
 		return isAccessTypeField() ? field.getType() : propertyGetter.getReturnType();
 	}
-		
+	
+	public String getTypeName() {
+		return getType().getSimpleName();
+	}
+	
+	public String getTypeNameFlc() {
+		return StringUtils.getInstance().firstToLowerCase(getName()); 
+	}
+			
 	public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
 		if (isAccessTypeField()) {
 			return field.getAnnotation(annotationClass);
@@ -121,5 +135,29 @@ public class Attribute {
 		else {
 			return propertyGetter.getAnnotation(annotationClass);
 		}
+	}
+
+	public boolean isAnnotedWithVersion() {
+		return getAnnotation(Version.class) != null;
+	}
+
+	public Boolean isRequired() {
+
+		Boolean required = false;
+		
+		if (getAnnotation(Column.class) != null) {
+			required = !getAnnotation(Column.class).nullable();
+		}
+		else if (getAnnotation(OneToOne.class) != null) {
+			required = !getAnnotation(OneToOne.class).optional();
+		}
+		else if (getAnnotation(ManyToOne.class) != null) {
+			required = !getAnnotation(ManyToOne.class).optional();
+		}
+		else if (getAnnotation(JoinColumn.class) != null) {
+			required = !getAnnotation(JoinColumn.class).nullable();
+		}
+		
+		return required;
 	}
 }
