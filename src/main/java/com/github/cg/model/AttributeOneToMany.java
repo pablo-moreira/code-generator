@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.persistence.OneToMany;
 
+import com.github.cg.component.StringUtils;
+
 public class AttributeOneToMany extends Attribute {
 	
 	private AttributeFormType formType = AttributeFormType.INTERNAL;
@@ -79,6 +81,10 @@ public class AttributeOneToMany extends Attribute {
 		}
 		
 		return mappedBy;
+	}
+	
+	public String getAssociationMappedByFuc() {
+		return StringUtils.getInstance().firstToUpperCase(getAssociationMappedBy());
 	}
 
 	public Entity getAssociationEntity() {

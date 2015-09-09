@@ -14,7 +14,6 @@ import javax.persistence.OneToOne;
 
 import br.com.atos.cg.util.LinkedProperties;
 import br.com.atos.core.util.JpaReflectionUtils;
-import br.com.atos.utils.ReflectionUtils;
 import br.com.atos.utils.StringUtils;
 
 import com.github.cg.model.Attribute;
@@ -24,6 +23,7 @@ import com.github.cg.model.AttributeManyToOne;
 import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Gender;
+import com.github.cg.util.ReflectionUtils;
 
 public class EntityManager extends BaseManager {
 
