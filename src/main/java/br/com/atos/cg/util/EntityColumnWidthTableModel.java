@@ -12,11 +12,17 @@ import javax.swing.JTable;
  */
 public abstract class EntityColumnWidthTableModel<E> extends EntityTableModel<E> {
 
-    public EntityColumnWidthTableModel(JTable table) {        
+	private static final long serialVersionUID = 1L;
+
+	public EntityColumnWidthTableModel(JTable table) {        
         super(table);        
         initializeWidth();
     }
    
+	public void resetColumns() {
+		initializeWidth();
+	}
+	
     private void initializeWidth() {
         for (int i=0; i < getTable().getColumnModel().getColumnCount(); i++) {
             getTable().getColumnModel().getColumn(i).setPreferredWidth(findColumnMetadataByIndex(i).getWidth());

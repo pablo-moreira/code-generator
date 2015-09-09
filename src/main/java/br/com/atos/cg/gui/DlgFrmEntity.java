@@ -344,8 +344,11 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		else {
 			getPnAttributes().initialize(null);
 		}
+		
+		getPnAttributes().getTmAttributes().resetColumns();
 
-		if (targetTask != null) {
+		if (targetTask != null) {			
+			
 			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_COLUMN)) {
 				getPnAttributes().getTmAttributes().hideColumnRenderColumn();
 			}
@@ -362,6 +365,8 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 				getPnAttributes().getTmAttributes().hideColumnFormType();
 			}
 		}
+		
+		pack();
 
 		JFrameUtils.setCenterLocation(this);
 		JFrameUtils.showMazimized(this);

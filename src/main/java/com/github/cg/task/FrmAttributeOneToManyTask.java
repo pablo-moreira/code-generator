@@ -16,8 +16,8 @@ public class FrmAttributeOneToManyTask extends Task {
 		
 		for (AttributeOneToMany attribute : attributesOneToMany) {
 
-        	attribute.initializeAssociationEntity();
-        	
+			getManagerRepository().getEntityManager().loadAssociationEntity(attribute);
+			        	
         	DlgAttributeOneToMany winFrmAttributeOneToMany = new DlgAttributeOneToMany(null, true);                                        
         	winFrmAttributeOneToMany.start(attribute, getTargetContext(), getTargetTask());
 

@@ -1,6 +1,7 @@
 package com.github.cg.manager;
 
 import br.com.atos.cg.CodeGenerator;
+import br.com.atos.cg.util.LinkedProperties;
 
 public class ManagerRepository {
 
@@ -42,5 +43,13 @@ public class ManagerRepository {
 
 	public TemplateManager getTemplateManager() {
 		return templateManager;
+	}
+
+	public LinkedProperties getCgProperties() {
+		return getCodeGenerator().getCgProperties();
+	}
+
+	public LinkedProperties getMessagesProperties() {
+		return getCodeGenerator().getMessagesProperties();
 	}
 }

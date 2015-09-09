@@ -56,9 +56,23 @@ public class EntityManager extends BaseManager {
 		
 		loadAttributes(entity, entityClass, cgProperties, cgMessagesProperties);
 		
+		loadAttributesOneToMany(entity, cgProperties, cgMessagesProperties);
+		
 		return entity;
 	}
 	
+	private void loadAttributesOneToMany(Entity entity,	LinkedProperties cgProperties, LinkedProperties cgMessagesProperties) {
+
+		List<AttributeOneToMany> attributesOneToMany = entity.getAttributesOneToMany();
+		
+		for (AttributeOneToMany attribute : attributesOneToMany) {
+			
+			loadAssociationEntity(attribute);
+			
+			loadAttributesOneToMany(attribute.getAssociationEntity(), cgProperties, cgMessagesProperties);
+		}		
+	}
+
 	private void loadAttributes(Entity entity, Class<?> entityClass, LinkedProperties cgProperties, LinkedProperties cgMessagesProperties) {
 
 		AccessType accessType = JpaReflectionUtils.determineAccessType(entityClass);
@@ -233,5 +247,14 @@ public class EntityManager extends BaseManager {
 
 	public void storeEntity(Entity entity) {
 		getManagerRepository().getCodeGenerator().store(entity);		
+	}
+
+	public void loadAssociationEntity(AttributeOneToMany attribute) {
+
+		Class<?> associationClass = attribute.getAssociationClass();
+		
+		Entity associationEntity = loadEntity(associationClass, getManagerRepository().getCgProperties(), getManagerRepository().getMessagesProperties());
+					
+		attribute.initializeAssociationEntity(associationEntity);
 	}
 }

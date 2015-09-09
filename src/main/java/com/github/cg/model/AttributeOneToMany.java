@@ -9,11 +9,9 @@ import java.util.List;
 
 import javax.persistence.OneToMany;
 
-import br.com.atos.core.model.IBaseEntity;
-
 public class AttributeOneToMany extends Attribute {
 	
-	private AttributeFormType formType = AttributeFormType.EXTERNAL;
+	private AttributeFormType formType = AttributeFormType.INTERNAL;
 
 	private Entity associationEntity;
 
@@ -26,16 +24,7 @@ public class AttributeOneToMany extends Attribute {
 	public AttributeOneToMany(Method method, Entity entity) {
 		super(method, entity);
 	}
-
-	public void initializeAssociationEntity() {
-			
-		@SuppressWarnings("unchecked")
-		Class<? extends IBaseEntity<?>> clazz = (Class<? extends IBaseEntity<?>>) getAssociationClass();
-		
-		/* TODO - Refatorar para o EntityManager Initialize association entity */
-//		associationEntity = new Entity(clazz, getEntity().getGc());
-	}
-		
+	
 	public AttributeFormType getFormType() {
 		return formType;
 	}
@@ -108,13 +97,8 @@ public class AttributeOneToMany extends Attribute {
 		
 		return attributes;
 	}
-	
-	public boolean isAllowedFormTypeInternal() {
-		
-		if (associationEntity == null) {
-			initializeAssociationEntity();
-		}
-		
-		return getAssociationEntity().isHaveAttributeOneToMany();
+
+	public void initializeAssociationEntity(Entity associationEntity) {
+		this.associationEntity = associationEntity;		
 	}
 }

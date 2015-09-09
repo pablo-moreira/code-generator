@@ -146,6 +146,16 @@ public class Entity {
 	public void setPluralDefault() {
 		this.plural = getName() + "s";
 	}
+	
+	/**
+	 * Metodo responsavel por retornar o nome da entidade no plural sem caracteres acentuados ou especiais
+	 * 
+	 * @return O nome da entidade no plural para utilizar em nome de Variavel ou Metodo 
+	 * 
+	 */
+	public String getPluralFvm() {
+		return StringUtils.getInstance().formatForVariableOrMethodName(getPlural());
+	}
 
 	public void setPlural(String plural) {
 		this.plural = plural;

@@ -131,8 +131,7 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
     }
 
     private void initializeTooltip() {
-        
-        
+                
         for (int i=0; i < getTable().getColumnModel().getColumnCount(); i++) {
             
             ColumnMetadata colMetadata = findColumnMetadataByIndex(i);
@@ -145,8 +144,4 @@ public abstract class EntityTableModel<E> extends AbstractTableModel {
             }
         }       
     }
-
-    
-    
-
 }

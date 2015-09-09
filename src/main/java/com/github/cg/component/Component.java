@@ -22,12 +22,18 @@ abstract public class Component {
 		sb.append(string);
 	}
 	
-	protected void println(StringBuilder sb, String string) {
-		sb.append(string).append("\n");
+	protected void print(StringBuilder sb, String string, Object ... args) {
+		sb.append(MessageFormat.format(string, args));
 	}
 	
-	protected void println(StringBuilder sb, String string, Object ... attr) {
-		sb.append(MessageFormat.format(string, attr)).append("\n");
+	protected void println(StringBuilder sb, String string) {
+		print(sb, string);
+		sb.append("\n");
+	}
+	
+	protected void println(StringBuilder sb, String string, Object ... args) {
+		print(sb, string, args);
+		sb.append("\n");
 	}
 	
 	protected String tab(int numTabs) {

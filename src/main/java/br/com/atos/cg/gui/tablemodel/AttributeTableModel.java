@@ -18,11 +18,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import com.github.cg.model.Attribute;
-import com.github.cg.model.AttributeFormType;
-import com.github.cg.model.AttributeManyToOne;
-import com.github.cg.model.AttributeOneToMany;
-
 import br.com.atos.cg.gui.DlgFrmEntity;
 import br.com.atos.cg.util.ColumnMetadata;
 import br.com.atos.cg.util.ComboBoxCellEditor;
@@ -30,6 +25,11 @@ import br.com.atos.cg.util.EntityColumnWidthTableModel;
 import br.com.atos.cg.util.EntityComboBoxModel;
 import br.com.atos.cg.util.SuggestBoxModel;
 import br.com.atos.utils.ReflectionUtils;
+
+import com.github.cg.model.Attribute;
+import com.github.cg.model.AttributeFormType;
+import com.github.cg.model.AttributeManyToOne;
+import com.github.cg.model.AttributeOneToMany;
 
 /**
  *
@@ -268,17 +268,8 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         	final Attribute attribute = getEntityByRow(row);
         	
         	if (attribute instanceof AttributeOneToMany) {
-        		
-        		AttributeOneToMany attrOneToMany = (AttributeOneToMany) attribute;
-        	                     		
-        		AttributeFormType[] types;
-        		
-        		if (attrOneToMany.isAllowedFormTypeInternal()) {
-        			types = new AttributeFormType[] { AttributeFormType.EXTERNAL };
-        		}
-        		else {
-        			types = new AttributeFormType[] { AttributeFormType.EXTERNAL, AttributeFormType.INTERNAL };
-        		}
+        		        	                     		
+        		AttributeFormType[] types = new AttributeFormType[] { AttributeFormType.EXTERNAL, AttributeFormType.INTERNAL };
         		
 		        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<AttributeFormType>(types) {
 		

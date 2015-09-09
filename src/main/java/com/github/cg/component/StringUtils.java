@@ -1,5 +1,6 @@
 package com.github.cg.component;
 
+import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -53,5 +54,35 @@ public class StringUtils {
 		}
 		
 		return builder.toString();
+	}
+	
+	
+	public String removeAllNonNumeric(String string){
+		if (!isNullOrEmpty(string)) {
+			return string.replaceAll("[^0-9]",	"");
+		}
+		return string;
+	}
+		
+	public String stripSpecialCharacters(String string) {
+		if (!isNullOrEmpty(string)) {
+			return string.replaceAll("[^0-9a-zA-Z]","");
+		}
+		return string;
+	}
+						 
+	public String formatForVariableOrMethodName(String string) {
+		if (!isNullOrEmpty(string)) {
+			return replaceAllAccents(stripSpecialCharacters(string));
+		}
+		return string;
+	}
+	
+	public String replaceAllAccents(String string) {
+		if (!isNullOrEmpty(string)) {
+			CharSequence cs = new StringBuilder(string);  
+			return Normalizer.normalize(cs, Normalizer.Form.NFKD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+		}
+		return string;
 	}
 }

@@ -24,7 +24,6 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
 	public static final String CONFIG_RENDER_COLUMN = "renderColumn";
 	public static final String CONFIG_RENDER_FORM = "renderForm";
 	public static final String CONFIG_RENDER_FILTER = "renderFilter";
-	public static final String CONFIG_SHOW_ATTRIBUTES_ONE_TO_MANY = "showAttributesOneToMany";
 	public static final String CONFIG_RENDER_FORM_TYPE = "renderFormType";
 	public static final String CONFIG_RENDER_ATTRIBUTE_DESCRIPTION = "renderAttributeDescription";
 	
