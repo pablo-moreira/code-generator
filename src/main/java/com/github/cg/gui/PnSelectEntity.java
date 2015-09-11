@@ -13,10 +13,9 @@ import java.util.List;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
-import br.com.atos.utils.swing.JFrameUtils;
-
 import com.github.cg.gui.tablemodel.AttributeTableModel;
 import com.github.cg.gui.tablemodel.SelectEntityTableModel;
+import com.github.cg.gui.util.JFrameUtils;
 import com.github.cg.vo.SelectItem;
 
 /**

@@ -18,8 +18,6 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
-import br.com.atos.utils.OsUtil;
-
 import com.github.cg.gui.FrmCodeGeneration;
 import com.github.cg.manager.ManagerRepository;
 import com.github.cg.model.Entity;
@@ -28,6 +26,7 @@ import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetGroup;
 import com.github.cg.util.LinkedProperties;
+import com.github.cg.util.OsUtil;
 
 public class CodeGenerator {
 	

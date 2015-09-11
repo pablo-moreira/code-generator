@@ -10,13 +10,12 @@ import java.util.List;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
+import com.github.cg.component.StringUtils;
 import com.github.cg.gui.tablemodel.AttributeTableModel;
+import com.github.cg.gui.util.JFrameUtils;
 import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeManyToOne;
 import com.github.cg.model.AttributeOneToMany;
-
-import br.com.atos.utils.StringUtils;
-import br.com.atos.utils.swing.JFrameUtils;
 
 /**
  *
@@ -137,7 +136,7 @@ public class PnAttributes extends javax.swing.JPanel {
 				
 				AttributeManyToOne attribute = (AttributeManyToOne) attr;
 				
-				if (StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
+				if (StringUtils.getInstance().isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
 					JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação " + attribute.getName() + " não foi informado!");
 					return false;
 				}
@@ -149,7 +148,7 @@ public class PnAttributes extends javax.swing.JPanel {
 
 	public void save() {		
 		for (Attribute attribute : getTmAttributes().getEntities()) {
-			if (StringUtils.isNullOrEmpty(attribute.getLabel())) {
+			if (StringUtils.getInstance().isNullOrEmpty(attribute.getLabel())) {
 				attribute.setLabelDefault();
 			}
 		}	

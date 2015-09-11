@@ -21,7 +21,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import br.com.atos.utils.StringUtils;
+import com.github.cg.component.StringUtils;
 
 /**
  *
@@ -130,7 +130,7 @@ abstract public class SuggestBoxModel extends AbstractListModel implements Combo
 		
         suggestions.clear();
 
-        if (!StringUtils.isNullOrEmpty(suggest)) {
+        if (!StringUtils.getInstance().isNullOrEmpty(suggest)) {
             
             for(String option : getOptions(suggest)) {
                 if(option.startsWith(suggest)) {

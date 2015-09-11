@@ -3,7 +3,7 @@ package com.github.cg.model;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import br.com.atos.utils.StringUtils;
+import com.github.cg.component.StringUtils;
 
 public class AttributeId extends Attribute {
 
@@ -11,7 +11,7 @@ public class AttributeId extends Attribute {
 			
 		super(field, entity);
 
-		if (StringUtils.isNullOrEmpty(getLabel())) {
+		if (StringUtils.getInstance().isNullOrEmpty(getLabel())) {
 			setLabel("Id");
 		}
 	}
@@ -20,7 +20,7 @@ public class AttributeId extends Attribute {
 
 		super(propertyGetter, entity);
 		
-		if (StringUtils.isNullOrEmpty(getLabel())) {
+		if (StringUtils.getInstance().isNullOrEmpty(getLabel())) {
 			setLabel("Id");
 		}
 	}

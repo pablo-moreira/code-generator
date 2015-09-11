@@ -18,8 +18,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import br.com.atos.utils.ReflectionUtils;
-
 import com.github.cg.gui.DlgFrmEntity;
 import com.github.cg.gui.util.ComboBoxCellEditor;
 import com.github.cg.gui.util.EntityColumnWidthTableModel;
@@ -29,6 +27,7 @@ import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeFormType;
 import com.github.cg.model.AttributeManyToOne;
 import com.github.cg.model.AttributeOneToMany;
+import com.github.cg.util.ReflectionUtils;
 import com.github.cg.vo.ColumnMetadata;
 
 /**

@@ -10,9 +10,8 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.atos.utils.swing.JFrameUtils;
-
 import com.github.cg.CodeGenerator;
+import com.github.cg.gui.util.JFrameUtils;
 import com.github.cg.model.Target;
 import com.github.cg.model.TargetStatus;
 

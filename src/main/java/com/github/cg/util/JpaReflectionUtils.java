@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import br.com.atos.utils.ReflectionUtils;
-
 public class JpaReflectionUtils {
 	
 	public static Field getFieldId(Class<?> clazz) {

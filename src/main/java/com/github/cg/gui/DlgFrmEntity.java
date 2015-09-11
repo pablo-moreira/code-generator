@@ -10,11 +10,10 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import br.com.atos.utils.StringUtils;
-import br.com.atos.utils.swing.JFrameUtils;
-
+import com.github.cg.component.StringUtils;
 import com.github.cg.gui.tablemodel.AttributeTableModel;
 import com.github.cg.gui.util.EntityComboBoxModel;
+import com.github.cg.gui.util.JFrameUtils;
 import com.github.cg.gui.util.SuggestBoxModel;
 import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeId;
@@ -252,14 +251,14 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 			return;
 		}
 
-		if (StringUtils.isNullOrEmpty(txtLabel.getText())) {
+		if (StringUtils.getInstance().isNullOrEmpty(txtLabel.getText())) {
 			getEntity().setLabelDefault();
 		}
 		else {
 			getEntity().setLabel(txtLabel.getText());
 		}
 		
-		if (StringUtils.isNullOrEmpty(txtPlural.getText())) {
+		if (StringUtils.getInstance().isNullOrEmpty(txtPlural.getText())) {
 			getEntity().setPluralDefault();
 		}
 		else {

@@ -8,13 +8,12 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.reflections.Reflections;
 
-import br.com.atos.utils.StringUtils;
-
 import com.github.cg.annotation.Plugin;
 import com.github.cg.annotation.Target;
 import com.github.cg.annotation.TargetGroup;
 import com.github.cg.annotation.TargetTask;
 import com.github.cg.annotation.TaskConfig;
+import com.github.cg.component.StringUtils;
 
 public class CodeGeneratorInitializer {
 
@@ -181,8 +180,8 @@ public class CodeGeneratorInitializer {
 			
 			String name = compAnnotation.name();
 				
-			if (StringUtils.isNullOrEmpty(name)) {			
-				name = StringUtils.firstToLowerCase(clazz.getSimpleName());
+			if (StringUtils.getInstance().isNullOrEmpty(name)) {			
+				name = StringUtils.getInstance().firstToLowerCase(clazz.getSimpleName());
 			}
 			
 			getCg().getComponentsClass().put(name, clazz);

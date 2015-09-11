@@ -19,11 +19,6 @@
 			<version>1.2.16</version>
 		</dependency>
 		<dependency>
-			<groupId>br.com.atos</groupId>
-			<artifactId>atos-utils</artifactId>
-			<version>0.0.4</version>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate-core.version}</version>

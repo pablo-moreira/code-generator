@@ -4,15 +4,15 @@
  */
 package com.github.cg.gui;
 
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
-import br.com.atos.utils.swing.JFrameUtils;
-
+import com.github.cg.gui.util.JFrameUtils;
 import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetTask;
-import java.util.List;
 
 /**
  *
