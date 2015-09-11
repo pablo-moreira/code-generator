@@ -1,6 +1,6 @@
 package com.github.cg.task;
 
-import br.com.atos.cg.gui.DlgFrmEntity;
+import com.github.cg.gui.DlgFrmEntity;
 
 public class FrmEntityTask extends Task {
 	

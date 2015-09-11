@@ -1,7 +1,7 @@
 package com.github.cg.manager;
 
-import br.com.atos.cg.CodeGenerator;
-import br.com.atos.cg.util.LinkedProperties;
+import com.github.cg.CodeGenerator;
+import com.github.cg.util.LinkedProperties;
 
 public class ManagerRepository {
 

@@ -4,12 +4,11 @@ import java.util.HashMap;
 
 import org.apache.velocity.VelocityContext;
 
-import br.com.atos.cg.CodeGenerator;
-import br.com.atos.cg.util.LinkedProperties;
-
+import com.github.cg.CodeGenerator;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
+import com.github.cg.util.LinkedProperties;
 
 public class TargetManager extends BaseManager {
 

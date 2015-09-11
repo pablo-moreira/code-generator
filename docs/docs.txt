@@ -10,7 +10,7 @@ Roadmap
  [x] Criar um mecanismo de customizar as opcoes desse combo
  [ ] Implementar i18n nos formularios 
  [ ] Implementar i18n nas mensagens de erros
- [ ] Apos a execucao da task FrmEntityTask nao esta sendo gravado os dados preenchidos
+ [x] Apos a execucao da task FrmEntityTask nao esta sendo gravado os dados preenchidos
 
 Extraido do CodeGenerator.constructor()
 

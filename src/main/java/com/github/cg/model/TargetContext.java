@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.velocity.VelocityContext;
 
-import br.com.atos.cg.CodeGenerator;
+import com.github.cg.CodeGenerator;
 
 public class TargetContext {
 
