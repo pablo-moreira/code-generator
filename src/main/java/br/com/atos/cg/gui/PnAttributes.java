@@ -31,11 +31,15 @@ public class PnAttributes extends javax.swing.JPanel {
     /**
      * Creates new form FrmAttributes
      */
-    public PnAttributes() {
+	public PnAttributes() {
+		this(new ArrayList<String>());
+	}
+	
+    public PnAttributes(List<String> patterns) {
         
         initComponents();
         
-        tmAttributes = new AttributeTableModel(tblAttributes);
+        tmAttributes = new AttributeTableModel(tblAttributes, patterns);
     }
     
     public void initialize(List<Attribute> attributes) {

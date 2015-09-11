@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +56,7 @@ public class CodeGenerator {
 	private List<Class<?>> entitiesClass = new ArrayList<Class<?>>();
 	private HashMap<String,Class<?>> componentsClass = new HashMap<String,Class<?>>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
+	private List<String> patterns = new ArrayList<String>();
 	private ManagerRepository managerRepository = new ManagerRepository(this);
 		
 	@SuppressWarnings("unchecked")
@@ -341,5 +343,23 @@ public class CodeGenerator {
 
 	public HashMap<String, Class<?>> getComponentsClass() {
 		return componentsClass;
+	}
+
+	/**
+	 * Adiciona uma lista de patterns na lista de patterns do CodeGenerator
+	 * 
+	 * @param patterns Os patterns que serao adicionados
+	 */
+	public void addPatterns(String[] patterns) {
+		this.patterns.addAll(Arrays.asList(patterns));
+	}
+	
+	/**
+	 * Retorna a lista de patterns do CodeGenerator
+	 * 
+	 * @return a lista de patterns do CodeGenerator
+	 */
+	public List<String> getPatterns() {
+		return patterns;
 	}
 }

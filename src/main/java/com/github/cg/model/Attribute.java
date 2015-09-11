@@ -17,6 +17,7 @@ public class Attribute {
 	protected Field field;
 	protected Method propertyGetter;	
 	private String label;
+	private String pattern;
 	
 	private Boolean renderColumn = true;
 	private Boolean renderFilter = true;
@@ -159,5 +160,13 @@ public class Attribute {
 		}
 		
 		return required;
+	}
+
+	public String getPattern() {
+		return pattern;
+	}
+
+	public void setPattern(String pattern) {
+		this.pattern = pattern;
 	}
 }

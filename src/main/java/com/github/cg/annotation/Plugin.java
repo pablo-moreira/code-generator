@@ -18,4 +18,9 @@ public @interface Plugin {
 	 */
 	public abstract TargetGroup[] targetsGroups() default {};
 	
+	/**
+	 * Define os patterns do plugin 
+	 */
+	public abstract String[] patterns() default {};
+	
 }

@@ -31,30 +31,43 @@
           <Group type="102" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="pnAttributes" pref="0" max="32767" attributes="0"/>
+                  <Component id="pnAttributes" pref="798" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="688" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnOk" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblTarget" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblEntity" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblPlural" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="txtPlural" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtLabel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtEntity" alignment="0" max="32767" attributes="0"/>
+                      </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="txtTarget" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="lblGender" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbbGender" min="-2" pref="160" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                              <Component id="lblAttributeDescription" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="txtPlural" max="32767" attributes="0"/>
-                          <Component id="txtLabel" max="32767" attributes="0"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="lblGender" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblTarget" alignment="1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="cbbGender" alignment="1" max="32767" attributes="0"/>
+                          <Component id="cbbAttributeDescription" alignment="1" max="32767" attributes="0"/>
+                          <Component id="txtTarget" alignment="1" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -69,21 +82,25 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="txtTarget" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblTarget" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblEntity" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtEntity" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cbbGender" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblGender" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="txtLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblLabel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="txtPlural" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblPlural" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtPlural" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cbbAttributeDescription" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblAttributeDescription" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="pnAttributes" pref="449" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+              <Component id="pnAttributes" pref="447" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="7" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -97,6 +114,11 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
+    <Component class="javax.swing.JLabel" name="lblEntity">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Entidade:"/>
+      </Properties>
+    </Component>
     <Component class="javax.swing.JLabel" name="lblTarget">
       <Properties>
         <Property name="text" type="java.lang.String" value="Target:"/>
@@ -107,15 +129,22 @@
         <Property name="text" type="java.lang.String" value="R&#xf3;tulo:"/>
       </Properties>
     </Component>
+    <Component class="javax.swing.JLabel" name="lblGender">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="G&#xea;nero:"/>
+      </Properties>
+    </Component>
     <Component class="javax.swing.JLabel" name="lblPlural">
       <Properties>
         <Property name="text" type="java.lang.String" value="Plural:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="lblGender">
+    <Component class="javax.swing.JLabel" name="lblAttributeDescription">
       <Properties>
-        <Property name="text" type="java.lang.String" value="G&#xea;nero: "/>
+        <Property name="text" type="java.lang.String" value="Descri&#xe7;&#xe3;o:"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtEntity">
     </Component>
     <Component class="javax.swing.JTextField" name="txtTarget">
       <Properties>
@@ -126,8 +155,6 @@
       <Events>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtLabelKeyReleased"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JTextField" name="txtPlural">
     </Component>
     <Component class="javax.swing.JComboBox" name="cbbGender">
       <Properties>
@@ -140,6 +167,10 @@
           </StringArray>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtPlural">
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cbbAttributeDescription">
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator1">
     </Component>
@@ -160,6 +191,9 @@
       </Events>
     </Component>
     <Component class="br.com.atos.cg.gui.PnAttributes" name="pnAttributes">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new br.com.atos.cg.gui.PnAttributes(this.patterns)"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

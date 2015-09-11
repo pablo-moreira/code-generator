@@ -12,6 +12,7 @@ import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Target;
 import com.github.cg.model.TargetContext;
 import com.github.cg.model.TargetTask;
+import java.util.List;
 
 /**
  *
@@ -26,15 +27,17 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
 	public static final String CONFIG_RENDER_FILTER = "renderFilter";
 	public static final String CONFIG_RENDER_FORM_TYPE = "renderFormType";
 	public static final String CONFIG_RENDER_ATTRIBUTE_DESCRIPTION = "renderAttributeDescription";
-	
+
 	private int status;
 	private AttributeOneToMany attributeOneToMany;
+	private final List<String> patterns;
 
 	/**
 	 * Creates new form WinFrmAttributeOneToMany
 	 */
-	public DlgAttributeOneToMany(java.awt.Frame parent, boolean modal) {
+	public DlgAttributeOneToMany(java.awt.Frame parent, boolean modal, List<String> patterns) {
 		super(parent, modal);
+		this.patterns = patterns;
 		initComponents();
 	}
 
@@ -52,7 +55,9 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
         btnCancel = new javax.swing.JButton();
         lblTarget = new javax.swing.JLabel();
         txtTarget = new javax.swing.JTextField();
-        pnAttributes = new br.com.atos.cg.gui.PnAttributes();
+        pnAttributes = new br.com.atos.cg.gui.PnAttributes(this.patterns);
+        lblAssociation = new javax.swing.JLabel();
+        txtAssociation = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("\"Formulário - \"");
@@ -74,7 +79,8 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
         lblTarget.setText("Target:");
 
         txtTarget.setEditable(false);
-        txtTarget.setText("Target");
+
+        lblAssociation.setText("Associação");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -84,30 +90,38 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 799, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnOK))
+                        .addComponent(btnOK)
+                        .addGap(12, 12, 12))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(pnAttributes, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblTarget)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTarget)
+                            .addComponent(lblAssociation))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtTarget)
+                            .addComponent(txtAssociation))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblAssociation)
+                    .addComponent(txtAssociation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblTarget))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                .addComponent(pnAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, 479, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 6, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -171,7 +185,7 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
 		/* Create and display the dialog */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				DlgAttributeOneToMany dialog = new DlgAttributeOneToMany(new javax.swing.JFrame(), true);
+				DlgAttributeOneToMany dialog = new DlgAttributeOneToMany(new javax.swing.JFrame(), true, null);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
@@ -192,6 +206,7 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
 
 		Target target = targetContext.getTarget();
 		
+		txtAssociation.setText(attributeOneToMany.getEntity().getName() + "." + attributeOneToMany.getName());
 		txtTarget.setText(target.getDescription());
 		
 		setTitle("Formulário - " + attributeOneToMany.getEntity().getName() + "." + attributeOneToMany.getName() + " - " + attributeOneToMany.getAssociationClassSimpleName());
@@ -235,8 +250,10 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOK;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblAssociation;
     private javax.swing.JLabel lblTarget;
     private br.com.atos.cg.gui.PnAttributes pnAttributes;
+    private javax.swing.JTextField txtAssociation;
     private javax.swing.JTextField txtTarget;
     // End of variables declaration//GEN-END:variables
 }

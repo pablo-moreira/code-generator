@@ -8,7 +8,7 @@ public class FrmEntityTask extends Task {
 		
 		TaskResult taskResult;
 		
-		DlgFrmEntity winFrm = new DlgFrmEntity(null, true);                        
+		DlgFrmEntity winFrm = new DlgFrmEntity(null, true, getTargetContext().getCg().getPatterns());
 		winFrm.start(getTargetContext(), getTargetTask());
             
 		if (!winFrm.isStatusOK()) {

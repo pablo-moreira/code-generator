@@ -10,7 +10,9 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import br.com.atos.cg.gui.tablemodel.AttributeTableModel;
 import br.com.atos.cg.util.EntityComboBoxModel;
+import br.com.atos.cg.util.SuggestBoxModel;
 import br.com.atos.utils.StringUtils;
 import br.com.atos.utils.swing.JFrameUtils;
 
@@ -41,14 +43,18 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 	private EntityComboBoxModel<Gender> cmGender;
 	private Entity entity;
 	private int status;
+	private final List<String> patterns;
+	private Class<?> entityClass = DlgFrmEntity.class; // Seta esta classe somente para nao dar erros;
 
 	/**
 	 * Creates new form WinFrmEntity
 	 */
-	public DlgFrmEntity(java.awt.Frame parent, boolean modal) {
+	public DlgFrmEntity(java.awt.Frame parent, boolean modal, List<String> patterns) {
 
 		super(parent, modal);
 
+		this.patterns = patterns;
+		
 		initComponents();
 
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -64,8 +70,18 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 				return item.getDescription();
 			}
 		};
-
+		
 		cbbGender.setModel(cmGender);
+		
+		new SuggestBoxModel(this.cbbAttributeDescription) {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public List<String> getOptions(String suggest) {
+				return AttributeTableModel.getOptions(getEntityClass(), suggest);
+			}
+		};
 	}
 
 	/**
@@ -78,30 +94,38 @@ public class DlgFrmEntity extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblEntity = new javax.swing.JLabel();
         lblTarget = new javax.swing.JLabel();
         lblLabel = new javax.swing.JLabel();
-        lblPlural = new javax.swing.JLabel();
         lblGender = new javax.swing.JLabel();
+        lblPlural = new javax.swing.JLabel();
+        lblAttributeDescription = new javax.swing.JLabel();
+        txtEntity = new javax.swing.JTextField();
         txtTarget = new javax.swing.JTextField();
         txtLabel = new javax.swing.JTextField();
-        txtPlural = new javax.swing.JTextField();
         cbbGender = new javax.swing.JComboBox();
+        txtPlural = new javax.swing.JTextField();
+        cbbAttributeDescription = new javax.swing.JComboBox();
         jSeparator1 = new javax.swing.JSeparator();
         btnOk = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        pnAttributes = new br.com.atos.cg.gui.PnAttributes();
+        pnAttributes = new br.com.atos.cg.gui.PnAttributes(this.patterns);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Formulário de Entidade");
         setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 
+        lblEntity.setText("Entidade:");
+
         lblTarget.setText("Target:");
 
         lblLabel.setText("Rótulo:");
 
+        lblGender.setText("Gênero:");
+
         lblPlural.setText("Plural:");
 
-        lblGender.setText("Gênero: ");
+        lblAttributeDescription.setText("Descrição:");
 
         txtTarget.setEditable(false);
 
@@ -135,27 +159,36 @@ public class DlgFrmEntity extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnAttributes, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 688, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnOk))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblTarget)
+                            .addComponent(lblEntity)
                             .addComponent(lblLabel)
                             .addComponent(lblPlural))
-                        .addGap(21, 21, 21)
+                        .addGap(9, 9, 9)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtPlural, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtEntity, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtTarget)
+                                .addGap(7, 7, 7)
+                                .addComponent(lblAttributeDescription))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblGender)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtPlural)
-                            .addComponent(txtLabel))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblGender, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lblTarget, javax.swing.GroupLayout.Alignment.TRAILING))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbbGender, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbbAttributeDescription, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtTarget, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -165,18 +198,22 @@ public class DlgFrmEntity extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTarget, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblTarget)
-                    .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblGender))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lblEntity)
+                    .addComponent(txtEntity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbbGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblGender)
                     .addComponent(txtLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPlural)
                     .addComponent(txtPlural, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPlural))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(cbbAttributeDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAttributeDescription))
+                .addGap(16, 16, 16)
+                .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -285,7 +322,7 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				DlgFrmEntity dialog = new DlgFrmEntity(
-						new javax.swing.JFrame(), true);
+						new javax.swing.JFrame(), true, null);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
@@ -304,8 +341,10 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 	public void start(TargetContext targetContext, TargetTask targetTask) {
 
 		this.entity = targetContext.getEntity();
+		this.entityClass = this.entity.getEntityClass();
 		
 		txtTarget.setText(targetContext.getTarget().getDescription());
+		txtEntity.setText(targetContext.getEntity().getName());
 
 		if (entity != null) {
 
@@ -313,7 +352,8 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 
 			txtLabel.setText(getEntity().getLabel());
 			cmGender.setSelectedEntity(getEntity().getGender());
-			txtPlural.setText(getEntity().getPlural());
+			txtPlural.setText(getEntity().getPlural());			
+			cbbAttributeDescription.setSelectedIndex(-1);
 
 			List<Attribute> attributes = new ArrayList<Attribute>();
 
@@ -381,17 +421,25 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 	public boolean isStatusOK() {
 		return status == JOptionPane.OK_OPTION;
 	}
+	
+	public Class<?> getEntityClass() {
+		return this.entityClass;
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
+    private javax.swing.JComboBox cbbAttributeDescription;
     private javax.swing.JComboBox cbbGender;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lblAttributeDescription;
+    private javax.swing.JLabel lblEntity;
     private javax.swing.JLabel lblGender;
     private javax.swing.JLabel lblLabel;
     private javax.swing.JLabel lblPlural;
     private javax.swing.JLabel lblTarget;
     private br.com.atos.cg.gui.PnAttributes pnAttributes;
+    private javax.swing.JTextField txtEntity;
     private javax.swing.JTextField txtLabel;
     private javax.swing.JTextField txtPlural;
     private javax.swing.JTextField txtTarget;

@@ -41,16 +41,19 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 	
 	public static final ColumnMetadata COL_ATTRIBUTE = new ColumnMetadata(0, "Atributo", 150);
     public static final ColumnMetadata COL_LABEL = new ColumnMetadata(1, "Rótulo", 200);
-    public static final ColumnMetadata COL_RENDER_COLUMN = new ColumnMetadata(2, "Coluna", 60, "Renderizar uma coluna para atributo");
-    public static final ColumnMetadata COL_RENDER_FILTER = new ColumnMetadata(3, "Filtro", 60, "Renderizar um filtro para atributo");
-    public static final ColumnMetadata COL_RENDER_FORM = new ColumnMetadata(4, "Form.", 60, "Renderizar um campo no formulário para atributo");    
-    public static final ColumnMetadata COL_FORM_TYPE = new ColumnMetadata(5, "Tipo de Formulário", 150);
-    public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(6, "Atrib. Descrição da Associação", 350);
+	public static final ColumnMetadata COL_PATTERN = new ColumnMetadata(2, "Pattern", 150);
+    public static final ColumnMetadata COL_RENDER_COLUMN = new ColumnMetadata(3, "Coluna", 60, "Renderizar uma coluna para atributo");
+    public static final ColumnMetadata COL_RENDER_FILTER = new ColumnMetadata(4, "Filtro", 60, "Renderizar um filtro para atributo");
+    public static final ColumnMetadata COL_RENDER_FORM = new ColumnMetadata(5, "Form.", 60, "Renderizar um campo no formulário para atributo");    
+    public static final ColumnMetadata COL_FORM_TYPE = new ColumnMetadata(6, "Tipo de Formulário", 150);
+    public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(7, "Atrib. Descrição da Associação", 350);
   
     private List<Attribute> attributes = new ArrayList<Attribute>();
+	private List<String> patterns;
 
-    public AttributeTableModel(JTable table) {
+    public AttributeTableModel(JTable table, List<String> patterns) {
         super(table);
+		this.patterns = patterns;
     }
     
     @Override
@@ -60,32 +63,37 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 return attribute.getName();
             case 1 :
                 return attribute.getLabel();
-            case 2 :
+			case 2 :
+                return attribute.getClass() == Attribute.class ? attribute.getPattern() : null;
+			case 3 :
                 return attribute.isRenderColumn();
-            case 3 :
-                return attribute.isRenderFilter();
             case 4 :
-                return attribute.isRenderForm();
+                return attribute.isRenderFilter();
             case 5 :
+                return attribute.isRenderForm();
+            case 6 :
                 if (attribute instanceof AttributeOneToMany) {
                     return ((AttributeOneToMany) attribute).getFormType().getDescription();
                 }
                 else {
                     return null;
                 }
-            default :
-                return null;
-            case 6 :
+            case 7 :
             	if (attribute instanceof AttributeManyToOne) {
             		return ((AttributeManyToOne) attribute).getDescriptionAttributeOfAssociation();
             	}
             	else {
-		    return null;
+					return null;
             	}
-
+            default :
+                return null;
         }
     }
         
+	public TableColumn getColumnPattern() {
+        return getTable().getColumnModel().getColumn(COL_PATTERN.getIndex());
+    }
+	
     public TableColumn getColumnRenderFilter() {
         return getTable().getColumnModel().getColumn(COL_RENDER_FILTER.getIndex());
     }
@@ -135,6 +143,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         return Arrays.asList(new ColumnMetadata[] { 
             COL_ATTRIBUTE, 
             COL_LABEL, 
+			COL_PATTERN, 
             COL_RENDER_COLUMN, 
             COL_RENDER_FILTER, 
             COL_RENDER_FORM, 
@@ -157,6 +166,12 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         else if (col == COL_LABEL.getIndex() || col == COL_RENDER_COLUMN.getIndex() || col == COL_RENDER_FILTER.getIndex() || col == COL_RENDER_FORM.getIndex()) {
             return true;
         }
+		else if (col == COL_PATTERN.getIndex()) {
+			
+			Attribute attribute = getEntityByRow(row);
+			
+			return attribute.getClass() == Attribute.class;
+		}
         else {
             
             Attribute attribute = getEntityByRow(row);
@@ -167,12 +182,12 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             if (col == COL_ATTRIBUTE_DESCRIPTION.getIndex() && instanceofManyToOne) {
                 return true;
             }            
-            else if (col == COL_FORM_TYPE.getIndex() && instanceofOneToMany) {
-                return true;
-            }
+            else if (col != COL_FORM_TYPE.getIndex() || !instanceofOneToMany) {
+				return false;
+			}
             else {
-                return false;
-            }
+				return true;
+			}
         }
     }
     
@@ -184,6 +199,9 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         if (COL_LABEL.getIndex() == col) {
             attribute.setLabel((String) value);
         }
+		else if (COL_PATTERN.getIndex() == col) {
+			attribute.setPattern((String) value);
+		}
         else if (COL_RENDER_COLUMN.getIndex() == col) {
             attribute.setRenderColumn((Boolean) value);
         }
@@ -263,6 +281,26 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 
             return new ComboBoxCellEditor(cbbAttributeDescription);
         }
+		else if (COL_PATTERN.getIndex() == col) {
+			
+			final Attribute attribute = getEntityByRow(row);
+        	
+        	if (attribute.getClass() == Attribute.class) {
+
+		        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<String>(this.patterns) {
+		
+					private static final long serialVersionUID = 1L;
+		
+					@Override
+		            public String getLabel(String item) {
+		                return item;
+		            }
+		        });
+		                
+		        return new DefaultCellEditor(cbbFormType);
+        	}
+			
+		}
         else if (COL_FORM_TYPE.getIndex() == col) {
         	
         	final Attribute attribute = getEntityByRow(row);

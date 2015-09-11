@@ -40,7 +40,7 @@ public class EntityManager extends BaseManager {
 
 		if (!StringUtils.isNullOrEmpty(genderValue)) {
 			entity.setGender(Gender.valueOf(genderValue));
-		}
+		}		
 		
 		String labelValue = cgMessagesProperties.getProperty(entityClass.getName());
 		
@@ -165,6 +165,7 @@ public class EntityManager extends BaseManager {
 		cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".renderColumn", attribute.isRenderColumn().toString());
 		cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".renderFilter", attribute.isRenderFilter().toString());
 		cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".renderForm", attribute.isRenderForm().toString());
+		cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".pattern", attribute.getPattern() != null ? attribute.getPattern() : "");
 		
 		if (attribute.getLabel() != null) {
 			messagesProperties.setProperty(attribute.getPropertiesKeyBase(), attribute.getLabel());	
@@ -198,11 +199,11 @@ public class EntityManager extends BaseManager {
 		String renderColumnValue = cgProperties.getProperty(attribute.getPropertiesKeyBase() + ".renderColumn");
 		String renderFilterValue = cgProperties.getProperty(attribute.getPropertiesKeyBase() + ".renderFilter");
 		String renderFormValue = cgProperties.getProperty(attribute.getPropertiesKeyBase() + ".renderForm");
-
+		String patternValue = cgProperties.getProperty(attribute.getPropertiesKeyBase() + ".pattern");
+		
 		// messages.properties
 		String labelValue = messagesProperties.getProperty(attribute.getPropertiesKeyBase());
-		
-		
+				
 		if (!StringUtils.isNullOrEmpty(renderColumnValue)) {
 			attribute.setRenderColumn(Boolean.valueOf(renderColumnValue));
 		}
@@ -213,6 +214,10 @@ public class EntityManager extends BaseManager {
 		
 		if (!StringUtils.isNullOrEmpty(renderFormValue)) {
 			attribute.setRenderForm(Boolean.valueOf(renderFormValue));
+		}
+		
+		if (!StringUtils.isNullOrEmpty(patternValue)) {
+			attribute.setPattern(patternValue);
 		}
 				
 		if (!StringUtils.isNullOrEmpty(labelValue)) {

@@ -77,6 +77,7 @@ public class CodeGeneratorInitializer {
 			
 			initPluginTargets(pluginAnnotation, plugin);
 			
+			getCg().addPatterns(pluginAnnotation.patterns());			
 			getCg().addPlugin(plugin);
 			
 			map.put(pluginAnnotation, plugin);
@@ -90,7 +91,7 @@ public class CodeGeneratorInitializer {
 			initPluginTargetsGroups(pluginAnnotation,plugin);			
 		}			
 	}
-	
+		
 	/**
 	 * Para cada target do tipo annotation cria um target do tipo model e
 	 * adiciona a uma lista de targets do plugin
