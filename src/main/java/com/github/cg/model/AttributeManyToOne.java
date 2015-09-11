@@ -7,10 +7,9 @@ import java.util.List;
 
 import javax.persistence.AccessType;
 
-import br.com.atos.core.util.JpaReflectionUtils;
-import br.com.atos.utils.ReflectionUtils;
-import br.com.atos.utils.StringUtils;
-
+import com.github.cg.component.StringUtils;
+import com.github.cg.util.JpaReflectionUtils;
+import com.github.cg.util.ReflectionUtils;
 
 public class AttributeManyToOne extends Attribute {
 
@@ -50,7 +49,7 @@ public class AttributeManyToOne extends Attribute {
 		this.descriptionAttributeOfAssociationField = null;
 		this.descriptionAttributeOfAssociation = null;
 
-		if (!StringUtils.isNullOrEmpty(descriptionAttributeOfAssociation)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(descriptionAttributeOfAssociation)) {
 			
 			String[] items = descriptionAttributeOfAssociation.split("\\.");
 		

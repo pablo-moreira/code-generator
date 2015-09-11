@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.persistence.AccessType;
 
-import org.hibernate.envers.Audited;
-
 import com.github.cg.component.StringUtils;
 
 public class Entity {
@@ -99,10 +97,6 @@ public class Entity {
 	
 	public String getAttributeIdClass() {
 		return getAttributeId().getType().getSimpleName();
-	}
-	
-	public boolean isAudited() {
-		return getEntityClass().isAnnotationPresent(Audited.class);
 	}
 	
 	public void setGender(Gender gender) {

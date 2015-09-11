@@ -12,9 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import br.com.atos.core.util.JpaReflectionUtils;
-import br.com.atos.utils.StringUtils;
-
+import com.github.cg.component.StringUtils;
 import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeFormType;
 import com.github.cg.model.AttributeId;
@@ -22,6 +20,7 @@ import com.github.cg.model.AttributeManyToOne;
 import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Gender;
+import com.github.cg.util.JpaReflectionUtils;
 import com.github.cg.util.LinkedProperties;
 import com.github.cg.util.ReflectionUtils;
 
@@ -38,19 +37,19 @@ public class EntityManager extends BaseManager {
 		// Verifica se possui os dados no gc.properties
 		String genderValue = cgProperties.getProperty(entityClass.getName() + ".gender");
 
-		if (!StringUtils.isNullOrEmpty(genderValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(genderValue)) {
 			entity.setGender(Gender.valueOf(genderValue));
 		}		
 		
 		String labelValue = cgMessagesProperties.getProperty(entityClass.getName());
 		
-		if (!StringUtils.isNullOrEmpty(labelValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(labelValue)) {
 			entity.setLabel(labelValue);
 		}
 
 		String pluralValue = cgMessagesProperties.getProperty(entityClass.getName() + "-plural");
 		
-		if (!StringUtils.isNullOrEmpty(pluralValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(pluralValue)) {
 			entity.setPlural(pluralValue);
 		}
 		
@@ -181,7 +180,7 @@ public class EntityManager extends BaseManager {
 	
 	private void storeAttributeManyToOne(AttributeManyToOne attribute, LinkedProperties cgProperties, LinkedProperties messagesProperties) {
 		
-		if (!StringUtils.isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
+		if (!StringUtils.getInstance().isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
 			cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".descriptionAttributeAssociation", attribute.getDescriptionAttributeOfAssociation());
 		}
 	}
@@ -204,23 +203,23 @@ public class EntityManager extends BaseManager {
 		// messages.properties
 		String labelValue = messagesProperties.getProperty(attribute.getPropertiesKeyBase());
 				
-		if (!StringUtils.isNullOrEmpty(renderColumnValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(renderColumnValue)) {
 			attribute.setRenderColumn(Boolean.valueOf(renderColumnValue));
 		}
 		
-		if (!StringUtils.isNullOrEmpty(renderFilterValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(renderFilterValue)) {
 			attribute.setRenderFilter(Boolean.valueOf(renderFilterValue));
 		}
 		
-		if (!StringUtils.isNullOrEmpty(renderFormValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(renderFormValue)) {
 			attribute.setRenderForm(Boolean.valueOf(renderFormValue));
 		}
 		
-		if (!StringUtils.isNullOrEmpty(patternValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(patternValue)) {
 			attribute.setPattern(patternValue);
 		}
 				
-		if (!StringUtils.isNullOrEmpty(labelValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(labelValue)) {
 			attribute.setLabel(labelValue);
 		}
 		
@@ -236,7 +235,7 @@ public class EntityManager extends BaseManager {
 
 		String daaValue = cgProperties.getProperty(attribute.getPropertiesKeyBase() + ".descriptionAttributeAssociation");
 		
-		if (!StringUtils.isNullOrEmpty(daaValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(daaValue)) {
 			attribute.setDescriptionAttributeOfAssociation(daaValue);
 		}		
 	}
@@ -245,7 +244,7 @@ public class EntityManager extends BaseManager {
 		
 		String formTypeValue = cgProperties.getProperty(attribute.getPropertiesKeyBase() + ".formType");
 
-		if (!StringUtils.isNullOrEmpty(formTypeValue)) {
+		if (!StringUtils.getInstance().isNullOrEmpty(formTypeValue)) {
 			attribute.setFormType(AttributeFormType.valueOf(formTypeValue));
 		}
 	}
