@@ -13,10 +13,6 @@ Roadmap
  [x] Apos a execucao da task FrmEntityTask nao esta sendo gravado os dados preenchidos
 
 Extraido do CodeGenerator.constructor()
-
-        /* TODO - Refatorar adicionar estas informacoes no app */
-//		attributesValues.put(PAGE_MANAGER_SUFFIX, "Manager");
-//		attributesValues.put(PAGE_VIEW_SUFFIX, "View");
 		
 		/* TODO - Refatorar colocar esta validacao no momento que o usuario selecionar esta entidade para gerar o codigo */ 
 //		try {
@@ -26,82 +22,6 @@ Extraido do CodeGenerator.constructor()
 //			throw new Exception("Erro ao obter o atributo 'entityIdClass' da classe " + getEntity().getClassSimpleName());
 //		}
  
-
-FluxoEvento
-	fluxoEvento.id					// AttributeId
-	fluxoEvento.nome				// Attribute
-	fluxoEvento.descricao			// Attribute
-	fluxoEvento.fluxo.nome			// AttributeManyToOne
-
-	fluxoEvento.perfis				// AttributeOneToMany	
-	
-		FluxoEventoPerfil			
-			id						// AttributeId
-			perfil.nome				// AttributeManyToOne
-			fluxoEvento				// AttributeManyToOne - mappedBy	
-	
-	fluxoEvento.condicoes			// AttributeOneToMany	
-	
-		FluxoEventoCondicao			
-			id						// AttributeId
-			condicao.descricao		// AttributeManyToOne
-			fluxoEvento				// AttributeManyToOne - mappedBy	
-
-
-Visualizar.xhtml
-
-FrmEntity
-	- renderColumn = true
-	- renderFilter = false
-	- renderForm = false
-	- description = true
-	- formType = false
-
-FrmAttributeOneToMany
-	- renderColumn = true
-	- renderFilter = false
-	- renderForm = false
-	- description = true
-	- formType = false
-
-
-Grid.xhtml
-
-FrmEntity
-	- renderColumn = true
-	- renderFilter = true
-	- renderForm = false
-	- description = true
-	- formType = false
-
-FrmAttributeOneToMany
-	- renderColumn = false
-	- renderFilter = false
-	- renderForm = false
-	- description = false
-	- formType = false
-
-
-WinFrm.xhtml
-
-FrmEntity
-	- renderColumn = false
-	- renderFilter = false
-	- renderForm = true
-	- description = true
-	- formType = true
-
-FrmAttributeOneToMany
-	- renderColumn = true
-	- renderFilter = false
-	- renderForm = true
-	- description = true
-	- formType = true
-
-
-
-
-
 
 
 Para o desenvolvimento de um novo plugin utilize: 
