@@ -2,10 +2,10 @@ Roadmap
  [x] Adicionar o campo plural para o formulario da entidade
  [x] Criar o formulario para escolher as entidades e os targets que serao executados
  [x] Refatorar o formulario DlgFrmEntity para definir o atributo descricao da entidade
- [ ] Retirar qualquer dependencia do atos do projeto
+ [x] Retirar qualquer dependencia do atos do projeto
  [ ] Criar um parametro de configuracao no cg.properties para definir o caminho para o arquivo messages.properties
  [ ] Refatoracao retirar a responsabilidade de gravrar os arquivos messages.properties e cg.properties do CodeGenerator e passar para um manager
- [ ] Criar mecanismo de definir required configs no arquivo cg.properties, para o core e os plugins
+ [x] Criar mecanismo de definir required configs no arquivo cg.properties, para o core e os plugins
  [x] Adicionar um combo para definir a mascara de um atributo String.
  [x] Criar um mecanismo de customizar as opcoes desse combo
  [ ] Implementar i18n nos formularios 

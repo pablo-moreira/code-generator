@@ -138,6 +138,9 @@ public class EntityManager extends BaseManager {
 	}
 
 	public void writeEntity(Entity entity, LinkedProperties cgProperties, LinkedProperties messagesProperties) {
+				
+		cgProperties.addComment("");			
+		messagesProperties.addComment("");
 		
 		String keyBase = entity.getEntityClass().getName();
 		

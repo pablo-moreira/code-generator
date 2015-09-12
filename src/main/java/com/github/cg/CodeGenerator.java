@@ -1,9 +1,6 @@
 package com.github.cg;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -19,6 +16,7 @@ import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 
 import com.github.cg.gui.FrmCodeGeneration;
+import com.github.cg.manager.CgPropertiesManager;
 import com.github.cg.manager.ManagerRepository;
 import com.github.cg.model.Entity;
 import com.github.cg.model.Plugin;
@@ -35,13 +33,6 @@ public class CodeGenerator {
 	public static final String APP_NAME = "Code Generator";
 	public static final String APP_VERSION = "1.0.0-SNAPSHOT";
 	public static final String APP_TITLE = APP_NAME + " - " + APP_VERSION;
-	
-	public static final String DIRS_SRC = "dirs.src";
-	public static final String DIRS_RESOURCES = "dirs.resources";
-	public static final String DIRS_WEBCONTENT = "dirs.web";
-		
-	public static final String CG_PROPERTIES_FILENAME = "cg.properties";
-	public static final String MESSAGES_PROPERTIES_FILENAME = "messages.properties";
 
 	private File dirSrc;	
 	private File dirBase;
@@ -56,6 +47,7 @@ public class CodeGenerator {
 	private HashMap<String,Class<?>> componentsClass = new HashMap<String,Class<?>>();	
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 	private List<String> patterns = new ArrayList<String>();
+	private List<String> requiredProperties = new ArrayList<String>();
 	private ManagerRepository managerRepository = new ManagerRepository(this);
 		
 	@SuppressWarnings("unchecked")
@@ -63,7 +55,7 @@ public class CodeGenerator {
 		
 		String[] split = key.split("\\.");
 		
-		HashMap<String,Object> parent = app;
+		HashMap<String,Object> parent = this.app;
 		
 		for (int i=0; i < split.length - 1; i++) {
 			
@@ -92,10 +84,13 @@ public class CodeGenerator {
 	 * @throws Exception 
 	 */
 	public CodeGenerator() throws Exception {
-				
+		
 		dirBase = new File(System.getProperty("user.dir"));
 		
 		app = new HashMap<String, Object>();
+
+		CodeGeneratorInitializer initializer = new CodeGeneratorInitializer(this);
+		initializer.init();
 		
 		createAppItem("dirs.base", dirBase.getAbsolutePath());
 		
@@ -106,33 +101,30 @@ public class CodeGenerator {
 		while (iterator.hasNext()) {
 			Entry<String, String> entry = iterator.next();
 			createAppItem(entry.getKey(), entry.getValue());
-		}		
+		}
 		
-		dirSrc = new File(dirBase, cgProperties.getProperty(DIRS_SRC, ""));
-		dirResources = new File(dirBase,  cgProperties.getProperty(DIRS_RESOURCES, ""));
-		dirWebContent = new File(dirBase, cgProperties.getProperty(DIRS_WEBCONTENT, ""));
+		dirSrc = new File(dirBase, cgProperties.getProperty(CgPropertiesManager.DIRS_SRC));
+		dirResources = new File(dirBase,  cgProperties.getProperty(CgPropertiesManager.DIRS_RESOURCES));
+		dirWebContent = new File(dirBase, cgProperties.getProperty(CgPropertiesManager.DIRS_WEBCONTENT));
 		
 		// Verifica se os diretorios existe se nao existir mostrar msg de erro
 		if (!dirSrc.exists() || !dirSrc.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de codigo fonte ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(DIRS_SRC)), "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de codigo fonte ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(CgPropertiesManager.DIRS_SRC)), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		
 		if (!dirWebContent.exists() || !dirWebContent.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de recursos ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(DIRS_RESOURCES)), "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório de recursos ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(CgPropertiesManager.DIRS_RESOURCES)), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		
 		if (!dirWebContent.exists() || !dirWebContent.isDirectory()) {
-			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório do conteudo WEB ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(DIRS_WEBCONTENT)), "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, MessageFormat.format("O diretório do conteudo WEB ({0}) configurado no arquivo cg.properties é inválido!", cgProperties.getProperty(CgPropertiesManager.DIRS_WEBCONTENT)), "Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 		
 		loadMessagesProperties();
-				
-		CodeGeneratorInitializer initializer = new CodeGeneratorInitializer(this);
-		initializer.init();
-		
+
         try {
             if (OsUtil.isOsLinux()) {
                 UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -144,57 +136,21 @@ public class CodeGenerator {
         catch (Exception e) {}
 	}
 
-	private void loadMessagesProperties() throws Exception {
-		
-		File messagesFile = getMessagesPropertiesFile();
-		
-		// Se nao encontrar o arquivo messages.properties cria
-		if (messagesFile.exists() == false) {		
-			messagesFile.createNewFile();
-		}
-		
-		messagesProperties = new LinkedProperties();
-		messagesProperties.load(new FileInputStream(messagesFile));		
-	}
-
-	private File getMessagesPropertiesFile() {
-		return new File(dirResources, MESSAGES_PROPERTIES_FILENAME);
+	private void loadMessagesProperties() throws Exception {		
+		this.messagesProperties = getManagerRepository().getMessagesPropertiesManager().loadMessagesProperties(this.dirResources);
 	}
 	
-	private File getCgPropertiesFile() {
-		return new File(dirResources, CG_PROPERTIES_FILENAME);
-	}
-
 	private void loadCgProperties() throws Exception {
-		
-		// Tenta recuperar o gc.properties pelo classPath
-		InputStream is = this.getClass().getResourceAsStream("/" + CG_PROPERTIES_FILENAME);
-		
-		if (is == null) {
-			throw new RuntimeException("O arquivo cg.properties não foi encontrado no classpath!");
-		}
-		
-		loadCgProperties(is);
-	}
-	
-	private void loadCgProperties(InputStream is) throws Exception {
-		cgProperties = new LinkedProperties();
-		cgProperties.load(is);
+		this.cgProperties = getManagerRepository().getCgPropertiesManager().loadCgProperties(getRequiredProperties());
 	}
 
 	/* TODO - Refatorar retirar essa responsabilidade do CodeGenerator e passar para um manager */
 	public void store(Entity entity) {
-		try {
-			getCgProperties().addComment("");			
-			getMessagesProperties().addComment("");
-
+		try {			
 			getManagerRepository().getEntityManager().writeEntity(entity, getCgProperties(), getMessagesProperties());
-
-			getCgProperties().store(new FileOutputStream(getCgPropertiesFile()), null);
-			getMessagesProperties().store(new FileOutputStream(getMessagesPropertiesFile()), null);
-			
-			loadCgProperties(new FileInputStream(getCgPropertiesFile()));
-			loadMessagesProperties();
+						
+			this.cgProperties = getManagerRepository().getCgPropertiesManager().storeAndLoad(getCgProperties(), this.dirResources);
+			this.messagesProperties = getManagerRepository().getMessagesPropertiesManager().storeAndLoad(getMessagesProperties(), this.dirResources);
 		}
 		catch (Exception e) {
 			throw new RuntimeException("Erro ao gravar os arquivos cg.properties e messages.properties, msg interna: " + e.getMessage());
@@ -349,16 +305,31 @@ public class CodeGenerator {
 	 * 
 	 * @param patterns Os patterns que serao adicionados
 	 */
-	public void addPatterns(String[] patterns) {
+	protected void addPatterns(String[] patterns) {
 		this.patterns.addAll(Arrays.asList(patterns));
 	}
 	
-	/**
-	 * Retorna a lista de patterns do CodeGenerator
-	 * 
+	/** 
 	 * @return a lista de patterns do CodeGenerator
 	 */
 	public List<String> getPatterns() {
 		return patterns;
+	}
+
+	/**
+	 * Adiciona uma lista de required properties na lista de required properties do CodeGenerator
+	 * 
+	 * @param requiredProperties Os propriedades requeridas
+	 */
+	protected void addAllRequiredProperties(String[] requiredProperties) {
+		this.requiredProperties.addAll(Arrays.asList(requiredProperties));
+		
+	}
+
+	/**
+	 * @return a lista de required properties do CodeGenerator
+	 */
+	public List<String> getRequiredProperties() {
+		return requiredProperties;
 	}
 }

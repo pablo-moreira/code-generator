@@ -76,6 +76,7 @@ public class CodeGeneratorInitializer {
 			
 			initPluginTargets(pluginAnnotation, plugin);
 			
+			getCg().addAllRequiredProperties(pluginAnnotation.requiredProperties());
 			getCg().addPatterns(pluginAnnotation.patterns());			
 			getCg().addPlugin(plugin);
 			

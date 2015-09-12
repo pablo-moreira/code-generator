@@ -10,15 +10,19 @@ public class ManagerRepository {
 	private TargetManager targetManager;
 	private TaskManager taskManager;
 	private TemplateManager templateManager;
-	private ComponentManager componentManager;	
+	private ComponentManager componentManager;
+	private CgPropertiesManager cgPropertiesManager;
+	private MessagesPropertiesManager messagesPropertiesManager;	
 
 	public ManagerRepository(CodeGenerator codeGenerator) {		
+		this.cgPropertiesManager = new CgPropertiesManager(this);
 		this.codeGenerator = codeGenerator;
+		this.componentManager = new ComponentManager(this);		
 		this.entityManager = new EntityManager(this);
+		this.messagesPropertiesManager = new MessagesPropertiesManager(this);
 		this.targetManager = new TargetManager(this);
 		this.taskManager = new TaskManager(this);
 		this.templateManager = new TemplateManager(this);
-		this.componentManager = new ComponentManager(this);
 	}
 	
 	public ComponentManager getComponentManager() {
@@ -51,5 +55,13 @@ public class ManagerRepository {
 
 	public LinkedProperties getMessagesProperties() {
 		return getCodeGenerator().getMessagesProperties();
+	}
+
+	public CgPropertiesManager getCgPropertiesManager() {
+		return cgPropertiesManager;
+	}
+
+	public MessagesPropertiesManager getMessagesPropertiesManager() {
+		return messagesPropertiesManager;
 	}
 }

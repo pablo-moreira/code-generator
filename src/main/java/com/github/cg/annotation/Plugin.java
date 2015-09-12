@@ -23,4 +23,16 @@ public @interface Plugin {
 	 */
 	public abstract String[] patterns() default {};
 	
+	
+	/**
+	 * Define uma lista de propriedades requiradas
+	 * todas as propriedades definidas nesta lista
+	 * deverao ser declaradas pelas as aplicacoes 
+	 * que utilizarem este plugin no arquivo
+	 * cg.properties
+	 * 
+	 * @return A lista de propriedades
+	 */
+	public abstract String[] requiredProperties() default {};
+	
 }
