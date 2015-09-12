@@ -11,15 +11,12 @@ package com.github.cg.gui.util;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxEditor;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 
 import com.github.cg.component.StringUtils;
 
@@ -27,85 +24,71 @@ import com.github.cg.component.StringUtils;
  *
  * @author pablo-moreira
  */
-abstract public class SuggestBoxModel extends AbstractListModel implements ComboBoxModel, KeyListener {
+abstract public class SuggestBoxModel extends EntityComboBoxModel<String> implements KeyListener {
 
 	private static final long serialVersionUID = 1L;
-
-	private List<String> suggestions = new ArrayList<String>();
-    private String selectedItem;
-    private JComboBox comboBox;
+	
+    private JComboBox<String> comboBox;
     private ComboBoxEditor comboBoxEditor;
     private JTextField editorTextField;
-    private boolean hideFlag = false;
+	private boolean hideFlag;
+	private String lastSelectedItem;
+	private ListCellRenderer<? super String> renderer;
 
-    public SuggestBoxModel(JComboBox comboBox) {
-        this.comboBox = comboBox;
-        init();
-    }
-
-    @Override
-    public int getSize() {
-        return suggestions.size();
+    public SuggestBoxModel(JComboBox<String> comboBox) {
+    	super();
+        init(comboBox);
     }
     
     @Override
-    public Object getElementAt(int index) {
-        return suggestions.get(index);
-    }
-    
-    @Override
-    public void setSelectedItem(Object anObject) {        
-        if ((selectedItem != null && !selectedItem.equals( anObject )) ||
-	    selectedItem == null && anObject != null) {
-	    selectedItem = (String) anObject;
-	    fireContentsChanged(this, -1, -1);
+    public void setSelectedItem(Object selectedItem) {
+        if ((this.lastSelectedItem != null && !this.lastSelectedItem.equals( selectedItem )) || this.lastSelectedItem == null && selectedItem != null) {
+        	this.lastSelectedItem = (String) selectedItem;
+        	super.setSelectedItem(selectedItem);
+        	fireContentsChanged(this, -1, -1);
         }
     }
     
     @Override
-    public Object getSelectedItem() {
-        return selectedItem;
-    }
-    
-    @Override
-    public void keyTyped(KeyEvent e) { 
+    public void keyTyped(final KeyEvent e) {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
 
-                String text = editorTextField.getText();
-                
-
-//                if(text.length()==0) {
-//                    comboBox.hidePopup();
-//                    loadSuggestions("");
-                    
-                    // Hack
-                    //comboBox.setModel(comboBox.getModel());
-                    //comboBox.setSelectedIndex(-1);
-                    //editorTextField.setText("");
-//                }
-//                else {
-                    loadSuggestions(text);
-                    
-//                    if(suggestions.isEmpty() || hideFlag) {
-//                        //comboBox.hidePopup();
-//                        hideFlag = false;
-//                    }
-//                    else{                        
-                        // Hack
+            	if (!hideFlag) {
+            		
+            		String text = editorTextField.getText();
+            		
+            		System.out.println("text=" + text);
+            		System.out.println("event key=" + e.getKeyChar() + "-" + e.getKeyCode());
+            		System.out.println("selectindex=" + comboBox.getSelectedIndex());
+            		            		
+            		loadSuggestions(text);
+	                                		
                     comboBox.setModel(comboBox.getModel()); 
-                    comboBox.setSelectedIndex(-1);
-                    editorTextField.setText(text);
-                        
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                        	comboBox.showPopup();
-                        }
-                    });
-//                    }
-//                }
+    	            comboBox.setSelectedIndex(-1);
+    	            
+    	            if (getItems().size() > 0) {
+	                    EventQueue.invokeLater(new Runnable() {
+	                    	@Override
+	                        public void run() {
+	                    		comboBox.showPopup();
+	                    	}
+	                    });
+    	            }
+    	            else {
+    	            	EventQueue.invokeLater(new Runnable() {
+	                    	@Override
+	                        public void run() {
+	                    		comboBox.hidePopup();
+	                    	}
+	                    });
+    	            }
+            	}
+            	else {
+            		comboBox.hidePopup();
+            		hideFlag = false;
+            	}
             }
         });
     }
@@ -114,7 +97,7 @@ abstract public class SuggestBoxModel extends AbstractListModel implements Combo
     public void keyPressed(KeyEvent e) {
                         
         int code = e.getKeyCode();
-                
+
         if (code==KeyEvent.VK_ENTER) {
             hideFlag = true; 
         }
@@ -126,45 +109,43 @@ abstract public class SuggestBoxModel extends AbstractListModel implements Combo
     @Override
     public void keyReleased(KeyEvent e) {}
 
-    private void loadSuggestions(String suggest) {
-		
-        suggestions.clear();
-
-        if (!StringUtils.getInstance().isNullOrEmpty(suggest)) {
+    public void loadSuggestions(String suggest) {
+    	
+    	getItems().clear();
+    	
+    	if (!StringUtils.getInstance().isNullOrEmpty(suggest)) {
             
             for(String option : getOptions(suggest)) {
                 if(option.startsWith(suggest)) {
-                    suggestions.add(option);
+                    addItem(option);
                 }
             }
         }
         else {
-            suggestions.addAll(getOptions(suggest));
+        	setItems(getOptions(suggest));
         }
-        
-        DefaultComboBoxModel model = (DefaultComboBoxModel) (comboBox).getModel();
-        model.removeAllElements();
-        
-        for (String s : suggestions) {
-        	model.addElement(s);
-        }
-    
     }
     
-    private void init() {
+    private void init(JComboBox<String> comboBox) {
         
-        //set the model on the combobox
-        //comboBox.setModel();
-        comboBox.setEditable(true);
+        this.comboBox = comboBox;
+    	this.comboBox.setModel(this);
+        this.comboBox.setEditable(true);
         
-        comboBoxEditor = comboBox.getEditor();
+        this.comboBoxEditor = comboBox.getEditor();
+        this.renderer = comboBox.getRenderer();
         
         //here we add the key listener to the text field that the combobox is wrapped around                
-        editorTextField = (JTextField) comboBoxEditor.getEditorComponent();
-        editorTextField.addKeyListener(this);
+        this.editorTextField = (JTextField) comboBoxEditor.getEditorComponent();
+        this.editorTextField.addKeyListener(this);
         
         loadSuggestions("");
     }
 	
-	public abstract List<String> getOptions(String suggest);
+    abstract public List<String> getOptions(String suggest);
+    
+    @Override
+    public String getLabel(String item) {
+    	return item;
+    }
 }

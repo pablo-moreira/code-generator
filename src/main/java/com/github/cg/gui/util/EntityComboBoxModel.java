@@ -16,6 +16,10 @@ abstract public class EntityComboBoxModel<E> extends AbstractEntityListModel<E> 
 
 	private static final long serialVersionUID = 1L;
 
+	public EntityComboBoxModel() {
+		super();
+	}
+	
 	public EntityComboBoxModel(E[] items) {
         super(items);
     }
@@ -37,7 +41,7 @@ abstract public class EntityComboBoxModel<E> extends AbstractEntityListModel<E> 
     }
     
     public E getSelectedEntity() {
-        for (E item : getItens()) {
+        for (E item : getItems()) {
             if (getLabel(item).equals(getSelectedItem())) {
                 return item;
             }

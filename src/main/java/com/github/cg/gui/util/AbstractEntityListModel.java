@@ -4,6 +4,7 @@
  */
 package com.github.cg.gui.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,8 +16,14 @@ import javax.swing.AbstractListModel;
  */
 public abstract class AbstractEntityListModel<E> extends AbstractListModel { 
     
-    private List<E> items;
+	private static final long serialVersionUID = 1L;
+	
+	private List<E> items;
     
+	public AbstractEntityListModel() {
+		this.items = new ArrayList<E>();
+	}
+	
     public AbstractEntityListModel(E[] items) {
         this.items = Arrays.asList(items);
     }
@@ -37,7 +44,15 @@ public abstract class AbstractEntityListModel<E> extends AbstractListModel {
         return items.size();
     }
 
-    public List<E> getItens() {
+    public List<E> getItems() {
         return items;
+    }
+    
+    public void setItems(List<E> items) {
+    	this.items = items;
+    }
+    
+    public void addItem(E item) {
+    	getItems().add(item);
     }
 }

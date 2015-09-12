@@ -4,6 +4,7 @@
  */
 package com.github.cg.gui;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import com.github.cg.component.StringUtils;
 import com.github.cg.gui.tablemodel.AttributeTableModel;
 import com.github.cg.gui.util.EntityComboBoxModel;
 import com.github.cg.gui.util.JFrameUtils;
-import com.github.cg.gui.util.SuggestBoxModel;
+import com.github.cg.gui.util.SuggestComboBox;
 import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeId;
 import com.github.cg.model.AttributeManyToOne;
@@ -39,11 +40,17 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 	public static final String CONFIG_RENDER_FORM_TYPE = "renderFormType";
 	public static final String CONFIG_RENDER_ATTRIBUTE_DESCRIPTION = "renderAttributeDescription";
 	
+	/**
+	 * Define se tabela de atributos sera renderizada no formulario	
+	 */
+	public static final String CONFIG_RENDER_ATTRIBUTES = "renderAttributes";
+	
 	private EntityComboBoxModel<Gender> cmGender;
 	private Entity entity;
 	private int status;
 	private final List<String> patterns;
 	private Class<?> entityClass = DlgFrmEntity.class; // Seta esta classe somente para nao dar erros;
+	private SuggestComboBox cmAttributeDescription;
 
 	/**
 	 * Creates new form WinFrmEntity
@@ -72,12 +79,12 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		
 		cbbGender.setModel(cmGender);
 		
-		new SuggestBoxModel(this.cbbAttributeDescription) {
-
+		this.cmAttributeDescription = new SuggestComboBox(this.cbbAttributeDescription) {
+			
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public List<String> getOptions(String suggest) {
+			public List<String> getItems(String suggest) {
 				return AttributeTableModel.getOptions(getEntityClass(), suggest);
 			}
 		};
@@ -134,8 +141,6 @@ public class DlgFrmEntity extends javax.swing.JDialog {
             }
         });
 
-        cbbGender.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         btnOk.setText("OK");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,9 +166,9 @@ public class DlgFrmEntity extends javax.swing.JDialog {
                     .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnCancel)
+                        .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnOk))
+                        .addComponent(btnCancel))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblEntity)
@@ -246,6 +251,11 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 			JFrameUtils.showErro("Erro de validação","O Gênero não foi informado!");
 			return;
 		}
+		
+		if (this.cmAttributeDescription.getSelectedItem() == null) {
+			JFrameUtils.showErro("Erro de validação","O atributo que descreve a entidade não foi informado!");
+			return;
+		}
 
 		if (!getPnAttributes().validateAttributes()) {
 			return;
@@ -265,7 +275,8 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 			getEntity().setPlural(txtPlural.getText());
 		}		
 
-		getEntity().setGender(cmGender.getSelectedEntity());
+		getEntity().setGender(this.cmGender.getSelectedEntity());
+		getEntity().setAttributeDescription(this.cmAttributeDescription.getSelectedItem().toString());
 
 		getPnAttributes().save();
 
@@ -342,18 +353,19 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		this.entity = targetContext.getEntity();
 		this.entityClass = this.entity.getEntityClass();
 		
-		txtTarget.setText(targetContext.getTarget().getDescription());
-		txtEntity.setText(targetContext.getEntity().getName());
+		this.txtTarget.setText(targetContext.getTarget().getDescription());
+		this.txtEntity.setText(targetContext.getEntity().getName());
 
-		if (entity != null) {
+		if (this.entity != null) {
 
-			setTitle(getTitle() + " - " + entity.getEntityClass().getName());
+			setTitle(getTitle() + " - " + entity.getName());
 
-			txtLabel.setText(getEntity().getLabel());
-			cmGender.setSelectedEntity(getEntity().getGender());
-			txtPlural.setText(getEntity().getPlural());			
-			cbbAttributeDescription.setSelectedIndex(-1);
-
+			this.txtLabel.setText(getEntity().getLabel());
+			this.cmGender.setSelectedEntity(getEntity().getGender());
+			this.txtPlural.setText(getEntity().getPlural());
+			this.cmAttributeDescription.load();
+			this.cbbAttributeDescription.setSelectedItem(getEntity().getAttributeDescription());
+						
 			List<Attribute> attributes = new ArrayList<Attribute>();
 
 			for (Attribute attribute : getEntity().getAttributes()) {
@@ -386,29 +398,40 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		
 		getPnAttributes().getTmAttributes().resetColumns();
 
+		boolean showMaximized = true;
+		
 		if (targetTask != null) {			
 			
-			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_COLUMN)) {
-				getPnAttributes().getTmAttributes().hideColumnRenderColumn();
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTES)) {
+				getPnAttributes().setVisible(false);
+				setPreferredSize(new Dimension(800, 300));
+				showMaximized = false;
 			}
-			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FILTER)) {
-				getPnAttributes().getTmAttributes().hideColumnRenderFilter();
-			}
-			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM)) {
-				getPnAttributes().getTmAttributes().hideColumnRenderForm();
-			}
-			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTE_DESCRIPTION)) {
-				getPnAttributes().getTmAttributes().hideColumnAttributeDescription();
-			}
-			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM_TYPE)) {
-				getPnAttributes().getTmAttributes().hideColumnFormType();
+			else {
+				if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_COLUMN)) {
+					getPnAttributes().getTmAttributes().hideColumnRenderColumn();
+				}
+				if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FILTER)) {
+					getPnAttributes().getTmAttributes().hideColumnRenderFilter();
+				}
+				if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM)) {
+					getPnAttributes().getTmAttributes().hideColumnRenderForm();
+				}
+				if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTE_DESCRIPTION)) {
+					getPnAttributes().getTmAttributes().hideColumnAttributeDescription();
+				}
+				if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_FORM_TYPE)) {
+					getPnAttributes().getTmAttributes().hideColumnFormType();
+				}
 			}
 		}
 		
 		pack();
 
 		JFrameUtils.setCenterLocation(this);
-		JFrameUtils.showMazimized(this);
+		if (showMaximized) {
+			JFrameUtils.showMazimized(this);
+		}
 		status = JOptionPane.CANCEL_OPTION;
 		setVisible(true);
 	}

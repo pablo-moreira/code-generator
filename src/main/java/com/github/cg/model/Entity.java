@@ -1,20 +1,30 @@
 package com.github.cg.model;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.AccessType;
 
 import com.github.cg.component.StringUtils;
+import com.github.cg.util.JpaReflectionUtils;
+import com.github.cg.util.ReflectionUtils;
 
 public class Entity {
 
-	private Class<?> entityClass;
+	private final Class<?> entityClass;
 	private Gender gender;
 	private String label;
 	private String plural;
 	private AccessType accessType;
-	private List<Attribute> attributes = new ArrayList<Attribute>();
+	private final List<Attribute> attributes = new ArrayList<Attribute>();
+	
+	private String attributeDescription;
+    private Field attributeDescriptionField;
+	private Method attributeDescriptionProperty;
+	
 	
 	public Entity(Class<?> entityClass) {		
 		this.entityClass = entityClass;
@@ -157,5 +167,118 @@ public class Entity {
 
 	public void addAtribute(Attribute attribute) {
 		getAttributes().add(attribute);
+	}
+	
+	public void setAttributeDescription(String attributeDescription) {
+
+		this.attributeDescriptionField = null;
+		this.attributeDescriptionProperty = null;
+
+		if (!StringUtils.getInstance().isNullOrEmpty(attributeDescription)) {
+			
+			String[] items = attributeDescription.split("\\.");
+		
+			AccessType accessType = JpaReflectionUtils.determineAccessType(getEntityClass());
+		
+			if (AccessType.FIELD.equals(accessType)) {
+
+				Field fieldFounded = null;
+				String path = "";
+				
+				for (int i=0; i < items.length; i++) {
+					
+					String item = items[i];
+					
+					List<Field> fields;
+					
+					if (i == 0) {
+						// Verifica se este atributo existe na associacao
+						fields = ReflectionUtils.getFieldsRecursive(getEntityClass());
+					}
+					else {
+						fields = ReflectionUtils.getFieldsRecursive(fieldFounded.getType());
+					}
+					
+					fieldFounded = null;
+					
+					for (Field field : fields) {
+						if (field.getName().equals(item)) {
+							if (i==0) {
+								path = field.getName();
+							}
+							else {
+								path += "." + field.getName();
+							}
+							fieldFounded = field;
+							break;
+						}
+					}
+					
+					if (fieldFounded == null) {
+						break;
+					}
+				}
+				
+				if (fieldFounded != null) {
+					this.attributeDescriptionField = fieldFounded;
+				    this.attributeDescription = path;
+				}
+			}
+			else {
+				Method propertyFounded = null;
+				String path = "";
+				
+				for (int i=0; i < items.length; i++) {
+					
+					String item = items[i];
+					
+					List<Method> properties;
+					
+					if (i == 0) {
+						// Verifica se este atributo existe na associacao
+						properties = JpaReflectionUtils.getPropertiesGettersRecursive(getEntityClass());
+					}
+					else {
+						properties = JpaReflectionUtils.getPropertiesGettersRecursive(propertyFounded.getReturnType());
+					}
+					
+					propertyFounded = null;
+					
+					for (Method property : properties) {
+						if (property.getName().equals(item)) {
+							if (i==0) {
+								path = property.getName();
+							}
+							else {
+								path += "." + property.getName();
+							}
+							propertyFounded = property;
+							break;
+						}
+					}
+					
+					if (propertyFounded == null) {
+						break;
+					}
+				}
+				
+				if (propertyFounded != null) {
+					this.attributeDescriptionProperty = propertyFounded;
+				    this.attributeDescription = path;
+				}
+			}
+		}
+    }
+
+	public String getAttributeDescription() {
+		return attributeDescription;
+	}
+	
+	public boolean isAttributeDescriptionAccessTypeField() {
+		return attributeDescriptionField != null;
+	}
+	
+	public <T extends Annotation> T getAnnotationOfAttributeDescription(Class<T> clazz) {
+		return isAttributeDescriptionAccessTypeField() ? attributeDescriptionField.getAnnotation(clazz) : attributeDescriptionProperty.getAnnotation(clazz);
 	}
 }

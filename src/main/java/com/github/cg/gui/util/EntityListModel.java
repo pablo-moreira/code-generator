@@ -32,10 +32,10 @@ public abstract class EntityListModel<E> extends AbstractEntityListModel<E> {
     }
         
     public E getEntidadeSelecionada() {        
-        return getItens().get(list.getSelectedIndex());
+        return getItems().get(list.getSelectedIndex());
     }
         
     public void setEntidadeSelecionada(E selected) {        
-        list.setSelectedIndex(getItens().indexOf(selected));
+        list.setSelectedIndex(getItems().indexOf(selected));
     }
 }

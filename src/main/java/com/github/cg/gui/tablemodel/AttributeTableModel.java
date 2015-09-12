@@ -266,7 +266,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
             	associationClass = DlgFrmEntity.class;
             }
     		
-            JComboBox cbbAttributeDescription = new JComboBox();
+            JComboBox<String> cbbAttributeDescription = new JComboBox<String>();
 
 			new SuggestBoxModel(cbbAttributeDescription) {
 
@@ -286,7 +286,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         	
         	if (attribute.getClass() == Attribute.class) {
 
-		        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<String>(this.patterns) {
+		        JComboBox<String> cbbFormType = new JComboBox<String>(new EntityComboBoxModel<String>(this.patterns) {
 		
 					private static final long serialVersionUID = 1L;
 		

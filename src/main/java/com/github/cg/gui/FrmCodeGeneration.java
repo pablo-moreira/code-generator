@@ -65,6 +65,7 @@ public class FrmCodeGeneration extends javax.swing.JFrame {
         pnSelectTarget = new com.github.cg.gui.PnSelectTarget();
         pnSelectEntity = new com.github.cg.gui.PnSelectEntity();
         pnExecutionMonitor = new com.github.cg.gui.PnExecutionMonitor();
+        btnFinish = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -142,23 +143,32 @@ public class FrmCodeGeneration extends javax.swing.JFrame {
         pnStage.add(pnSelectEntity, "stage1");
         pnStage.add(pnExecutionMonitor, "stage3");
 
+        btnFinish.setText("Concluir");
+        btnFinish.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinishActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addComponent(pnStageInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jSeparator1)
+            .addComponent(pnStage, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNext)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnExecute)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnFinish)
                 .addContainerGap())
-            .addComponent(pnStageInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSeparator1)
-            .addComponent(pnStage, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -173,7 +183,8 @@ public class FrmCodeGeneration extends javax.swing.JFrame {
                     .addComponent(btnExecute)
                     .addComponent(btnBack)
                     .addComponent(btnNext)
-                    .addComponent(btnCancel))
+                    .addComponent(btnCancel)
+                    .addComponent(btnFinish))
                 .addGap(16, 16, 16))
         );
 
@@ -195,6 +206,10 @@ public class FrmCodeGeneration extends javax.swing.JFrame {
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         backStage();
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnFinishActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinishActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_btnFinishActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -235,6 +250,7 @@ public class FrmCodeGeneration extends javax.swing.JFrame {
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnExecute;
+    private javax.swing.JButton btnFinish;
     private javax.swing.JButton btnNext;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblStage1;
@@ -269,6 +285,7 @@ public class FrmCodeGeneration extends javax.swing.JFrame {
 		this.btnBack.setEnabled(false);
 		this.btnNext.setEnabled(false);
 		this.btnExecute.setEnabled(false);
+		this.btnFinish.setEnabled(false);
 		
 		if (stage > 1) {
 			this.btnBack.setEnabled(true);
@@ -329,6 +346,8 @@ public class FrmCodeGeneration extends javax.swing.JFrame {
 					
 					pnExecutionMonitor.refreshTable();
 				}				
+				
+				btnFinish.setEnabled(true);
 			}
 		});
 		thread.start();

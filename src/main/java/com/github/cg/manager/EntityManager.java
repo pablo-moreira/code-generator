@@ -40,6 +40,12 @@ public class EntityManager extends BaseManager {
 		if (!StringUtils.getInstance().isNullOrEmpty(genderValue)) {
 			entity.setGender(Gender.valueOf(genderValue));
 		}		
+
+		String attributeDescriptionValue = cgProperties.getProperty(entityClass.getName() + ".attributeDescription");
+
+		if (!StringUtils.getInstance().isNullOrEmpty(attributeDescriptionValue)) {
+			entity.setAttributeDescription(attributeDescriptionValue);
+		}
 		
 		String labelValue = cgMessagesProperties.getProperty(entityClass.getName());
 		
@@ -144,6 +150,10 @@ public class EntityManager extends BaseManager {
 		
 		String keyBase = entity.getEntityClass().getName();
 		
+		if (entity.getAttributeDescription() != null) {
+			cgProperties.setProperty(keyBase + ".attributeDescription", entity.getAttributeDescription());
+		}
+
 		if (entity.getGender() != null) {
 			// Verifica se possui os dados no gc.properties
 			cgProperties.setProperty(keyBase + ".gender", entity.getGender().name());
