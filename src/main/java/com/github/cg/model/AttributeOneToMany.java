@@ -35,25 +35,24 @@ public class AttributeOneToMany extends Attribute {
 		this.formType = formType;
 	}
 	
-	public String getAssociationClassSimpleName() {
-		try {
-			return getAssociationClass().getSimpleName();
-		}
-		catch (Exception e) {
-			return null;
-		}
+	public String getAssociationClassNameFlc() {
+		return StringUtils.getInstance().firstToLowerCase(getAssociationClassName());
+	}
+	
+	public String getAssociationClassName() {
+		return getAssociationClass().getSimpleName();
 	}
 	
 	public Class<?> getAssociationClass() {
 		try {
-			return Class.forName(getAssociationClassName());
+			return Class.forName(getAssociationClassNameByGenerics());
 		}
 		catch (Exception e) {
 			return null;
 		}
 	}
 	
-	public String getAssociationClassName() {
+	public String getAssociationClassNameByGenerics() {
 		
 		Type type = isAccessTypeField() ? field.getGenericType() : propertyGetter.getGenericReturnType();
 		

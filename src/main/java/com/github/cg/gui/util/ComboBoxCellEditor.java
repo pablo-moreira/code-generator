@@ -1,41 +1,34 @@
 package com.github.cg.gui.util;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.Serializable;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
 
-public class ComboBoxCellEditor extends AbstractCellEditor implements ActionListener, TableCellEditor, Serializable {
+public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellEditor, Serializable, KeyListener {
     
 	private static final long serialVersionUID = 1L;
 	
 	private JComboBox comboBox;
+	private JTextField comboBoxEditor;
     
     public ComboBoxCellEditor(JComboBox comboBox) {
         this.comboBox = comboBox;
         this.comboBox.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         // hitting enter in the combo box should stop cellediting (see below)
-        this.comboBox.addActionListener(this);
+//        this.comboBox.addActionListener(this);
         // remove the editor's border - the cell itself already has one
-        ((JComponent) comboBox.getEditor().getEditorComponent()).setBorder(null);
+        this.comboBoxEditor = (JTextField) comboBox.getEditor().getEditorComponent();
+        this.comboBoxEditor.setBorder(null);
+        this.comboBoxEditor.addKeyListener(this);        
     }
     
     private void setValue(Object value) {
         comboBox.setSelectedItem(value);
-    }
-    
-    // Implementing ActionListener
-    public void actionPerformed(java.awt.event.ActionEvent e) {
-        // Selecting an item results in an actioncommand "comboBoxChanged".
-        // We should ignore these ones.
-        
-        // Hitting enter results in an actioncommand "comboBoxEdited"
-        if(e.getActionCommand().equals("comboBoxEdited")) {
-            stopCellEditing();
-        }
     }
     
     // Implementing CellEditor
@@ -57,11 +50,17 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements ActionList
         setValue(value);
         return comboBox;
     }
-    
-    // Implementing TreeCellEditor
-//    public java.awt.Component getTreeCellEditorComponent(javax.swing.JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
-//        String stringValue = tree.convertValueToText(value, isSelected, expanded, leaf, row, false);
-//        setValue(stringValue);
-//        return comboBox;
-//    }    
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			stopCellEditing();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {}	
 }

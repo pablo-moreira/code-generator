@@ -44,6 +44,15 @@ public class TargetTask {
 	}
 	
 	public Boolean getConfigValueAsBoolean(String key) {
-		return Boolean.valueOf(getConfigs().get(key));
+		return getConfigValueAsBoolean(key, false);
+	}
+	
+	public Boolean getConfigValueAsBoolean(String key, boolean padrao) {
+		if (getConfigs().containsKey(key)) {
+			return Boolean.valueOf(getConfigs().get(key));	
+		}
+		else {
+			return padrao;
+		}		
 	}
 }

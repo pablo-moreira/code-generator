@@ -2,6 +2,7 @@ package com.github.cg.model;
 
 public class Patterns {
 
+	public static final String NONE = "NONE";
 	public static final String CURRENCY = "CURRENCY";
 	public static final String PERCENT = "PERCENT";
 	public static final String ZIPCODE = "ZIPCODE";

@@ -7,7 +7,7 @@ Roadmap
  [ ] Refatoracao retirar a responsabilidade de gravrar os arquivos messages.properties e cg.properties do CodeGenerator e passar para um manager
  [x] Criar mecanismo de definir required configs no arquivo cg.properties, para o core e os plugins
  [x] Adicionar um combo para definir a mascara de um atributo String.
- [x] Criar um mecanismo de customizar as opcoes desse combo
+ [x] Criar um mecanismo de customizar as opcoes do combo mascara
  [ ] Implementar i18n nos formularios 
  [ ] Implementar i18n nas mensagens de erros
  [x] Apos a execucao da task FrmEntityTask nao esta sendo gravado os dados preenchidos

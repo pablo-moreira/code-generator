@@ -8,7 +8,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.OneToMany;
@@ -22,7 +24,7 @@ import com.github.cg.gui.DlgFrmEntity;
 import com.github.cg.gui.util.ComboBoxCellEditor;
 import com.github.cg.gui.util.EntityColumnWidthTableModel;
 import com.github.cg.gui.util.EntityComboBoxModel;
-import com.github.cg.gui.util.SuggestBoxModel;
+import com.github.cg.gui.util.SuggestComboBox;
 import com.github.cg.model.Attribute;
 import com.github.cg.model.AttributeFormType;
 import com.github.cg.model.AttributeManyToOne;
@@ -169,7 +171,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 			
 			Attribute attribute = getEntityByRow(row);
 			
-			return attribute.getClass() == Attribute.class;
+			return isEditablePattern(attribute);
 		}
         else {
             
@@ -190,7 +192,17 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         }
     }
     
-    @Override
+    private boolean isEditablePattern(Attribute attribute) {
+
+    	Class<?> type = attribute.getType();
+    	
+		return attribute.getClass() == Attribute.class 
+    			&& !Date.class.isAssignableFrom(type)
+    			&& !Calendar.class.isAssignableFrom(type)
+    			&& !Enum.class.isAssignableFrom(type); 
+	}
+
+	@Override
     public void setValueAt(Object value, int row, int col) {
         
         Attribute attribute = getEntityByRow(row);
@@ -268,23 +280,22 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     		
             JComboBox<String> cbbAttributeDescription = new JComboBox<String>();
 
-			new SuggestBoxModel(cbbAttributeDescription) {
-
-				private static final long serialVersionUID = 1L;
+			SuggestComboBox suggestComboBox = new SuggestComboBox(cbbAttributeDescription) {
 
 				@Override
-				public List<String> getOptions(String suggest) {
+				public List<String> getItems(String suggest) {
 					return AttributeTableModel.getOptions(associationClass, suggest);
 				}
-			};			
-
+			};
+		    suggestComboBox.load();
+		    
             return new ComboBoxCellEditor(cbbAttributeDescription);
         }
 		else if (COL_PATTERN.getIndex() == col) {
 			
 			final Attribute attribute = getEntityByRow(row);
-        	
-        	if (attribute.getClass() == Attribute.class) {
+        				
+        	if (isEditablePattern(attribute)) {
 
 		        JComboBox<String> cbbFormType = new JComboBox<String>(new EntityComboBoxModel<String>(this.patterns) {
 		
@@ -298,7 +309,6 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
 		                
 		        return new DefaultCellEditor(cbbFormType);
         	}
-			
 		}
         else if (COL_FORM_TYPE.getIndex() == col) {
         	

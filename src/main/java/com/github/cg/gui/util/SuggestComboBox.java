@@ -29,8 +29,8 @@ public abstract class SuggestComboBox extends KeyAdapter {
 			@Override
 			public void run() {
 				
-				String text = ((JTextField) e.getComponent()).getText();
-				
+				String text = comboBoxEditor.getText();
+									
 				ComboBoxModel<String> cbModel;
 				
 				List<String> items = getItems(text);
@@ -56,7 +56,7 @@ public abstract class SuggestComboBox extends KeyAdapter {
 		});
 	}
 
-	abstract public List<String> getItems(String text);
+	abstract public List<String> getItems(String suggest);
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -77,10 +77,6 @@ public abstract class SuggestComboBox extends KeyAdapter {
 				}
 				break;
 			case KeyEvent.VK_ENTER:
-				if (!list.contains(text)) {
-					list.add(text);					
-					setSuggestionModel(createSuggestedModel(list, text), text);
-				}
 				shouldHide = true;
 				break;
 			case KeyEvent.VK_ESCAPE:
@@ -95,14 +91,14 @@ public abstract class SuggestComboBox extends KeyAdapter {
 		setSuggestionModel(createSuggestedModel(getItems(""), ""), "");
 	}
 	
-	private void setSuggestionModel(ComboBoxModel<String> mdl, String str) {
+	private void setSuggestionModel(ComboBoxModel<String> mdl, String str) {		
 		this.comboBox.setModel(mdl);
 		this.comboBox.setSelectedIndex(-1);
 		this.comboBoxEditor.setText(str);
 	}
 
 	private ComboBoxModel<String> createSuggestedModel(List<String> items, String text) {
-	    
+		
 		DefaultComboBoxModel<String> cbModel = new DefaultComboBoxModel<String>();
 		
 		for (String item : items) {

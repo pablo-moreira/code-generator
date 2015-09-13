@@ -6,6 +6,7 @@ import com.github.cg.model.Patterns;
 
 @Plugin(	
 	patterns = { 
+			Patterns.NONE,
 			Patterns.CURRENCY,
 			Patterns.PERCENT,
 			Patterns.EMAIL,

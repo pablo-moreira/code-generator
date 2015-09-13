@@ -402,9 +402,9 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		
 		if (targetTask != null) {			
 			
-			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTES)) {
+			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTES, true)) {
 				getPnAttributes().setVisible(false);
-				setPreferredSize(new Dimension(800, 300));
+				setPreferredSize(new Dimension(800, 210));
 				showMaximized = false;
 			}
 			else {
