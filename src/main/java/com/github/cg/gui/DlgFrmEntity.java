@@ -163,7 +163,7 @@ public class DlgFrmEntity extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 798, Short.MAX_VALUE)
+                    .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnOk, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -397,15 +397,12 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		}
 		
 		getPnAttributes().getTmAttributes().resetColumns();
-
-		boolean showMaximized = true;
 		
 		if (targetTask != null) {			
 			
 			if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_ATTRIBUTES, true)) {
 				getPnAttributes().setVisible(false);
 				setPreferredSize(new Dimension(800, 210));
-				showMaximized = false;
 			}
 			else {
 				if (!targetTask.getConfigValueAsBoolean(CONFIG_RENDER_COLUMN)) {
@@ -429,10 +426,9 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		pack();
 
 		JFrameUtils.setCenterLocation(this);
-		if (showMaximized) {
-			JFrameUtils.showMazimized(this);
-		}
+
 		status = JOptionPane.CANCEL_OPTION;
+
 		setVisible(true);
 	}
 
