@@ -13,7 +13,7 @@ import com.github.cg.component.StringUtils;
 
 public class AttributeOneToMany extends Attribute {
 	
-	private AttributeFormType formType = AttributeFormType.INTERNAL;
+	private String formType;
 
 	private Entity associationEntity;
 
@@ -27,11 +27,11 @@ public class AttributeOneToMany extends Attribute {
 		super(method, entity);
 	}
 	
-	public AttributeFormType getFormType() {
+	public String getFormType() {
 		return formType;
 	}
 
-	public void setFormType(AttributeFormType formType) {
+	public void setFormType(String formType) {
 		this.formType = formType;
 	}
 	

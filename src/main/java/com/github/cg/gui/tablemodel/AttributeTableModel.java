@@ -26,7 +26,6 @@ import com.github.cg.gui.util.EntityColumnWidthTableModel;
 import com.github.cg.gui.util.EntityComboBoxModel;
 import com.github.cg.gui.util.SuggestComboBox;
 import com.github.cg.model.Attribute;
-import com.github.cg.model.AttributeFormType;
 import com.github.cg.model.AttributeManyToOne;
 import com.github.cg.model.AttributeOneToMany;
 import com.github.cg.util.ReflectionUtils;
@@ -51,10 +50,18 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
   
     private List<Attribute> attributes = new ArrayList<Attribute>();
 	private List<String> patterns;
+	private List<String> formTypes;
 
+	@Deprecated
     public AttributeTableModel(JTable table, List<String> patterns) {
         super(table);
 		this.patterns = patterns;
+    }
+
+    public AttributeTableModel(JTable table, List<String> patterns, List<String> formTypes) {
+        super(table);
+		this.patterns = patterns;
+		this.formTypes = formTypes;
     }
     
     @Override
@@ -74,7 +81,7 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 return attribute.isRenderForm();
             case 6 :
                 if (attribute instanceof AttributeOneToMany) {
-                    return ((AttributeOneToMany) attribute).getFormType().getDescription();
+                    return ((AttributeOneToMany) attribute).getFormType();
                 }
                 else {
                     return null;
@@ -226,16 +233,9 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         	AttributeManyToOne attributeManyToOne = (AttributeManyToOne) attribute;
         	attributeManyToOne.setDescriptionAttributeOfAssociation((String) value);
         }
-        else if (COL_FORM_TYPE.getIndex() == col) {
-        	
+        else if (COL_FORM_TYPE.getIndex() == col) {        	
         	AttributeOneToMany attributeOneToMany = (AttributeOneToMany) attribute;
-        	
-        	for (AttributeFormType item : AttributeFormType.values()) {
-                if (item.getDescription().equals(value)) {
-                	attributeOneToMany.setFormType(item);
-                	break;
-                }
-            }
+        	attributeOneToMany.setFormType((String) value);
         }
         
         //System.out.println("Value: " + value + " - Row: " + row + " - Col: " + col);
@@ -250,9 +250,6 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
                 || COL_RENDER_FILTER.getIndex() == col
                 || COL_RENDER_FORM.getIndex() == col) {
             return Boolean.class;
-        }
-        else if (COL_FORM_TYPE.getIndex() == col) {
-        	return AttributeFormType.class;
         }
         else {
             return super.getColumnClass(col);
@@ -315,16 +312,14 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
         	final Attribute attribute = getEntityByRow(row);
         	
         	if (attribute instanceof AttributeOneToMany) {
-        		        	                     		
-        		AttributeFormType[] types = new AttributeFormType[] { AttributeFormType.EXTERNAL, AttributeFormType.INTERNAL };
         		
-		        JComboBox cbbFormType = new JComboBox(new EntityComboBoxModel<AttributeFormType>(types) {
+		        JComboBox<String> cbbFormType = new JComboBox<String>(new EntityComboBoxModel<String>(this.formTypes) {
 		
 					private static final long serialVersionUID = 1L;
 		
 					@Override
-		            public String getLabel(AttributeFormType item) {
-		                return item.getDescription();
+		            public String getLabel(String item) {
+		                return item;
 		            }
 		        });
 		                

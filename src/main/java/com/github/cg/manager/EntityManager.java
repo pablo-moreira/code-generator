@@ -14,7 +14,6 @@ import javax.persistence.OneToOne;
 
 import com.github.cg.component.StringUtils;
 import com.github.cg.model.Attribute;
-import com.github.cg.model.AttributeFormType;
 import com.github.cg.model.AttributeId;
 import com.github.cg.model.AttributeManyToOne;
 import com.github.cg.model.AttributeOneToMany;
@@ -201,7 +200,7 @@ public class EntityManager extends BaseManager {
 	private void storeAttributeOneToMany(AttributeOneToMany attribute, LinkedProperties cgProperties, LinkedProperties messagesProperties) {
 		
 		if (attribute.getFormType() != null) {
-			cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".formType", attribute.getFormType().name());
+			cgProperties.setProperty(attribute.getPropertiesKeyBase() + ".formType", attribute.getFormType());
 		}
 	}
 		
@@ -258,7 +257,7 @@ public class EntityManager extends BaseManager {
 		String formTypeValue = cgProperties.getProperty(attribute.getPropertiesKeyBase() + ".formType");
 
 		if (!StringUtils.getInstance().isNullOrEmpty(formTypeValue)) {
-			attribute.setFormType(AttributeFormType.valueOf(formTypeValue));
+			attribute.setFormType(formTypeValue);
 		}
 	}
 

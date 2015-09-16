@@ -35,4 +35,6 @@ public @interface Plugin {
 	 */
 	public abstract String[] requiredProperties() default {};
 	
+	public abstract String[] formTypes() default {};
+	
 }
