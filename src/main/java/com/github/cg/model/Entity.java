@@ -24,8 +24,7 @@ public class Entity {
 	private String attributeDescription;
     private Field attributeDescriptionField;
 	private Method attributeDescriptionProperty;
-	
-	
+		
 	public Entity(Class<?> entityClass) {		
 		this.entityClass = entityClass;
 	}
@@ -132,6 +131,20 @@ public class Entity {
 		for (Attribute attr : getAttributes()) {
 			
 			if (!(attr instanceof AttributeOneToMany)) { 
+				attributes.add(attr);
+			}
+		}
+		
+		return attributes;
+	}
+	
+	public List<Attribute> getAttributesWithoutAttributesOneToManyAndIdAndVersion() {
+	
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		
+		for (Attribute attr : getAttributes()) {
+			
+			if (!AttributeId.class.isInstance(attr) && !AttributeOneToMany.class.isInstance(attr) && !attr.isAnnotedWithVersion()) { 
 				attributes.add(attr);
 			}
 		}
@@ -280,5 +293,24 @@ public class Entity {
 	
 	public <T extends Annotation> T getAnnotationOfAttributeDescription(Class<T> clazz) {
 		return isAttributeDescriptionAccessTypeField() ? attributeDescriptionField.getAnnotation(clazz) : attributeDescriptionProperty.getAnnotation(clazz);
+	}
+	
+	/** 
+	 * Recupera o atributo anotado com @Version
+	 * @return O atributo anotado com @Version se existir e nulo caso nao exista
+	 */
+	public Attribute getAttributeVersion() {
+		
+		for (Attribute attribute : getAttributes()) {
+			if (attribute.isAnnotedWithVersion()) {
+				return attribute;
+			}
+		}
+		
+		return null;
+	}
+	
+	public boolean isDeclaredAttributeVersion() {
+		return getAttributeVersion() != null;
 	}
 }
