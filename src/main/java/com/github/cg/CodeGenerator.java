@@ -48,6 +48,7 @@ public class CodeGenerator {
 	private List<Plugin> plugins = new ArrayList<Plugin>();
 	private List<String> patterns = new ArrayList<String>();
 	private List<String> requiredProperties = new ArrayList<String>();
+	private List<String> formTypes = new ArrayList<String>();
 	private ManagerRepository managerRepository = new ManagerRepository(this);
 		
 	@SuppressWarnings("unchecked")
@@ -305,7 +306,7 @@ public class CodeGenerator {
 	 * 
 	 * @param patterns Os patterns que serao adicionados
 	 */
-	protected void addPatterns(String[] patterns) {
+	protected void addAllPatterns(String[] patterns) {
 		this.patterns.addAll(Arrays.asList(patterns));
 	}
 	
@@ -331,5 +332,21 @@ public class CodeGenerator {
 	 */
 	public List<String> getRequiredProperties() {
 		return requiredProperties;
+	}
+	
+	/**
+	 * Adiciona uma lista de tipos de formularios na lista de tippos de formularios do CodeGenerator
+	 * 
+	 * @param formTypes Os tipos de formularios
+	 */
+	public void addAllFormTypes(String[] formTypes) {
+		this.formTypes.addAll(Arrays.asList(formTypes));
+	}
+
+	/**
+	 * @return a lista de tipos de formularios do CodeGenerator
+	 */
+	public List<String> getFormTypes() {
+		return formTypes;
 	}
 }

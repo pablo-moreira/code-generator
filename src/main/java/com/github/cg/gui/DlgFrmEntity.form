@@ -182,7 +182,7 @@
     </Component>
     <Component class="com.github.cg.gui.PnAttributes" name="pnAttributes">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.github.cg.gui.PnAttributes(this.patterns)"/>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new com.github.cg.gui.PnAttributes(this.patterns, this.formTypes)"/>
       </AuxValues>
     </Component>
   </SubComponents>

@@ -6,7 +6,7 @@ package com.github.cg.vo;
 
 /**
  *
- * @author 205327
+ * @author pablo.filetti@gmail.com
  */
 public class ColumnMetadata {
 

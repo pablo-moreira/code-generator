@@ -31,13 +31,15 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
 	private int status;
 	private AttributeOneToMany attributeOneToMany;
 	private final List<String> patterns;
+	private final List<String> formTypes;
 
 	/**
 	 * Creates new form WinFrmAttributeOneToMany
 	 */
-	public DlgAttributeOneToMany(java.awt.Frame parent, boolean modal, List<String> patterns) {
+	public DlgAttributeOneToMany(java.awt.Frame parent, boolean modal, List<String> patterns, List<String> formTypes) {
 		super(parent, modal);
 		this.patterns = patterns;
+		this.formTypes = formTypes;
 		initComponents();
 	}
 
@@ -55,7 +57,7 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
         btnCancel = new javax.swing.JButton();
         lblTarget = new javax.swing.JLabel();
         txtTarget = new javax.swing.JTextField();
-        pnAttributes = new com.github.cg.gui.PnAttributes(this.patterns);
+        pnAttributes = new com.github.cg.gui.PnAttributes(this.patterns, this.formTypes);
         lblAssociation = new javax.swing.JLabel();
         txtAssociation = new javax.swing.JTextField();
 
@@ -90,9 +92,7 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 799, Short.MAX_VALUE)
-                        .addContainerGap())
+                    .addComponent(pnAttributes, javax.swing.GroupLayout.DEFAULT_SIZE, 799, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblTarget)
@@ -100,13 +100,12 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtTarget)
-                            .addComponent(txtAssociation))
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancel)
+                            .addComponent(txtAssociation)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCancel)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -185,7 +184,7 @@ public class DlgAttributeOneToMany extends javax.swing.JDialog {
 		/* Create and display the dialog */
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				DlgAttributeOneToMany dialog = new DlgAttributeOneToMany(new javax.swing.JFrame(), true, null);
+				DlgAttributeOneToMany dialog = new DlgAttributeOneToMany(new javax.swing.JFrame(), true, null, null);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {

@@ -32,8 +32,7 @@ import com.github.cg.util.ReflectionUtils;
 import com.github.cg.vo.ColumnMetadata;
 
 /**
- *
- * @author 205327
+ * @author pablo.filetti@gmail.com
  */
 public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> {
 
@@ -49,14 +48,8 @@ public class AttributeTableModel extends EntityColumnWidthTableModel<Attribute> 
     public static final ColumnMetadata COL_ATTRIBUTE_DESCRIPTION = new ColumnMetadata(7, "Atrib. Descrição da Associação", 350);
   
     private List<Attribute> attributes = new ArrayList<Attribute>();
-	private List<String> patterns;
-	private List<String> formTypes;
-
-	@Deprecated
-    public AttributeTableModel(JTable table, List<String> patterns) {
-        super(table);
-		this.patterns = patterns;
-    }
+	private final List<String> patterns;
+	private final List<String> formTypes;
 
     public AttributeTableModel(JTable table, List<String> patterns, List<String> formTypes) {
         super(table);

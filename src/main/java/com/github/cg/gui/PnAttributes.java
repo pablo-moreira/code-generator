@@ -19,7 +19,7 @@ import com.github.cg.model.AttributeOneToMany;
 
 /**
  *
- * @author 205327
+ * @author pablo.filetti@gmail.com
  */
 public class PnAttributes extends javax.swing.JPanel {
 
@@ -27,18 +27,24 @@ public class PnAttributes extends javax.swing.JPanel {
 	
 	private final AttributeTableModel tmAttributes;
 
+	private List<String> patterns;
+	private List<String> formTypes;
+
     /**
      * Creates new form FrmAttributes
      */
 	public PnAttributes() {
-		this(new ArrayList<String>());
+		this(new ArrayList<String>(), new ArrayList<String>());
 	}
-	
-    public PnAttributes(List<String> patterns) {
+
+    public PnAttributes(List<String> patterns, List<String> formTypes) {
+		
+    	this.patterns = patterns;
+		this.formTypes = formTypes;
+		        
+		initComponents();
         
-        initComponents();
-        
-        tmAttributes = new AttributeTableModel(tblAttributes, patterns);
+        tmAttributes = new AttributeTableModel(tblAttributes, this.patterns, this.formTypes);    	
     }
     
     public void initialize(List<Attribute> attributes) {
@@ -138,6 +144,15 @@ public class PnAttributes extends javax.swing.JPanel {
 				
 				if (StringUtils.getInstance().isNullOrEmpty(attribute.getDescriptionAttributeOfAssociation())) {
 					JFrameUtils.showErro("Erro de validação", "O Atributo descrição da associação " + attribute.getName() + " não foi informado!");
+					return false;
+				}
+			}
+			else if (attr instanceof AttributeOneToMany && this.formTypes.size() > 0) {
+				
+				AttributeOneToMany attribute = (AttributeOneToMany) attr;
+				
+				if (StringUtils.getInstance().isNullOrEmpty(attribute.getFormType())) {
+					JFrameUtils.showErro("Erro de validação", "O Atributo tipo de formulário da associação " + attribute.getName() + " não foi informado!");
 					return false;
 				}
 			}

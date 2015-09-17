@@ -77,7 +77,8 @@ public class CodeGeneratorInitializer {
 			initPluginTargets(pluginAnnotation, plugin);
 			
 			getCg().addAllRequiredProperties(pluginAnnotation.requiredProperties());
-			getCg().addPatterns(pluginAnnotation.patterns());			
+			getCg().addAllPatterns(pluginAnnotation.patterns());
+			getCg().addAllFormTypes(pluginAnnotation.formTypes());
 			getCg().addPlugin(plugin);
 			
 			map.put(pluginAnnotation, plugin);

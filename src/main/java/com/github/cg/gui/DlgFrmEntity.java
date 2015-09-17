@@ -27,7 +27,7 @@ import com.github.cg.model.TargetTask;
 
 /**
  * 
- * @author 205327
+ * @author pablo.fileti@gmail.com
  */
 public class DlgFrmEntity extends javax.swing.JDialog {
 	
@@ -51,15 +51,17 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 	private final List<String> patterns;
 	private Class<?> entityClass = DlgFrmEntity.class; // Seta esta classe somente para nao dar erros;
 	private SuggestComboBox cmAttributeDescription;
+	private final List<String> formTypes;
 
 	/**
 	 * Creates new form WinFrmEntity
 	 */
-	public DlgFrmEntity(java.awt.Frame parent, boolean modal, List<String> patterns) {
+	public DlgFrmEntity(java.awt.Frame parent, boolean modal, List<String> patterns, List<String> formTypes) {
 
 		super(parent, modal);
 
 		this.patterns = patterns;
+		this.formTypes = formTypes;
 		
 		initComponents();
 
@@ -115,7 +117,7 @@ public class DlgFrmEntity extends javax.swing.JDialog {
         jSeparator1 = new javax.swing.JSeparator();
         btnOk = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        pnAttributes = new com.github.cg.gui.PnAttributes(this.patterns);
+        pnAttributes = new com.github.cg.gui.PnAttributes(this.patterns, this.formTypes);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Formulário de Entidade");
@@ -332,7 +334,7 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				DlgFrmEntity dialog = new DlgFrmEntity(
-						new javax.swing.JFrame(), true, null);
+						new javax.swing.JFrame(), true, null, null);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					@Override
 					public void windowClosing(java.awt.event.WindowEvent e) {
