@@ -102,6 +102,19 @@ public class AttributeOneToMany extends Attribute {
 		
 		return attributes;
 	}
+	
+	public List<Attribute> getAssociationAttributesWithoutAttributeMappedByAndAttributesOneToManyAndIdAndVersion() {
+		
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		
+		for (Attribute attribute : getAssociationEntity().getAttributesWithoutAttributesOneToManyAndIdAndVersion()) {
+			if (!attribute.getName().equals(getAssociationMappedBy())) {
+				attributes.add(attribute);
+			}
+		}
+		
+		return attributes;
+	}
 
 	public void initializeAssociationEntity(Entity associationEntity) {
 		this.associationEntity = associationEntity;		
