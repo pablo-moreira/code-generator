@@ -259,7 +259,7 @@ public class DlgFrmEntity extends javax.swing.JDialog {
 			return;
 		}
 
-		if (!getPnAttributes().validateAttributes()) {
+		if (getPnAttributes().isVisible() && !getPnAttributes().validateAttributes()) {
 			return;
 		}
 
