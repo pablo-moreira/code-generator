@@ -67,8 +67,6 @@ abstract public class SelectTargetGroupTableModel extends SelectItemTableModel<T
             item.setSelected((Boolean) value);
 			onChangeSelection(item);
         }
-        
-        fireTableCellUpdated(row, col);
     }
 
     @Override

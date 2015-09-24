@@ -193,7 +193,7 @@ public class PnSelectTarget extends javax.swing.JPanel {
 				
 				TargetGroup targetGroup = selectItem.getItem();
 				
-				if (selectItem.isSelected()) {						
+				if (selectItem.isSelected()) {
 					tmSelectTargets.selectItems(targetGroup.getTargets());
 				}
 				else {
