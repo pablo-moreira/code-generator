@@ -20,6 +20,4 @@ public enum Gender {
     public String getArticle() {
         return article;
     }
-        
-        
 }
