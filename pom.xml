@@ -1,15 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.github.cg</groupId>
+	<groupId>com.github</groupId>
 	<artifactId>code-generator</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Code Generator</name>
 	<description>Code Generator</description>
 	<packaging>jar</packaging>
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<hibernate-core.version>4.1.2.Final</hibernate-core.version>
+		<hibernate.version>4.1.2.Final</hibernate.version>
 	</properties>
 	<dependencies>
 		<!-- Log4 -->
@@ -21,7 +20,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>${hibernate-core.version}</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
