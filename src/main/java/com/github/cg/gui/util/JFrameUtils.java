@@ -1,12 +1,11 @@
 package com.github.cg.gui.util;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationHandler;
@@ -46,8 +45,13 @@ public class JFrameUtils {
 	}
 
 	public static void setCenterLocation(Component component) {
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		component.setLocation(dim.width / 2 - component.getWidth() / 2, dim.height / 2 - component.getHeight() / 2);
+		
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] gs = ge.getScreenDevices();
+		
+		Rectangle rectangle = gs[0].getDefaultConfiguration().getBounds();
+				
+		component.setLocation(rectangle.width / 2 - component.getWidth() / 2, rectangle.height / 2 - component.getHeight() / 2);
 	}
 
 	// show the given frame as modal to the specified owner.
