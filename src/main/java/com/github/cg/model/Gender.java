@@ -1,5 +1,7 @@
 package com.github.cg.model;
 
+import com.github.cg.component.StringUtils;
+
 public enum Gender {
 	
 	M("Masculino", "o"),
@@ -19,5 +21,9 @@ public enum Gender {
 
     public String getArticle() {
         return article;
+    }
+    
+    public String getArticleFuc() {
+    	return StringUtils.getInstance().firstToUpperCase(getArticle());
     }
 }

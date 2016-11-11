@@ -49,6 +49,10 @@ public class Entity {
 		return label;
 	}
 	
+	public String getLabelFlc() {
+		return StringUtils.getInstance().firstToLowerCase(getLabel());
+	}
+	
 	/**
 	 * @return O nome da classe da entidade 
 	 */
@@ -172,6 +176,10 @@ public class Entity {
 	 */
 	public String getPluralFvm() {
 		return StringUtils.getInstance().formatForVariableOrMethodName(getPlural());
+	}
+	
+	public String getPluralFlc() {
+		return StringUtils.getInstance().firstToLowerCase(getPlural());
 	}
 
 	public void setPlural(String plural) {
