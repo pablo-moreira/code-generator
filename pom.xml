@@ -63,12 +63,12 @@
 	</build>
 	<distributionManagement>
 		<repository>
-			<id>nexus</id>
+			<id>tjro</id>
 			<name>Repositorio de Releases</name>
 			<url>http://repositorio.tjro.jus.br/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>nexus</id>
+			<id>tjro</id>
 			<name>Repositorios de Snapshots</name>
 			<url>http://repositorio.tjro.jus.br/content/repositories/snapshots</url>
 		</snapshotRepository>
