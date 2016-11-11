@@ -26,7 +26,7 @@ public class StringUtils {
 	}
 	
 	public boolean isNullOrEmpty(String string) {
-		return string == null || string.length() == 0;
+		return string == null || string.isEmpty();
 	}
 	
 	public String firstToLowerCase(String str) {
