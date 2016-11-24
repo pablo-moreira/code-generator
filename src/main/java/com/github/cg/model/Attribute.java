@@ -72,6 +72,10 @@ public class Attribute {
 	public String getLabel() {
 		return label;
 	}
+	
+	public String getLabelFuc() {
+		return StringUtils.getInstance().firstToUpperCase(getLabel());
+	}
 
 	public void setLabel(String label) {
 		this.label = label;

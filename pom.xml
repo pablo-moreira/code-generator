@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github</groupId>
 	<artifactId>code-generator</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>Code Generator</name>
 	<description>Code Generator</description>
 	<packaging>jar</packaging>
