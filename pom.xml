@@ -65,12 +65,12 @@
 		<repository>
 			<id>tjro</id>
 			<name>Repositorio de Releases</name>
-			<url>http://repositorio.tjro.jus.br/content/repositories/releases</url>
+			<url>http://nexus.tjro.jus.br/repository/maven-releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>tjro</id>
 			<name>Repositorios de Snapshots</name>
-			<url>http://repositorio.tjro.jus.br/content/repositories/snapshots</url>
+			<url>http://nexus.tjro.jus.br/repository/maven-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
